@@ -10,6 +10,7 @@ public class TrackList {
 		public TrackModuleType type;
 		public String name;
 		public String textureLocation;
+		public String textureLocationCorner;
 	}
 
 	public enum  TrackModuleType {

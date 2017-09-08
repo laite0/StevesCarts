@@ -46,20 +46,33 @@ public class ModularTrackRenderUtils {
         textures.clear();
         TextureMap textureMap = event.getMap();
 	    TrackManager.trackList.modules.forEach(trackModule -> {
-		    TextureAtlasSprite texture = textureMap.getTextureExtry(trackModule.textureLocation);
-		    if (texture == null && !textures.containsKey(trackModule.textureLocation)) {
-			    texture = new ModelGenerator.CustomTexture(trackModule.textureLocation);
-			    textureMap.setTextureEntry(texture);
-			    textures.put(trackModule.textureLocation, texture);
-		    }
+		    loadTexture(trackModule.textureLocation, textureMap);
+		    loadTexture(trackModule.textureLocationCorner, textureMap);
 	    });
     }
 
-    public static TextureAtlasSprite getTexture(TrackList.TrackModule trackModule){
-    	if(!textures.containsKey(trackModule.textureLocation)){
-    		//TODO missing texture
+    private static void loadTexture(String textureLocation, TextureMap textureMap){
+	    TextureAtlasSprite texture = textureMap.getTextureExtry(textureLocation);
+	    if (texture == null && !textures.containsKey(textureLocation)) {
+		    texture = new ModelGenerator.CustomTexture(textureLocation);
+		    textureMap.setTextureEntry(texture);
+		    textures.put(textureLocation, texture);
 	    }
-    	return textures.get(trackModule.textureLocation);
+    }
+
+
+    public static TextureAtlasSprite getTexture(TrackList.TrackModule trackModule, boolean corner){
+    	if(corner){
+		    if(!textures.containsKey(trackModule.textureLocationCorner)){
+			    //TODO missing texture
+		    }
+		    return textures.get(trackModule.textureLocationCorner);
+	    } else {
+		    if(!textures.containsKey(trackModule.textureLocation)){
+			    //TODO missing texture
+		    }
+		    return textures.get(trackModule.textureLocation);
+	    }
     }
 
 	@SubscribeEvent()

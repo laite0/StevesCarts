@@ -3,17 +3,20 @@
     {
       "name" : "stevescarts:wooden_rail",
       "type" : "RAIL",
-      "textureLocation" : "minecraft:blocks/rail_activator_powered"
+      "textureLocation" : "stevescarts:blocks/modulartrack/wooden_rail",
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/wooden_rail_corner"
     },
     {
       "name" : "stevescarts:iron_rail",
       "type" : "RAIL",
-      "textureLocation" : ""
+      "textureLocation" : "stevescarts:blocks/modulartrack/iron_rail",
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/iron_rail_corner"
     },
     {
       "name" : "stevescarts:wooden_sleeper",
       "type" : "SLEEPER",
-      "textureLocation" : ""
+      "textureLocation" : "stevescarts:blocks/modulartrack/wooden_sleeper",
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/wooden_sleeper_corner"
     }
   ]
 }
