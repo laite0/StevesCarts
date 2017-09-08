@@ -31,7 +31,7 @@ public enum ModBlocks {
 	UPGRADE("upgrade", BlockUpgrade.class, TileEntityUpgrade.class, "upgrade", ItemUpgrade.class),
 	LIQUID_MANAGER("BlockLiquidManager", BlockLiquidManager.class, TileEntityLiquid.class, "liquid"),
 	STORAGE("BlockMetalStorage", BlockMetalStorage.class, ItemBlockStorage.class),
-	MODULAR_RAIL("ModularRail", BlockModularTack.class);
+	MODULAR_RAIL("ModularTrack", BlockModularTack.class, TileEntityModularTack.class, "modulartrack");
 
 	private final String name;
 	private final Class<? extends Block> clazz;

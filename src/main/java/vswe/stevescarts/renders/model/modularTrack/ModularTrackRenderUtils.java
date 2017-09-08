@@ -77,7 +77,7 @@ public class ModularTrackRenderUtils {
 
 	@SubscribeEvent()
 	public static void bakeModels(ModelBakeEvent event) {
-		event.getModelRegistry().putObject(new ModelResourceLocation("stevescarts:modularrail/modularrail#normal"), new ModelModularTrack());
+		event.getModelRegistry().putObject(new ModelResourceLocation("stevescarts:modulartrack/modulartrack#normal"), new ModelModularTrack());
 	}
 
 

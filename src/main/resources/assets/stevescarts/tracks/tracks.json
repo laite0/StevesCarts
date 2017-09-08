@@ -13,10 +13,22 @@
       "textureLocationCorner" : "stevescarts:blocks/modulartrack/iron_rail_corner"
     },
     {
+      "name" : "stevescarts:diamond_rail",
+      "type" : "RAIL",
+      "textureLocation" : "stevescarts:blocks/modulartrack/diamond_rail",
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/diamond_rail_corner"
+    },
+    {
       "name" : "stevescarts:wooden_sleeper",
       "type" : "SLEEPER",
       "textureLocation" : "stevescarts:blocks/modulartrack/wooden_sleeper",
       "textureLocationCorner" : "stevescarts:blocks/modulartrack/wooden_sleeper_corner"
+    },
+    {
+      "name" : "stevescarts:iron_sleeper",
+      "type" : "SLEEPER",
+      "textureLocation" : "stevescarts:blocks/modulartrack/iron_sleeper",
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/iron_sleeper_corner"
     }
   ]
 }
