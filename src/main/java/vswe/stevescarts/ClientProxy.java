@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -25,12 +26,12 @@ import vswe.stevescarts.renders.ItemStackRenderer;
 import vswe.stevescarts.renders.RendererCart;
 import vswe.stevescarts.renders.model.ItemModelManager;
 import vswe.stevescarts.renders.model.ModelGenerator;
+import vswe.stevescarts.renders.model.modularTrack.ModularTrackRenderUtils;
 
 public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void init() {
-
 		ModuleData.initModels();
 
 		ModelLoader.setCustomStateMapper(ModBlocks.UPGRADE.getBlock(), new DefaultStateMapper() {
@@ -53,6 +54,8 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void preInit() {
+		ModularTrackRenderUtils.preinit();
+		MinecraftForge.EVENT_BUS.register(ModularTrackRenderUtils.class);
 		ItemModelManager.load(); //Called in pre-init
 		RenderingRegistry.registerEntityRenderingHandler(EntityMinecartModular.class, new RenderManagerCart()); //Needs to be done after the mc ones have been done
 		new SoundHandler();

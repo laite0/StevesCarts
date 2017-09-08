@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import reborncore.RebornRegistry;
+import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.tileentities.*;
 import vswe.stevescarts.helpers.ComponentTypes;
 import vswe.stevescarts.helpers.RecipeHelper;
@@ -29,7 +30,8 @@ public enum ModBlocks {
 	DETECTOR_UNIT("BlockDetector", BlockDetector.class, TileEntityDetector.class, "detector", ItemBlockDetector.class),
 	UPGRADE("upgrade", BlockUpgrade.class, TileEntityUpgrade.class, "upgrade", ItemUpgrade.class),
 	LIQUID_MANAGER("BlockLiquidManager", BlockLiquidManager.class, TileEntityLiquid.class, "liquid"),
-	STORAGE("BlockMetalStorage", BlockMetalStorage.class, ItemBlockStorage.class);
+	STORAGE("BlockMetalStorage", BlockMetalStorage.class, ItemBlockStorage.class),
+	MODULAR_RAIL("ModularRail", BlockModularTack.class);
 
 	private final String name;
 	private final Class<? extends Block> clazz;
@@ -78,11 +80,10 @@ public enum ModBlocks {
 						GameRegistry.registerTileEntity(blockInfo.tileEntityClazz, blockInfo.tileEntityName);
 					}
 				} else {
-					System.out.println("This is not a block (" + blockInfo.name + ")");
+					StevesCarts.logger.error("This is not a block (" + blockInfo.name + ")");
 				}
 			} catch (Exception e) {
-				System.out.println("Failed to create block (" + blockInfo.name + ")");
-				e.printStackTrace();
+				throw new RuntimeException("Failed to create block (" + blockInfo.name + ")", e);
 			}
 		}
 		ModBlocks.STORAGE.block.setHardness(5.0f).setResistance(10.0f);

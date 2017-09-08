@@ -154,7 +154,7 @@ public class ModelGenerator {
 		return new BufferedReader(new InputStreamReader(iresource.getInputStream(), Charsets.UTF_8));
 	}
 
-	class CustomTexture extends TextureAtlasSprite {
+	public static class CustomTexture extends TextureAtlasSprite {
 		public CustomTexture(String spriteName) {
 			super(spriteName);
 		}

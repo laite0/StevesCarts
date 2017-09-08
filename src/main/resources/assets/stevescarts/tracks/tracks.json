@@ -1,0 +1,19 @@
+{
+  "modules" : [
+    {
+      "name" : "stevescarts:wooden_rail",
+      "type" : "RAIL",
+      "textureLocation" : "minecraft:blocks/rail_activator_powered"
+    },
+    {
+      "name" : "stevescarts:iron_rail",
+      "type" : "RAIL",
+      "textureLocation" : ""
+    },
+    {
+      "name" : "stevescarts:wooden_sleeper",
+      "type" : "SLEEPER",
+      "textureLocation" : ""
+    }
+  ]
+}

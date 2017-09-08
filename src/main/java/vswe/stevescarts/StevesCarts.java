@@ -35,6 +35,7 @@ import vswe.stevescarts.items.ModItems;
 import vswe.stevescarts.packet.PacketFluidSync;
 import vswe.stevescarts.packet.PacketStevesCarts;
 import vswe.stevescarts.plugins.PluginLoader;
+import vswe.stevescarts.tracks.TrackManager;
 import vswe.stevescarts.upgrades.AssemblerUpgrade;
 
 import javax.annotation.Nonnull;
@@ -67,6 +68,7 @@ public class StevesCarts {
 		maxDynamites = Math.min(maxDynamites, config.get("Settings", "MaximumNumberOfDynamites", maxDynamites).getInt(maxDynamites));
 		useArcadeSounds = config.get("Settings", "useArcadeSounds", true).getBoolean(true);
 		useArcadeMobSounds = config.get("Settings", "useTetrisMobSounds", true).getBoolean(true);
+		TrackManager.loadTracks();
 		ModItems.preBlockInit(config);
 		ItemBlockStorage.init();
 		ModBlocks.init();
