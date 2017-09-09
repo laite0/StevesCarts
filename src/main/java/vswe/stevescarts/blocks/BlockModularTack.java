@@ -7,10 +7,12 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -97,7 +99,16 @@ public class BlockModularTack extends BlockRail implements ITileEntityProvider {
 		super.addInformation(stack, player, tooltip, advanced);
 		List<TrackList.TrackModule> moduleList = TrackManager.fromNBT(stack.getTagCompound());
 		for(TrackList.TrackModule module : moduleList){
-			tooltip.add(module.type.name() + ":" + module.name);
+			tooltip.add(TextFormatting.BLUE + module.type.name() + TextFormatting.RED +  " : " +TextFormatting.GOLD  + module.name);
+		}
+	}
+
+	@Override
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		List<TrackList.TrackModule> moduleList = TrackManager.fromNBT(stack.getTagCompound());
+		TileEntityModularTack modularTack = (TileEntityModularTack) worldIn.getTileEntity(pos);
+		for(TrackList.TrackModule module : moduleList){
+			modularTack.setModule(module);
 		}
 	}
 }

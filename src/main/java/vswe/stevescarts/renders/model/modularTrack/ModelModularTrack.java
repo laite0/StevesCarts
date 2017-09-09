@@ -16,7 +16,7 @@ import java.util.*;
 
 public class ModelModularTrack implements IBakedModel {
 
-	static HashMap<String, List<BakedQuad>> quadCache = new HashMap<>();
+	public static HashMap<String, List<BakedQuad>> quadCache = new HashMap<>();
 
 	private FaceBakery faceBakery = new FaceBakery();
 

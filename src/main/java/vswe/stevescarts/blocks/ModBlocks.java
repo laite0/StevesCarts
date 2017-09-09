@@ -3,6 +3,7 @@ package vswe.stevescarts.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -125,5 +126,9 @@ public enum ModBlocks {
 
 	public Block getBlock() {
 		return block;
+	}
+
+	public Item getItem() {
+		return Item.getItemFromBlock(getBlock());
 	}
 }

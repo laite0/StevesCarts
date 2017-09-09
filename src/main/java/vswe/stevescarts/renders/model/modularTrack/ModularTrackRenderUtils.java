@@ -44,6 +44,7 @@ public class ModularTrackRenderUtils {
     @SubscribeEvent
     public static void textureStitch(TextureStitchEvent.Pre event) {
         textures.clear();
+        ModelModularTrack.quadCache.clear();
         TextureMap textureMap = event.getMap();
 	    TrackManager.trackList.modules.forEach(trackModule -> {
 		    loadTexture(trackModule.textureLocation, textureMap);

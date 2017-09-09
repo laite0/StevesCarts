@@ -26,6 +26,7 @@ import vswe.stevescarts.renders.ItemStackRenderer;
 import vswe.stevescarts.renders.RendererCart;
 import vswe.stevescarts.renders.model.ItemModelManager;
 import vswe.stevescarts.renders.model.ModelGenerator;
+import vswe.stevescarts.renders.model.modularTrack.ItemModelModularTrack;
 import vswe.stevescarts.renders.model.modularTrack.ModularTrackRenderUtils;
 
 public class ClientProxy extends CommonProxy {
@@ -55,6 +56,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void preInit() {
 		ModularTrackRenderUtils.preinit();
+		ItemModelModularTrack.init();
 		MinecraftForge.EVENT_BUS.register(ModularTrackRenderUtils.class);
 		ItemModelManager.load(); //Called in pre-init
 		RenderingRegistry.registerEntityRenderingHandler(EntityMinecartModular.class, new RenderManagerCart()); //Needs to be done after the mc ones have been done
