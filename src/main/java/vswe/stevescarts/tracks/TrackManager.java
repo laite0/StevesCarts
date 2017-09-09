@@ -83,6 +83,11 @@ public class TrackManager {
 		}, (path, path2) -> false, false, false);
 	}
 
+	public static void addTrack(TrackList.TrackModule trackModule){
+		TrackManager.trackList.modules.add(trackModule);
+	}
+
+
 	public static NBTTagCompound toNBT(List<TrackList.TrackModule> modules){
 		NBTTagCompound tagCompound = new NBTTagCompound();
 		for (TrackList.TrackModule module : modules){
