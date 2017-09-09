@@ -53,7 +53,7 @@ public class ItemModelModularTrack implements IModel {
 
 		textures.forEach(resourceLocation -> builder.addAll(new ItemLayerModel(ImmutableList.of(resourceLocation)).bake(transform, format, bakedTextureGetter).getQuads(null, null, 0L)));
 
-		return new BakedTrackItemModel(builder.build(), bakedTextureGetter.apply(textures.get(0)), format, transformMap);
+		return new BakedTrackItemModel(builder.build(), null, format, transformMap);
 	}
 
 	@Override
@@ -158,16 +158,29 @@ public class ItemModelModularTrack implements IModel {
 			                                   World world,
 		                                   @Nullable
 			                                   EntityLivingBase entity) {
-			String name = stack.getTagCompound().toString();
-			if (!modelCache.containsKey(name)) {
+			Optional<String> name = getCacheName(stack);
+			if (!name.isPresent() || (name.isPresent() && !modelCache.containsKey(name.get()))) {
 				List<ResourceLocation> textures = new ArrayList<>();
 				List<TrackList.TrackModule> moduleList = TrackManager.fromNBT(stack.getTagCompound());
 				moduleList.forEach(trackModule -> textures.add(new ResourceLocation(trackModule.textureLocation)));
 				BakedTrackItemModel bakedTrackItemModel = (BakedTrackItemModel) originalModel;
 				ItemModelModularTrack model = new ItemModelModularTrack(textures);
-				modelCache.put(name, model.bake(new SimpleModelState(bakedTrackItemModel.transformMap), bakedTrackItemModel.format, textureGetter));
+				modelCache.put(name.get(), model.bake(new SimpleModelState(bakedTrackItemModel.transformMap), bakedTrackItemModel.format, textureGetter));
 			}
-			return modelCache.get(name);
+			return modelCache.get(name.get());
 		}
 	}
+
+	public static Optional<String> getCacheName(ItemStack stack){
+		if(stack.isEmpty() && !stack.hasTagCompound()){
+			return Optional.empty();
+		}
+		StringBuilder stringBuilder = new StringBuilder();
+		List<TrackList.TrackModule> moduleList = TrackManager.fromNBT(stack.getTagCompound());
+		for(TrackList.TrackModule module : moduleList){
+			stringBuilder.append(module.name + ":");
+		}
+		return Optional.of(stringBuilder.toString());
+	}
+
 }

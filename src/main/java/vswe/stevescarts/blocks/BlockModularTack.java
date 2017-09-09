@@ -8,10 +8,13 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BlockModularTack extends BlockRail implements ITileEntityProvider {
 
@@ -110,5 +114,24 @@ public class BlockModularTack extends BlockRail implements ITileEntityProvider {
 		for(TrackList.TrackModule module : moduleList){
 			modularTack.setModule(module);
 		}
+	}
+
+	@Override
+	public float getRailMaxSpeed(World world, EntityMinecart cart, BlockPos pos) {
+		TileEntityModularTack modularTack = (TileEntityModularTack) world.getTileEntity(pos);
+		TrackList.TrackModule trackModule = modularTack.getModule(TrackList.TrackModuleType.RAIL);
+		if(trackModule != null && trackModule.dataMap.containsKey("speed")){
+			float speed = Float.parseFloat(trackModule.dataMap.get("speed"));
+			return speed;
+		}
+		return 0.4F;
+	}
+
+	@Override
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+    	ItemStack stack = new ItemStack(this, 1);
+		TileEntityModularTack modularTack = (TileEntityModularTack) world.getTileEntity(pos);
+		stack.setTagCompound(TrackManager.toNBT(new ArrayList<>(modularTack.modules.values())));
+		return stack;
 	}
 }

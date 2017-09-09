@@ -44,6 +44,10 @@ public class TileEntityModularTack extends TileEntity {
 		modules.put(module.type, module);
 	}
 
+	public TrackList.TrackModule getModule(TrackList.TrackModuleType trackModuleType){
+		return modules.get(trackModuleType);
+	}
+
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return false;

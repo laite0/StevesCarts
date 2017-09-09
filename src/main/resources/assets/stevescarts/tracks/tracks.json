@@ -24,8 +24,7 @@
       "textureLocation" : "stevescarts:blocks/modulartrack/gold_rail",
       "textureLocationCorner" : "stevescarts:blocks/modulartrack/gold_rail_corner",
       "dataMap" : {
-        "speed" : "0.6",
-        "requiredTeir" : "2"
+        "speed" : "0.6"
       }
     },
     {
@@ -34,8 +33,7 @@
       "textureLocation" : "stevescarts:blocks/modulartrack/diamond_rail",
       "textureLocationCorner" : "stevescarts:blocks/modulartrack/diamond_rail_corner",
       "dataMap" : {
-        "speed" : "0.8",
-        "requiredTeir" : "3"
+        "speed" : "0.8"
       }
     },
     {
@@ -44,54 +42,38 @@
       "textureLocation" : "stevescarts:blocks/modulartrack/galgadorian_rail",
       "textureLocationCorner" : "stevescarts:blocks/modulartrack/galgadorian_rail_corner",
       "dataMap" : {
-        "speed" : "1.3",
-        "requiredTeir" : "4"
+        "speed" : "1.3"
       }
     },
     {
       "name" : "stevescarts:wooden_sleeper",
       "type" : "SLEEPER",
       "textureLocation" : "stevescarts:blocks/modulartrack/wooden_sleeper",
-      "textureLocationCorner" : "stevescarts:blocks/modulartrack/wooden_sleeper_corner",
-      "dataMap" : {
-        "sleeperTier" : "1"
-      }
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/wooden_sleeper_corner"
     },
     {
       "name" : "stevescarts:iron_sleeper",
       "type" : "SLEEPER",
       "textureLocation" : "stevescarts:blocks/modulartrack/iron_sleeper",
-      "textureLocationCorner" : "stevescarts:blocks/modulartrack/iron_sleeper_corner",
-      "dataMap" : {
-        "sleeperTier" : "2"
-      }
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/iron_sleeper_corner"
     },
     {
       "name" : "stevescarts:gold_sleeper",
       "type" : "SLEEPER",
       "textureLocation" : "stevescarts:blocks/modulartrack/gold_sleeper",
-      "textureLocationCorner" : "stevescarts:blocks/modulartrack/gold_sleeper_corner",
-      "dataMap" : {
-        "sleeperTier" : "3"
-      }
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/gold_sleeper_corner"
     },
     {
       "name" : "stevescarts:diamond_sleeper",
       "type" : "SLEEPER",
       "textureLocation" : "stevescarts:blocks/modulartrack/diamond_sleeper",
-      "textureLocationCorner" : "stevescarts:blocks/modulartrack/diamond_sleeper_corner",
-      "dataMap" : {
-        "sleeperTier" : "4"
-      }
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/diamond_sleeper_corner"
     },
     {
       "name" : "stevescarts:galgadorian_sleeper",
       "type" : "SLEEPER",
       "textureLocation" : "stevescarts:blocks/modulartrack/galgadorian_sleeper",
-      "textureLocationCorner" : "stevescarts:blocks/modulartrack/galgadorian_sleeper_corner",
-      "dataMap" : {
-        "sleeperTier" : "5"
-      }
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/galgadorian_sleeper_corner"
     }
   ]
 }
