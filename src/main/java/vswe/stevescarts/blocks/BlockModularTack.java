@@ -10,8 +10,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -20,18 +23,18 @@ import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import sun.applet.Main;
 import vswe.stevescarts.StevesCarts;
-import vswe.stevescarts.arcade.tracks.Track;
+import vswe.stevescarts.api.tracks.IModuleLogicHandler;
 import vswe.stevescarts.blocks.tileentities.TileEntityModularTack;
-import vswe.stevescarts.tracks.TrackList;
+import vswe.stevescarts.api.tracks.TrackList;
 import vswe.stevescarts.tracks.TrackManager;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 public class BlockModularTack extends BlockRail implements ITileEntityProvider {
 
@@ -61,6 +64,18 @@ public class BlockModularTack extends BlockRail implements ITileEntityProvider {
 		} else {
 			return blockAccess.getTileEntity(pos);
 		}
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    	//TODO debugcode
+    	ItemStack stack = playerIn.getHeldItem(EnumHand.MAIN_HAND);
+    	if(!stack.isEmpty() && stack.getItem() == Items.REDSTONE){
+		    TileEntityModularTack modularTack = (TileEntityModularTack) world.getTileEntity(pos);
+		    modularTack.setModules(TrackManager.getModuleFromName("stevescarts:detector_module_off"));
+		    modularTack.markRenderUpdate();
+	    }
+		return super.onBlockActivated(world, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
 	}
 
 	@Override
@@ -112,7 +127,7 @@ public class BlockModularTack extends BlockRail implements ITileEntityProvider {
 		List<TrackList.TrackModule> moduleList = TrackManager.fromNBT(stack.getTagCompound());
 		TileEntityModularTack modularTack = (TileEntityModularTack) worldIn.getTileEntity(pos);
 		for(TrackList.TrackModule module : moduleList){
-			modularTack.setModule(module);
+			modularTack.setModules(module);
 		}
 	}
 
@@ -134,4 +149,29 @@ public class BlockModularTack extends BlockRail implements ITileEntityProvider {
 		stack.setTagCompound(TrackManager.toNBT(new ArrayList<>(modularTack.modules.values())));
 		return stack;
 	}
+
+	public void handleModuleEvent(World world, BlockPos pos, Consumer<IModuleLogicHandler> consumer){
+		TileEntityModularTack modularTack = (TileEntityModularTack) world.getTileEntity(pos);
+		modularTack.modules.forEach((key, value) -> consumer.accept(value.moduleLogicHandler));
+	}
+
+	@Override
+	public void onMinecartPass(World world, EntityMinecart cart, BlockPos pos) {
+		super.onMinecartPass(world, cart, pos);
+		handleModuleEvent(world, pos, iModuleLogicHandler -> iModuleLogicHandler.onMinecartPass(world, cart, pos));
+	}
+
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		super.breakBlock(worldIn, pos, state);
+		worldIn.removeTileEntity(pos);
+	}
+
+	@Override
+	public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int id, int param) {
+		super.eventReceived(state, worldIn, pos, id, param);
+		TileEntity tileentity = worldIn.getTileEntity(pos);
+		return tileentity == null ? false : tileentity.receiveClientEvent(id, param);
+	}
+
 }

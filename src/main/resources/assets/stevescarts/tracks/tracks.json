@@ -74,6 +74,20 @@
       "type" : "SLEEPER",
       "textureLocation" : "stevescarts:blocks/modulartrack/galgadorian_sleeper",
       "textureLocationCorner" : "stevescarts:blocks/modulartrack/galgadorian_sleeper_corner"
+    },
+    {
+      "name" : "stevescarts:detector_module_off",
+      "type" : "MODULE",
+      "textureLocation" : "stevescarts:blocks/modulartrack/detector_module_off",
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/detector_module_off_corner",
+      "moduleHandlerClass" : "vswe.stevescarts.tracks.modules.ModuleDetector"
+    },
+    {
+      "name" : "stevescarts:detector_module_on",
+      "type" : "MODULE",
+      "textureLocation" : "stevescarts:blocks/modulartrack/detector_module_on",
+      "textureLocationCorner" : "stevescarts:blocks/modulartrack/detector_module_on_corner",
+      "moduleHandlerClass" : "vswe.stevescarts.tracks.modules.ModuleDetector"
     }
   ]
 }

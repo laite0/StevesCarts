@@ -18,12 +18,13 @@ import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import vswe.stevescarts.blocks.ModBlocks;
 import vswe.stevescarts.renders.model.ModelHelper;
-import vswe.stevescarts.tracks.TrackList;
+import vswe.stevescarts.api.tracks.TrackList;
 import vswe.stevescarts.tracks.TrackManager;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ItemModelModularTrack implements IModel {
 
@@ -162,7 +163,9 @@ public class ItemModelModularTrack implements IModel {
 			if (!name.isPresent() || (name.isPresent() && !modelCache.containsKey(name.get()))) {
 				List<ResourceLocation> textures = new ArrayList<>();
 				List<TrackList.TrackModule> moduleList = TrackManager.fromNBT(stack.getTagCompound());
-				moduleList.forEach(trackModule -> textures.add(new ResourceLocation(trackModule.textureLocation)));
+				moduleList.stream()
+					.filter(trackModule -> !trackModule.isDummyModule).forEach(trackModule -> textures
+					.add(new ResourceLocation(trackModule.textureLocation)));
 				BakedTrackItemModel bakedTrackItemModel = (BakedTrackItemModel) originalModel;
 				ItemModelModularTrack model = new ItemModelModularTrack(textures);
 				modelCache.put(name.get(), model.bake(new SimpleModelState(bakedTrackItemModel.transformMap), bakedTrackItemModel.format, textureGetter));

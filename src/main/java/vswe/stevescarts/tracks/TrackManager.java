@@ -10,6 +10,8 @@ import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.io.IOUtils;
 import reborncore.common.blocks.PropertyString;
 import vswe.stevescarts.StevesCarts;
+import vswe.stevescarts.api.tracks.IModuleLogicHandler;
+import vswe.stevescarts.api.tracks.TrackList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,12 +40,25 @@ public class TrackManager {
 		defaultSateMap.clear();
 		Arrays.stream(TrackList.TrackModuleType.values()).forEach(moduleType -> {
 			List<TrackList.TrackModule> modules = getAllModulesForType(moduleType);
-			PropertyString property = new PropertyString(moduleType.name().toLowerCase(), trackList.modules.stream()
+			TrackList.TrackModule dummyModule = null;
+			if(moduleType.isPlayerAdded){
+				dummyModule = new TrackList.TrackModule();
+				dummyModule.isDummyModule = true;
+				dummyModule.name = "empty";
+				dummyModule.type = moduleType;
+				dummyModule.moduleLogicHandler = new IModuleLogicHandler(){};
+				modules.add(dummyModule);
+			}
+			PropertyString property = new PropertyString(moduleType.name().toLowerCase(), modules.stream()
 				.filter(trackModule -> trackModule.type == moduleType)
 				.map(trackModule -> trackModule.name)
 				.collect(Collectors.toList()));
 			propertyList.put(moduleType, property);
-			defaultSateMap.put(property, modules.get(0).name);
+			if(dummyModule != null){
+				defaultSateMap.put(property, dummyModule.name);
+			} else {
+				defaultSateMap.put(property, modules.get(0).name);
+			}
 		});
 	}
 
@@ -70,7 +85,21 @@ public class TrackManager {
 				try {
 					bufferedReader = Files.newBufferedReader(tracksPath);
 					TrackList trackList = GSON.fromJson(bufferedReader, TrackList.class);
-					trackList.modules.forEach(trackModule -> trackModule.name = trackModule.name.toLowerCase().replace(":", "_"));
+					trackList.modules.forEach(trackModule -> {
+						trackModule.name = trackModule.name.toLowerCase().replace(":", "_");
+						if(trackModule.moduleHandlerClass != null && !trackModule.moduleHandlerClass.isEmpty()){
+							try {
+								Class<? extends IModuleLogicHandler> clazz = (Class<? extends IModuleLogicHandler>) Class.forName(trackModule.moduleHandlerClass);
+								IModuleLogicHandler logicHandler = clazz.newInstance();
+								trackModule.moduleLogicHandler = logicHandler;
+								trackModule.moduleLogicHandler.load(trackModule);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						} else {
+							trackModule.moduleLogicHandler = new IModuleLogicHandler(){};
+						}
+					});
 					TrackManager.trackList.modules.addAll(trackList.modules);
 				} catch (IOException e) {
 					StevesCarts.logger.error("Error reading tracks.json: ", e);

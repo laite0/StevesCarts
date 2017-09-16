@@ -1,21 +1,14 @@
 package vswe.stevescarts.renders.model.modularTrack;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -23,11 +16,10 @@ import prospector.shootingstar.model.ModelMethods;
 import vswe.stevescarts.blocks.BlockModularTack;
 import vswe.stevescarts.blocks.ModBlocks;
 import vswe.stevescarts.renders.model.ModelGenerator;
-import vswe.stevescarts.tracks.TrackList;
+import vswe.stevescarts.api.tracks.TrackList;
 import vswe.stevescarts.tracks.TrackManager;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class ModularTrackRenderUtils {
