@@ -50,8 +50,10 @@ public class PacketFluidSync implements INetworkPacket<PacketFluidSync> {
 	@Override
 	public void processData(PacketFluidSync message, MessageContext context) {
 		if(context.side == Side.CLIENT){
-			TileEntityLiquid liquid = (TileEntityLiquid) Minecraft.getMinecraft().world.getTileEntity(message.pos);
-			liquid.tanks[message.tankID].setFluid(message.fluidStack);
+			TileEntity tile = Minecraft.getMinecraft().world.getTileEntity(message.pos);
+			if(tile!=null && tile instanceof TileEntityLiquid){
+				((TileEntityLiquid)tile).tanks[message.tankID].setFluid(message.fluidStack);
+			}
 		}
 	}
 }
