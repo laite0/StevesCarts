@@ -23,11 +23,11 @@ public class ThermalFuel extends TankEffect {
 		super.update(upgrade);
 		if (!upgrade.getWorld().isRemote && upgrade.getMaster() != null && upgrade.tank.getFluid() != null && upgrade.tank.getFluid().getFluid().equals(FluidRegistry.LAVA)) {
 			final int fuelspace = upgrade.getMaster().getMaxFuelLevel() - upgrade.getMaster().getFuelLevel();
-			final int unitspace = Math.min(fuelspace / 3, 200);
+			final int unitspace = Math.min(fuelspace / LAVA_EFFICIENCY, 200);
 			if (unitspace > 100) {
 				final FluidStack drain = upgrade.tank.drain(unitspace, false);
 				if (drain != null && drain.amount > 0) {
-					upgrade.getMaster().setFuelLevel(upgrade.getMaster().getFuelLevel() + drain.amount * 3);
+					upgrade.getMaster().setFuelLevel(upgrade.getMaster().getFuelLevel() + drain.amount * LAVA_EFFICIENCY);
 					upgrade.tank.drain(unitspace, true);
 				}
 			}

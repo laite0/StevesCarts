@@ -1223,21 +1223,15 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 		return MathHelper.floor(posZ);
 	}
 
-	public void addItemToChest(
-		@Nonnull
-			ItemStack iStack) {
+	public void addItemToChest(@Nonnull ItemStack iStack) {
 		TransferHandler.TransferItem(iStack, this, getCon(null), Slot.class, null, -1);
 	}
 
-	public void addItemToChest(
-		@Nonnull
-			ItemStack iStack, final int start, final int end) {
+	public void addItemToChest(@Nonnull ItemStack iStack, final int start, final int end) {
 		TransferHandler.TransferItem(iStack, this, start, end, getCon(null), Slot.class, null, -1);
 	}
 
-	public void addItemToChest(
-		@Nonnull
-			ItemStack iStack, final Class validSlot, final Class invalidSlot) {
+	public void addItemToChest(@Nonnull ItemStack iStack, final Class validSlot, final Class invalidSlot) {
 		TransferHandler.TransferItem(iStack, this, getCon(null), validSlot, invalidSlot, -1);
 	}
 

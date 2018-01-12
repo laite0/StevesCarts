@@ -95,10 +95,8 @@ public class ModulePowerObserver extends ModuleAddon {
 	}
 
 	private void drawEngine(final GuiMinecart gui, final int id, final int[] rect) {
-		final ModuleEngine engine = getCart().getEngines().get(id);
-		ResourceHelper.bindResourcePath("/atlas/items.png");
-		//TODO
-		//this.drawImage(gui, engine.getData().getIcon(), rect, 0, 0);
+		ModuleEngine engine = getCart().getEngines().get(id);
+		gui.drawModuleIcon(engine.getData(), gui.getGuiLeft() + getX() + rect[0], gui.getGuiTop() + getY() + rect[1], rect[2], rect[3], 0, 0);
 	}
 
 	private int[] getAreaRect(final int id) {

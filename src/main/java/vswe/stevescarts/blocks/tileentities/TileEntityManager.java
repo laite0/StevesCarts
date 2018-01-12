@@ -59,9 +59,7 @@ public abstract class TileEntityManager extends TileEntityBase implements IInven
 	}
 
 	@Override
-	public void setInventorySlotContents(final int i,
-	                                     @Nonnull
-		                                     ItemStack itemstack) {
+	public void setInventorySlotContents(final int i, @Nonnull ItemStack itemstack) {
 		cargoItemStacks.set(i, itemstack);
 		if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) {
 			itemstack.setCount(getInventoryStackLimit());

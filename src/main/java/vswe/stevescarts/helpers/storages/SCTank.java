@@ -1,5 +1,7 @@
 package vswe.stevescarts.helpers.storages;
 
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.*;
@@ -7,12 +9,13 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import reborncore.client.RenderUtil;
+import reborncore.common.util.FluidUtils;
 import vswe.stevescarts.guis.GuiBase;
 import vswe.stevescarts.helpers.Localization;
 
+import javax.annotation.Nullable;
 import java.text.NumberFormat;
 
-@Deprecated
 public class SCTank extends FluidTank {
 	private ITankHolder owner;
 	private int tankid;
@@ -35,14 +38,14 @@ public class SCTank extends FluidTank {
 	public void containerTransfer() {
 		ItemStack item = owner.getInputContainer(tankid);
 		if (!item.isEmpty()) {
-			IFluidHandler handler = FluidUtil.getFluidHandler(item);
+			IFluidHandler handler = FluidUtils.getFluidHandler(item);
 			if (handler != null) {
 				FluidStack fluidStack = handler.drain(Fluid.BUCKET_VOLUME, false);
 				if (fluidStack != null && fluidStack.amount >= Fluid.BUCKET_VOLUME) {
 					FluidActionResult result = FluidUtil.tryEmptyContainer(item, this, Fluid.BUCKET_VOLUME, null, false);
 					if (result.isSuccess()) {
 						ItemStack container = result.getResult();
-						handler = FluidUtil.getFluidHandler(container);
+						handler = FluidUtils.getFluidHandler(container);
 						if (handler != null) {
 							fluidStack = handler.drain(Fluid.BUCKET_VOLUME, false);
 							if (fluidStack != null && fluidStack.amount == Fluid.BUCKET_VOLUME) {
@@ -82,6 +85,34 @@ public class SCTank extends FluidTank {
 		}
 	}
 
+	@Nullable
+	@Override
+	public FluidStack drainInternal(int maxDrain, boolean doDrain) {
+		if (fluid == null || maxDrain <= 0) {
+			return null;
+		}
+
+		int drained = maxDrain;
+		if (fluid.amount < drained) {
+			drained = fluid.amount;
+		}
+
+		FluidStack stack = new FluidStack(fluid, drained);
+		if (doDrain) {
+			fluid.amount -= drained;
+			if (fluid.amount <= 0 && !isLocked) {
+				fluid = null;
+			}
+
+			onContentsChanged();
+
+			if (tile != null) {
+				FluidEvent.fireEvent(new FluidEvent.FluidDrainingEvent(fluid, tile.getWorld(), tile.getPos(), this, drained));
+			}
+		}
+		return stack;
+	}
+
 	public void setLocked(final boolean val) {
 		isLocked = val;
 	}
@@ -109,13 +140,50 @@ public class SCTank extends FluidTank {
 		return name + "\n" + format.format(amount) + " / " + format.format(capacity);
 	}
 
+	@Override
+	protected void onContentsChanged() {
+		owner.onFluidUpdated(tankid);
+	}
+
 	private static float getColorComponent(final int color, final int id) {
 		return ((color & 255 << id * 8) >> id * 8) / 255.0f;
 	}
 
+	public static void applyColorFilter(FluidStack fluid) {
+		int color = fluid.getFluid().getColor(fluid);
+		GlStateManager.color(getColorComponent(color, 2), getColorComponent(color, 1), getColorComponent(color, 0), 1F);
+	}
+
 	@SideOnly(Side.CLIENT)
-	public void drawFluid(final GuiBase gui, final int startX, final int startY, int width, int height) {
-		RenderUtil.renderGuiTank(this, gui.getGuiLeft() + startX, + gui.getGuiTop() + startY, 0, width, height);
+	public void drawFluid(final GuiBase gui, final int startX, final int startY) {
+		if (fluid != null) {
+			int fluidLevel = (int) (48 * ((float)fluid.amount / (float) capacity));
+
+			TextureAtlasSprite icon = RenderUtil.getStillTexture(fluid);
+			if (icon == null) {
+				return;
+			}
+
+			RenderUtil.bindBlockTexture();
+			applyColorFilter(fluid);
+
+			GlStateManager.enableBlend();
+			for (int y = 0; y < 3; y++) {
+				int pixels = fluidLevel - (2 - y) * 16;
+
+				if (pixels <= 0) {
+					continue;
+				} else if (pixels > 16) {
+					pixels = 16;
+				}
+
+				for (int x = 0; x < 2; x++) {
+					owner.drawImage(tankid, gui, icon, startX + 2 + 16 * x, startY + 1 + 16 * y + (16 - pixels), 0, (16 - pixels), 16, pixels);
+				}
+			}
+			GlStateManager.enableBlend();
+			GlStateManager.color(1F, 1F, 1F, 1F);
+		}
 	}
 
 	@Override

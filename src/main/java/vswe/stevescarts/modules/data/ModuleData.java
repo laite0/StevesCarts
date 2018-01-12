@@ -725,14 +725,14 @@ public class ModuleData {
 			list.add("");
 			for (final Localization.MODULE_INFO m : message) {
 				final String str = m.translate();
-				if (str.length() <= 30) {
+				if (str.length() <= MAX_MESSAGE_ROW_LENGTH) {
 					addExtraMessage(list, str);
 				} else {
 					final String[] words = str.split(" ");
 					String row = "";
 					for (final String word : words) {
 						final String next = (row + " " + word).trim();
-						if (next.length() <= 30) {
+						if (next.length() <= MAX_MESSAGE_ROW_LENGTH) {
 							row = next;
 						} else {
 							addExtraMessage(list, row);

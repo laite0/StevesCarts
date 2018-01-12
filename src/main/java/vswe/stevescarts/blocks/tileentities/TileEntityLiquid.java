@@ -1,5 +1,6 @@
 package vswe.stevescarts.blocks.tileentities;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
@@ -7,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -107,10 +109,9 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 	}
 
 	@Override
-	@Deprecated
 	@SideOnly(Side.CLIENT)
-	public void drawImage(final int tankid, final GuiBase gui, final int targetX, final int targetY, final int srcX, final int srcY, final int sizeX, final int sizeY) {
-		//		gui.drawIcon(icon, gui.getGuiLeft() + targetX, gui.getGuiTop() + targetY, sizeX / 16.0f, sizeY / 16.0f, srcX / 16.0f, srcY / 16.0f);
+	public void drawImage(int tankid, GuiBase gui, TextureAtlasSprite sprite, int targetX, int targetY, int srcX, int srcY, int width, int height) {
+		gui.drawIcon(sprite, gui.getGuiLeft() + targetX, gui.getGuiTop() + targetY, width / 16F, height / 16F, srcX / 16F, srcY / 16F);
 	}
 
 	@Override
@@ -204,7 +205,6 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 	}
 
 	private boolean isTankValid(final int tankId, int sideId) {
-		sideId -= 1;
 		return (layoutType != 1 || tankId == sideId) && (layoutType != 2 || color[sideId] == color[tankId]);
 	}
 
@@ -228,44 +228,33 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 	}
 
 	public int getMaxAmount(final int id) {
-		return (int) (getMaxAmountBuckets(id) * 1000.0f);
+		return (int) (getMaxAmountBuckets(id) * Fluid.BUCKET_VOLUME);
 	}
 
 	public float getMaxAmountBuckets(final int id) {
 		switch (getAmountId(id)) {
-			case 1: {
+			case 1:
 				return 0.25f;
-			}
-			case 2: {
+			case 2:
 				return 0.5f;
-			}
-			case 3: {
+			case 3:
 				return 0.75f;
-			}
-			case 4: {
+			case 4:
 				return 1.0f;
-			}
-			case 5: {
+			case 5:
 				return 2.0f;
-			}
-			case 6: {
+			case 6:
 				return 3.0f;
-			}
-			case 7: {
+			case 7:
 				return 5.0f;
-			}
-			case 8: {
+			case 8:
 				return 7.5f;
-			}
-			case 9: {
+			case 9:
 				return 10.0f;
-			}
-			case 10: {
+			case 10:
 				return 15.0f;
-			}
-			default: {
+			default:
 				return 0.0f;
-			}
 		}
 	}
 
@@ -321,10 +310,7 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 					updateGuiData(con, crafting, amount2, getShortFromInt(false, tanks[i].getFluid().amount));
 					changed = true;
 				} else {
-					//if (con.oldLiquids[i].getFluid() != this.tanks[i].getFluid().getFluid()) {
-						NetworkManager.sendToWorld(new PacketFluidSync(this.tanks[i].getFluid(), getPos(), world.provider.getDimension(), i), getWorld());
-						//changed = true;
-					//}
+					NetworkManager.sendToWorld(new PacketFluidSync(this.tanks[i].getFluid(), getPos(), world.provider.getDimension(), i), getWorld());
 					if (con.oldLiquids[i].amount != tanks[i].getFluid().amount) {
 						updateGuiData(con, crafting, amount1, getShortFromInt(true, tanks[i].getFluid().amount));
 						updateGuiData(con, crafting, amount2, getShortFromInt(false, tanks[i].getFluid().amount));
@@ -369,9 +355,7 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(final int slotId,
-	                                  @Nonnull
-		                                  ItemStack item) {
+	public boolean isItemValidForSlot(final int slotId, @Nonnull ItemStack item) {
 		if (isInput(slotId)) {
 			return SlotLiquidManagerInput.isItemStackValid(item, this, -1);
 		}
@@ -391,15 +375,11 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 		return TileEntityLiquid.sideSlots;
 	}
 
-	public boolean canInsertItem(final int slot,
-	                             @Nonnull
-		                             ItemStack item, final int side) {
+	public boolean canInsertItem(final int slot, @Nonnull ItemStack item, final int side) {
 		return side == 1 && isInput(slot) && isItemValidForSlot(slot, item);
 	}
 
-	public boolean canExtractItem(final int slot,
-	                              @Nonnull
-		                              ItemStack item, final int side) {
+	public boolean canExtractItem(final int slot, @Nonnull ItemStack item, final int side) {
 		return side == 0 && isOutput(slot);
 	}
 

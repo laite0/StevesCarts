@@ -57,15 +57,15 @@ public abstract class TankEffect extends InventoryEffect {
 		if (TankEffect.texture == null) {
 			TankEffect.texture = ResourceHelper.getResource("/gui/tank.png");
 		}
-		upgrade.tank.drawFluid(gui, 35, 20, 16, 16);
+		upgrade.tank.drawFluid(gui, tankInterfaceX, tankInterfaceY);
 		ResourceHelper.bindResource(TankEffect.texture);
-		gui.drawTexturedModalRect(gui.getGuiLeft() + 35, gui.getGuiTop() + 20, 0, 0, 36, 51);
+		gui.drawTexturedModalRect(gui.getGuiLeft() + tankInterfaceX, gui.getGuiTop() + tankInterfaceY, 0, 0, 36, 51);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void drawMouseOver(final TileEntityUpgrade upgrade, final GuiUpgrade gui, final int x, final int y) {
-		drawMouseOver(gui, upgrade.tank.getMouseOver(), x, y, new int[] { 35, 20, 36, 51 });
+		drawMouseOver(gui, upgrade.tank.getMouseOver(), x, y, new int[] { tankInterfaceX, tankInterfaceX, 36, 51 });
 	}
 
 	@Override
@@ -81,13 +81,13 @@ public abstract class TankEffect extends InventoryEffect {
 			changed = true;
 		} else if (upgrade.tank.getFluid() != null) {
 			if (isNew || oldfluid == null) {
-				//				upgrade.updateGuiData(con, crafting, id, (short) upgrade.tank.getFluid().fluidID);
+				//upgrade.updateGuiData(con, crafting, id, (short) upgrade.tank.getFluid().fluidID);
 				upgrade.updateGuiData(con, crafting, amount1, upgrade.getShortFromInt(true, upgrade.tank.getFluid().amount));
 				upgrade.updateGuiData(con, crafting, amount2, upgrade.getShortFromInt(false, upgrade.tank.getFluid().amount));
 				changed = true;
 			} else {
 				if (!oldfluid.getFluid().getName().equals(upgrade.tank.getFluid().getFluid().getName())) {
-					//					upgrade.updateGuiData(con, crafting, id, (short) upgrade.tank.getFluid().fluidID);
+					//upgrade.updateGuiData(con, crafting, id, (short) upgrade.tank.getFluid().fluidID);
 					changed = true;
 				}
 				if (oldfluid.amount != upgrade.tank.getFluid().amount) {
@@ -112,7 +112,7 @@ public abstract class TankEffect extends InventoryEffect {
 			if (data == -1) {
 				upgrade.tank.setFluid(null);
 			} else if (upgrade.tank.getFluid() == null) {
-				//				upgrade.tank.setFluid(new FluidStack((int) data, 0));
+				//upgrade.tank.setFluid(new FluidStack(FluidRegistry.get, 0));
 			}
 		} else if (upgrade.tank.getFluid() != null) {
 			upgrade.tank.getFluid().amount = upgrade.getIntFromShort(id == 1, upgrade.tank.getFluid().amount, data);

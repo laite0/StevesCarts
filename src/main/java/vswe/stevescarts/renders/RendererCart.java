@@ -6,13 +6,16 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
+import reborncore.client.RenderUtil;
 import vswe.stevescarts.entitys.EntityMinecartModular;
+import vswe.stevescarts.helpers.storages.SCTank;
 import vswe.stevescarts.models.ModelCartbase;
 import vswe.stevescarts.modules.ModuleBase;
 
@@ -105,66 +108,76 @@ public class RendererCart<T extends EntityMinecartModular> extends Render<T> {
 		}
 	}
 
-	public void renderLiquidCuboid(final FluidStack liquid, final int tankSize, final float x, final float y, final float z, final float sizeX, final float sizeY, final float sizeZ, float mult) {
-		//		final IconData data = SCTank.getIconAndTexture(liquid);
-		//		if (data == null || data.getIcon() == null) {
-		//			return;
-		//		}
-		//		if (liquid.amount > 0) {
-		//			final float filled = liquid.amount / tankSize;
-		//			GL11.glPushMatrix();
-		//			GL11.glTranslatef(x * mult, (y + sizeY * (1.0f - filled) / 2.0f) * mult, z * mult);
-		//			ResourceHelper.bindResource(data.getResource());
-		//			SCTank.applyColorFilter(liquid);
-		//			final float scale = 0.5f;
-		//			GL11.glScalef(scale, scale, scale);
-		//			GL11.glDisable(2896);
-		//			mult /= scale;
-		//			this.renderCuboid(data.getIcon(), sizeX * mult, sizeY * mult * filled, sizeZ * mult);
-		//			GL11.glEnable(2896);
-		//			GL11.glDisable(3042);
-		//			GL11.glDisable(32826);
-		//			GL11.glPopMatrix();
-		//			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		//		}
+	public void renderLiquidCuboid(final FluidStack fluid, final int tankSize, final float x, final float y, final float z, final float sizeX, final float sizeY, final float sizeZ, float mult) {
+		TextureAtlasSprite sprite = RenderUtil.getStillTexture(fluid);
+		if (sprite == null) {
+			return;
+		}
+		if (fluid.amount > 0) {
+			float filled = fluid.amount / (float)tankSize;
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(x * mult, (y + sizeY * (1.0f - filled) / 2.0f) * mult, z * mult);
+
+			RenderUtil.bindBlockTexture();
+			SCTank.applyColorFilter(fluid);
+			final float scale = 0.5f;
+			GlStateManager.scale(scale, scale, scale);
+			GlStateManager.disableLighting();
+			mult /= scale;
+			renderCuboid(sprite, sizeX * mult, sizeY * mult * filled, sizeZ * mult);
+			GlStateManager.enableLighting();
+			GlStateManager.disableBlend();
+			GlStateManager.disableRescaleNormal();
+			GlStateManager.popMatrix();
+
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+		}
 	}
 
-	//	private void renderCuboid(final IIcon icon, final double sizeX, final double sizeY, final double sizeZ) {
-	//		this.renderFace(icon, sizeX, sizeZ, 0.0f, 90.0f, 0.0f, -(float) (sizeY / 2.0), 0.0f);
-	//		this.renderFace(icon, sizeX, sizeZ, 0.0f, -90.0f, 0.0f, (float) (sizeY / 2.0), 0.0f);
-	//		this.renderFace(icon, sizeX, sizeY, 0.0f, 0.0f, 0.0f, 0.0f, (float) (sizeZ / 2.0));
-	//		this.renderFace(icon, sizeX, sizeY, 180.0f, 0.0f, 0.0f, 0.0f, -(float) (sizeZ / 2.0));
-	//		this.renderFace(icon, sizeZ, sizeY, 90.0f, 0.0f, (float) (sizeX / 2.0), 0.0f, 0.0f);
-	//		this.renderFace(icon, sizeZ, sizeY, -90.0f, 0.0f, -(float) (sizeX / 2.0), 0.0f, 0.0f);
-	//	}
+	private void renderCuboid(final TextureAtlasSprite icon, final double sizeX, final double sizeY, final double sizeZ) {
+		renderFace(icon, sizeX, sizeZ, 0, 		90F, 	0F, 					-(float)(sizeY / 2),	0F					);
+		renderFace(icon, sizeX, sizeZ, 0, 		-90F, 	0F, 					(float)(sizeY / 2), 	0F					);
+		renderFace(icon, sizeX, sizeY, 0, 		0, 		0F, 					0F, 					(float)(sizeZ / 2)	);
+		renderFace(icon, sizeX, sizeY, 180F, 	0F, 	0F, 					0F, 					-(float)(sizeZ / 2)	);
+		renderFace(icon, sizeZ, sizeY, 90F, 	0, 		(float)(sizeX / 2), 	0F, 					0F					);
+		renderFace(icon, sizeZ, sizeY, -90F, 	0F, 	-(float)(sizeX / 2), 	0F, 					0F					);
+	}
 
-	//	private void renderFace(final IIcon icon, final double totalTargetW, final double totalTargetH, final float yaw, final float roll, final float offX, final float offY, final float offZ) {
-	//		GL11.glPushMatrix();
-	//		GL11.glTranslatef(offX, offY, offZ);
-	//		GL11.glRotatef(yaw, 0.0f, 1.0f, 0.0f);
-	//		GL11.glRotatef(roll, 1.0f, 0.0f, 0.0f);
-	//		final Tessellator tessellator = Tessellator.instance;
-	//		final double srcX = icon.getMinU();
-	//		final double srcY = icon.getMinV();
-	//		final double srcW = icon.getMaxU() - srcX;
-	//		final double srcH = icon.getMaxV() - srcY;
-	//		double currentTargetW;
-	//		for (double d = 0.001, currentTargetX = 0.0; totalTargetW - currentTargetX > d * 2.0; currentTargetX += currentTargetW - d) {
-	//			currentTargetW = Math.min(totalTargetW - currentTargetX, 1.0);
-	//			double currentTargetH;
-	//			for (double currentTargetY = 0.0; totalTargetH - currentTargetY > d * 2.0; currentTargetY += currentTargetH - d) {
-	//				currentTargetH = Math.min(totalTargetH - currentTargetY, 1.0);
-	//				tessellator.startDrawingQuads();
-	//				tessellator.setNormal(0.0f, 1.0f, 0.0f);
-	//				tessellator.addVertexWithUV(currentTargetX - totalTargetW / 2.0, currentTargetY - totalTargetH / 2.0, 0.0, srcX, srcY);
-	//				tessellator.addVertexWithUV(currentTargetX + currentTargetW - totalTargetW / 2.0, currentTargetY - totalTargetH / 2.0, 0.0, srcX + srcW * currentTargetW, srcY);
-	//				tessellator.addVertexWithUV(currentTargetX + currentTargetW - totalTargetW / 2.0, currentTargetY + currentTargetH - totalTargetH / 2.0, 0.0, srcX + srcW * currentTargetW, srcY + srcH * currentTargetH);
-	//				tessellator.addVertexWithUV(currentTargetX - totalTargetW / 2.0, currentTargetY + currentTargetH - totalTargetH / 2.0, 0.0, srcX, srcY + srcH * currentTargetH);
-	//				tessellator.draw();
-	//			}
-	//		}
-	//		GL11.glPopMatrix();
-	//	}
+	private void renderFace(final TextureAtlasSprite icon, final double totalTargetW, final double totalTargetH, final float yaw, final float roll, final float offX, final float offY, final float offZ) {
+		GlStateManager.pushMatrix();
+
+		GlStateManager.translate(offX, offY, offZ);
+		GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(roll, 1.0f, 0.0f, 0.0f);
+
+		Tessellator tess = Tessellator.getInstance();
+		BufferBuilder buff = tess.getBuffer();
+		double srcX = icon.getMinU();
+		double srcY = icon.getMinV();
+
+		double srcW = icon.getMaxU() - srcX;
+		double srcH = icon.getMaxV() - srcY;
+
+		double d = 0.001D;
+		double currentTargetX = 0D;
+		while (totalTargetW - currentTargetX > d * 2) {
+			double currentTargetW = Math.min(totalTargetW - currentTargetX, 1D);
+			double currentTargetY = 0D;
+			while (totalTargetH - currentTargetY > d * 2) {
+				double currentTargetH = Math.min(totalTargetH - currentTargetY, 1D);
+
+				buff.begin(7, DefaultVertexFormats.POSITION_TEX_NORMAL);
+				buff.pos(currentTargetX - totalTargetW / 2.0, 					currentTargetY - totalTargetH / 2.0, 0.0)					.tex(srcX, 									srcY)							.normal(0.0f, 1.0f, 0.0f).endVertex();
+				buff.pos(currentTargetX + currentTargetW - totalTargetW / 2.0, 	currentTargetY - totalTargetH / 2.0, 0.0)					.tex(srcX + srcW * currentTargetW,		srcY)							.normal(0.0f, 1.0f, 0.0f).endVertex();
+				buff.pos(currentTargetX + currentTargetW - totalTargetW / 2.0, 	currentTargetY + currentTargetH - totalTargetH / 2.0, 0.0).tex(srcX + srcW * currentTargetW,		srcY + srcH * currentTargetH)	.normal(0.0f, 1.0f, 0.0f).endVertex();
+				buff.pos(currentTargetX - totalTargetW / 2.0, 					currentTargetY + currentTargetH - totalTargetH / 2.0, 0.0).tex(srcX,									srcY + srcH * currentTargetH)	.normal(0.0f, 1.0f, 0.0f).endVertex();
+				tess.draw();
+				currentTargetY += currentTargetH - d;
+			}
+			currentTargetX += currentTargetW  - d;
+		}
+		GlStateManager.popMatrix();
+	}
 
 	protected void renderLabel(final EntityMinecartModular cart, final double x, final double y, final double z) {
 		final ArrayList<String> labels = cart.getLabel();

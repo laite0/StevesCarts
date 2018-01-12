@@ -25,8 +25,8 @@ public class ModuleOpenTank extends ModuleTank {
 			--cooldown;
 		} else {
 			cooldown = 20;
-			if (getCart().world.isRaining() && getCart().world.canSeeSky(new BlockPos(getCart().x(), getCart().y() + 1, getCart().z())) && getCart().world.getPrecipitationHeight(new BlockPos(getCart().x(), 0, getCart().z())).getY() < getCart().y() + 1) {
-				fill(new FluidStack(FluidRegistry.WATER, getCart().world.getBiome(new BlockPos(getCart().x(), 0, getCart().z())).getEnableSnow() ? 2 : 5), true);
+			if (getCart().world.isRaining() && getCart().world.canSeeSky(new BlockPos(getCart().x(), getCart().y() + 1, getCart().z())) && getCart().world.getPrecipitationHeight(getCart().getPosition()).getY() < getCart().y() + 1) {
+				fill(new FluidStack(FluidRegistry.WATER, getCart().world.getBiome(getCart().getPosition()).getEnableSnow() ? 2 : 5), true);
 			}
 		}
 	}

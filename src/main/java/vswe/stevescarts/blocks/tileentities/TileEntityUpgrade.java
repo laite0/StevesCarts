@@ -1,6 +1,7 @@
 package vswe.stevescarts.blocks.tileentities;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
@@ -313,9 +314,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	}
 
 	@Override
-	public void setInventorySlotContents(final int i,
-	                                     @Nonnull
-		                                     ItemStack itemstack) {
+	public void setInventorySlotContents(final int i, @Nonnull ItemStack itemstack) {
 		if (inventoryStacks == null) {
 			if (master != null) {
 				master.setInventorySlotContents(i, itemstack);
@@ -380,9 +379,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	}
 
 	@Override
-	public boolean isItemValidForSlot(final int slot,
-	                                  @Nonnull
-		                                  ItemStack item) {
+	public boolean isItemValidForSlot(final int slot, @Nonnull ItemStack item) {
 		if (getUpgrade() != null) {
 			final InventoryEffect inv = getUpgrade().getInventoryEffect();
 			if (inv != null) {
@@ -413,9 +410,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	}
 
 	@Override
-	public boolean canInsertItem(final int slot,
-	                             @Nonnull
-		                             ItemStack item, EnumFacing side) {
+	public boolean canInsertItem(final int slot, @Nonnull ItemStack item, EnumFacing side) {
 		if (getUpgrade() != null) {
 			final InventoryEffect inv = getUpgrade().getInventoryEffect();
 			if (inv != null) {
@@ -426,9 +421,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	}
 
 	@Override
-	public boolean canExtractItem(final int slot,
-	                              @Nonnull
-		                              ItemStack item, EnumFacing side) {
+	public boolean canExtractItem(final int slot, @Nonnull ItemStack item, EnumFacing side) {
 		if (getUpgrade() != null) {
 			final InventoryEffect inv = getUpgrade().getInventoryEffect();
 			if (inv != null) {
@@ -446,13 +439,11 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 
 	@Override
 	public void setInputContainer(final int tankid, ItemStack stack) {
-		setInventorySlotContents(0, ItemStack.EMPTY);
+		setInventorySlotContents(0, stack);
 	}
 
 	@Override
-	public void addToOutputContainer(final int tankid,
-	                                 @Nonnull
-		                                 ItemStack item) {
+	public void addToOutputContainer(final int tankid, @Nonnull ItemStack item) {
 		TransferHandler.TransferItem(item, this, 1, 1, new ContainerUpgrade(null, this), Slot.class, null, -1);
 	}
 
@@ -460,15 +451,11 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	public void onFluidUpdated(final int tankid) {
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void drawImage(int p0, GuiBase p1, int p3, int p4, int p5, int p6, int p7, int p8) {
-
+	public void drawImage(int tankid, GuiBase gui, TextureAtlasSprite sprite, int targetX, int targetY, int srcX, int srcY, int width, int height) {
+		gui.drawIcon(sprite, gui.getGuiLeft() + targetX, gui.getGuiTop() + targetY, width / 16.0f, height / 16.0f, srcX / 16.0f, srcY / 16.0f);
 	}
-
-	//	@SideOnly(Side.CLIENT)
-	//	public void drawImage(final int tankid, final GuiBase gui, final IIcon icon, final int targetX, final int targetY, final int srcX, final int srcY, final int sizeX, final int sizeY) {
-	//		gui.drawIcon(icon, gui.getGuiLeft() + targetX, gui.getGuiTop() + targetY, sizeX / 16.0f, sizeY / 16.0f, srcX / 16.0f, srcY / 16.0f);
-	//	}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {

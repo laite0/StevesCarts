@@ -5,6 +5,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -247,42 +248,45 @@ public abstract class GuiBase extends GuiContainer {
 		return zLevel;
 	}
 
-	//	public void drawIcon(final IIcon icon, final int targetX, final int targetY, final float sizeX, final float sizeY, final float offsetX, final float offsetY) {
-	//		final Tessellator tessellator = Tessellator.instance;
-	//		tessellator.startDrawingQuads();
-	//		final float x = icon.getMinU() + offsetX * (icon.getMaxU() - icon.getMinU());
-	//		final float y = icon.getMinV() + offsetY * (icon.getMaxV() - icon.getMinV());
-	//		final float width = (icon.getMaxU() - icon.getMinU()) * sizeX;
-	//		final float height = (icon.getMaxV() - icon.getMinV()) * sizeY;
-	//		tessellator.addVertexWithUV((double) (targetX + 0), (double) (targetY + 16.0f * sizeY), (double) this.getZLevel(), (double) (x + 0.0f), (double) (y + height));
-	//		tessellator.addVertexWithUV((double) (targetX + 16.0f * sizeX), (double) (targetY + 16.0f * sizeY), (double) this.getZLevel(), (double) (x + width), (double) (y + height));
-	//		tessellator.addVertexWithUV((double) (targetX + 16.0f * sizeX), (double) (targetY + 0), (double) this.getZLevel(), (double) (x + width), (double) (y + 0.0f));
-	//		tessellator.addVertexWithUV((double) (targetX + 0), (double) (targetY + 0), (double) this.getZLevel(), (double) (x + 0.0f), (double) (y + 0.0f));
-	//		tessellator.draw();
-	//	}
+	public void drawIcon(final TextureAtlasSprite icon, final int targetX, final int targetY, final float sizeX, final float sizeY, final float offsetX, final float offsetY) {
+		final Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder buf = tessellator.getBuffer();
+		buf.begin(7, DefaultVertexFormats.POSITION_TEX);
+
+		float x = icon.getMinU() + offsetX * (icon.getMaxU() - icon.getMinU());
+		float y = icon.getMinV() + offsetY * (icon.getMaxV() - icon.getMinV());
+		float width = (icon.getMaxU() - icon.getMinU()) * sizeX;
+		float height = (icon.getMaxV() - icon.getMinV()) * sizeY;
+
+		buf.pos(targetX + 0, 			targetY + 16 * sizeY, 	this.getZLevel()).tex(x + 0, 			y + height).endVertex();
+		buf.pos(targetX + 16 * sizeX, 	targetY + 16 * sizeY, 	this.getZLevel()).tex(x + width, 		y + height).endVertex();
+		buf.pos(targetX + 16 * sizeX, 	targetY + 0, 			this.getZLevel()).tex(x + width, 		y + 0).endVertex();
+		buf.pos(targetX + 0, 			targetY + 0, 			this.getZLevel()).tex(x + 0, 			y + 0).endVertex();
+		tessellator.draw();
+	}
 
 	public void drawModuleIcon(ModuleData icon, final int targetX, final int targetY, final float sizeX, final float sizeY, final float offsetX, final float offsetY) {
 		RenderHelper.enableGUIStandardItemLighting();
 		RenderItem itemRenderer = Minecraft.getMinecraft().getRenderItem();
 		itemRenderer.renderItemAndEffectIntoGUI(icon.getItemStack(), targetX, targetY);
-
 	}
 
 	public void drawTexturedModalRect(final int x, final int y, final int u, final int v, final int w, final int h, final RENDER_ROTATION rotation) {
 		final float fw = 0.00390625f;
 		final float fy = 0.00390625f;
+
 		final double a = (u + 0) * fw;
 		final double b = (u + w) * fw;
 		final double c = (v + h) * fy;
 		final double d = (v + 0) * fy;
+
 		final double[] ptA = { a, c };
 		final double[] ptB = { b, c };
 		final double[] ptC = { b, d };
 		final double[] ptD = { a, d };
-		double[] pt1 = null;
-		double[] pt2 = null;
-		double[] pt3 = null;
-		double[] pt4 = null;
+
+		double [] pt1, pt2, pt3, pt4;
+
 		switch (rotation) {
 			default: {
 				pt1 = ptA;
@@ -343,12 +347,12 @@ public abstract class GuiBase extends GuiContainer {
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder vertexbuffer = tessellator.getBuffer();
-		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		vertexbuffer.pos((x + 0), y + h, zLevel).tex(pt1[0], pt1[1]).endVertex();
-		vertexbuffer.pos((x + w), y + h, zLevel).tex(pt2[0], pt2[1]).endVertex();
-		vertexbuffer.pos((x + w), y + 0, zLevel).tex(pt3[0], pt3[1]).endVertex();
-		vertexbuffer.pos((x + 0), y + 0, zLevel).tex(pt4[0], pt4[1]).endVertex();
+		BufferBuilder buff = tessellator.getBuffer();
+		buff.begin(7, DefaultVertexFormats.POSITION_TEX);
+		buff.pos((x + 0), y + h, zLevel).tex(pt1[0], pt1[1]).endVertex();
+		buff.pos((x + w), y + h, zLevel).tex(pt2[0], pt2[1]).endVertex();
+		buff.pos((x + w), y + 0, zLevel).tex(pt3[0], pt3[1]).endVertex();
+		buff.pos((x + 0), y + 0, zLevel).tex(pt4[0], pt4[1]).endVertex();
 		tessellator.draw();
 	}
 

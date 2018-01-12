@@ -2,6 +2,7 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
+      "particle": "stevescarts:items/blank_upgrade_icon",
       "0": "stevescarts:items/blank_upgrade_icon",
       "1": "stevescarts:items/blank_upgrade_icon"
     },

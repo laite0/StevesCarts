@@ -1,6 +1,7 @@
 package vswe.stevescarts.modules.storages.tanks;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -110,7 +111,7 @@ public abstract class ModuleTank extends ModuleStorage implements IFluidTank, IT
 
 	@Override
 	public void setInputContainer(final int tankid, ItemStack stack) {
-		setStack(0, ItemStack.EMPTY);
+		setStack(0, stack);
 	}
 
 	@Override
@@ -127,14 +128,14 @@ public abstract class ModuleTank extends ModuleStorage implements IFluidTank, IT
 	}
 
 	//	@SideOnly(Side.CLIENT)
-	//	public void drawImage(final int tankid, final GuiBase gui, final IIcon icon, final int targetX, final int targetY, final int srcX, final int srcY, final int sizeX, final int sizeY) {
-	//		this.drawImage((GuiMinecart) gui, icon, targetX, targetY, srcX, srcY, sizeX, sizeY);
+	//	public void drawFluid(final int tankid, final GuiBase gui, final IIcon icon, final int targetX, final int targetY, final int srcX, final int srcY, final int sizeX, final int sizeY) {
+	//		this.drawFluid((GuiMinecart) gui, icon, targetX, targetY, srcX, srcY, sizeX, sizeY);
 	//	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void drawBackground(final GuiMinecart gui, final int x, final int y) {
-		tank.drawFluid(gui, tankBounds[0], tankBounds[1], 34, 50);
+		tank.drawFluid(gui, tankBounds[0], tankBounds[1]);
 		ResourceHelper.bindResource("/gui/tank.png");
 		drawImage(gui, tankBounds, 0, 0);
 	}
@@ -280,8 +281,9 @@ public abstract class ModuleTank extends ModuleStorage implements IFluidTank, IT
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void drawImage(int p0, GuiBase p1, int p3, int p4, int p5, int p6, int p7, int p8) {
-		//TODO help me
+	public void drawImage(int tankid, GuiBase gui, TextureAtlasSprite sprite, int targetX, int targetY, int srcX, int srcY, int width, int height) {
+		drawImage((GuiMinecart)gui, sprite, targetX, targetY, srcX, srcY, width, height);
 	}
 }
