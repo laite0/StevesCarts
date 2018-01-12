@@ -13,9 +13,7 @@ public class SlotCartCrafterResult extends SlotBase implements ISpecialItemTrans
 	}
 
 	@Override
-	public boolean isItemValid(
-		@Nonnull
-			ItemStack itemstack) {
+	public boolean isItemValid(@Nonnull ItemStack itemstack) {
 		return false;
 	}
 
@@ -25,9 +23,7 @@ public class SlotCartCrafterResult extends SlotBase implements ISpecialItemTrans
 	}
 
 	@Override
-	public boolean isItemValidForTransfer(
-		@Nonnull
-			ItemStack item, final TransferHandler.TRANSFER_TYPE type) {
+	public boolean isItemValidForTransfer(@Nonnull ItemStack item, final TransferHandler.TRANSFER_TYPE type) {
 		return false;
 	}
 

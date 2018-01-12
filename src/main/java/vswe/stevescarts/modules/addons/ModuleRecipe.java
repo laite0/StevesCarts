@@ -316,9 +316,7 @@ public abstract class ModuleRecipe extends ModuleAddon {
 		}
 	}
 
-	protected boolean canCraftMoreOfResult(
-		@Nonnull
-			ItemStack result) {
+	protected boolean canCraftMoreOfResult(@Nonnull ItemStack result) {
 		if (mode == 0) {
 			return true;
 		}

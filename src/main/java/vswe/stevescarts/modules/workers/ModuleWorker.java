@@ -72,11 +72,11 @@ public abstract class ModuleWorker extends ModuleBase {
 		}
 		IBlockState blockState = getCart().world.getBlockState(pos);
 		if (BlockRailBase.isRailBlock(blockState)) {
-			int meta = ((BlockRailBase) blockState.getBlock()).getRailDirection(getCart().world, pos, blockState, getCart()).getMetadata();
-			if (meta >= 2 && meta <= 5) {
+			BlockRailBase.EnumRailDirection direction = ((BlockRailBase) blockState.getBlock()).getRailDirection(getCart().world, pos, blockState, getCart());
+			if (direction.isAscending()) {
 				pos = pos.up();
 			}
-			final int[][] logic = EntityMinecartModular.railDirectionCoordinates[meta];
+			final int[][] logic = EntityMinecartModular.railDirectionCoordinates[direction.getMetadata()];
 			final double pX = getCart().pushX;
 			final double pZ = getCart().pushZ;
 			final boolean xDir = (pX > 0.0 && logic[0][0] > 0) || pX == 0.0 || logic[0][0] == 0 || (pX < 0.0 && logic[0][0] < 0);

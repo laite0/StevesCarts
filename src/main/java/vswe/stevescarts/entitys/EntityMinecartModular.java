@@ -633,6 +633,20 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 	}
 
 	@Override
+	public boolean getIsInvulnerable() {
+		if (this.modules != null)
+		{
+			for(ModuleBase module : this.modules) {
+
+				if (!module.receiveDamage(null, 0)) {
+					return true;
+				}
+			}
+		}
+		return super.getIsInvulnerable();
+	}
+
+	@Override
 	public void onActivatorRailPass(final int x, final int y, final int z, final boolean active) {
 		if (modules != null) {
 			for (final ModuleBase module : modules) {

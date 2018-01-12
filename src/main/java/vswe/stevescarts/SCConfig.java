@@ -71,8 +71,8 @@ public class SCConfig {
 		parseFoodWhitelist(diamondRepair, diamondTierRepair = HashMultimap.create(), "diamond");
 		parseFoodWhitelist(hardenedRepair, hardenedTierRepair = HashMultimap.create(), "hardened");
 		ironRepairName = config.getString("Iron Tier Name", "Repair", "", "Set name of what is needed to repair iron tier tool, blank uses default text");
-		diamondRepairName = config.getString("Diamond Tier Name", "Repair", "", "Set name of what is needed to repair iron tier tool, blank uses default text");
-		hardenedRepairName = config.getString("Hardened Tier Name", "Repair", "", "Set name of what is needed to repair iron tier tool, blank uses default text");
+		diamondRepairName = config.getString("Diamond Tier Name", "Repair", "", "Set name of what is needed to repair diamond tier tool, blank uses default text");
+		hardenedRepairName = config.getString("Hardened Tier Name", "Repair", "", "Set name of what is needed to repair hardened tier tool, blank uses default text");
 
         save();
 	}

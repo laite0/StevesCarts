@@ -1,5 +1,6 @@
 package vswe.stevescarts.helpers;
 
+import net.minecraft.util.text.TextFormatting;
 import vswe.stevescarts.modules.ModuleBase;
 
 public class ActivatorOption {
@@ -68,12 +69,12 @@ public class ActivatorOption {
 		if (isDisabled()) {
 			return Localization.GUI.TOGGLER.SETTING_DISABLED.translate();
 		}
-		return "�6" + Localization.GUI.TOGGLER.SETTING_ORANGE.translate() + ": " + (shouldActivate(true) ? ("�2" + Localization.GUI.TOGGLER.STATE_ACTIVATE.translate())
+		return TextFormatting.GOLD + Localization.GUI.TOGGLER.SETTING_ORANGE.translate() + ": " + (shouldActivate(true) ? (TextFormatting.DARK_GREEN + Localization.GUI.TOGGLER.STATE_ACTIVATE.translate())
 		                                                                                                 : (shouldDeactivate(true)
-		                                                                                                    ? ("�4" + Localization.GUI.TOGGLER.STATE_DEACTIVATE.translate())
-		                                                                                                    : ("�E" + Localization.GUI.TOGGLER.STATE_TOGGLE.translate()))) + "\n" + "�1" + Localization.GUI.TOGGLER.SETTING_BLUE.translate() + ": " + (
-			shouldActivate(false) ? ("�2" + Localization.GUI.TOGGLER.STATE_ACTIVATE.translate())
-			                      : (shouldDeactivate(false) ? ("�4" + Localization.GUI.TOGGLER.STATE_DEACTIVATE.translate())
-			                                                 : ("�E" + Localization.GUI.TOGGLER.STATE_TOGGLE.translate())));
+		                                                                                                    ? (TextFormatting.DARK_RED + Localization.GUI.TOGGLER.STATE_DEACTIVATE.translate())
+		                                                                                                    : (TextFormatting.YELLOW + Localization.GUI.TOGGLER.STATE_TOGGLE.translate()))) + "\n" +TextFormatting.DARK_BLUE + Localization.GUI.TOGGLER.SETTING_BLUE.translate() + ": " + (
+			shouldActivate(false) ? (TextFormatting.DARK_GREEN + Localization.GUI.TOGGLER.STATE_ACTIVATE.translate())
+			                      : (shouldDeactivate(false) ? (TextFormatting.DARK_RED + Localization.GUI.TOGGLER.STATE_DEACTIVATE.translate())
+			                                                 : (TextFormatting.YELLOW + Localization.GUI.TOGGLER.STATE_TOGGLE.translate())));
 	}
 }

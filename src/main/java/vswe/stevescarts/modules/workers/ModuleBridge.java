@@ -54,7 +54,7 @@ public class ModuleBridge extends ModuleWorker implements ISuppliesModule {
 		BlockPos next = getNextblock();
 		if (getCart().getYTarget() < next.getY()) {
 			next = next.down(2);
-		} else {
+		} else if (getCart().getYTarget() == next.getY()){
 			next = next.down(1);
 		}
 		if (!BlockRailBase.isRailBlock(world, next) && !BlockRailBase.isRailBlock(world, next.down())) {

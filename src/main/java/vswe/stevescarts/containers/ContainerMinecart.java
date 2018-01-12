@@ -1,13 +1,16 @@
 package vswe.stevescarts.containers;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.blocks.tileentities.TileEntityBase;
 import vswe.stevescarts.containers.slots.SlotBase;
+import vswe.stevescarts.containers.slots.SlotFake;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.modules.ModuleBase;
 
@@ -72,6 +75,18 @@ public class ContainerMinecart extends ContainerBase {
 
 	protected int offsetY() {
 		return 174;
+	}
+
+	@Override
+	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+		ItemStack stack = super.slotClick(slotId, dragType, clickTypeIn, player);
+		if (slotId > 0) {
+			Slot slot = this.inventorySlots.get(slotId);
+			if (slot instanceof SlotFake) {
+				return ItemStack.EMPTY;
+			}
+		}
+		return stack;
 	}
 
 	@Override

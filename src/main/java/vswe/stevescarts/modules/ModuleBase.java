@@ -866,7 +866,7 @@ public abstract class ModuleBase {
 	 * @param val The damage
 	 * @return True if the cart should take the damage, False to prevent the damage
 	 */
-	public boolean receiveDamage(final DamageSource source, final float val) {
+	public boolean receiveDamage(DamageSource source, float val) {
 		return true;
 	}
 

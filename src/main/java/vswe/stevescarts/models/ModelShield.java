@@ -57,7 +57,7 @@ public class ModelShield extends ModelCartbase {
 		final float shieldDistance = (module == null) ? 18.0f : ((ModuleShield) module).getShieldDistance();
 		for (int i = 0; i < shields.length; ++i) {
 			for (int j = 0; j < shields[i].length; ++j) {
-				float a = shieldAngle + 6.2831855f * (j / shields[i].length + i / shields.length);
+				float a = shieldAngle + 6.2831855f * (j / (float)shields[i].length + i / (float)shields.length);
 				a %= 314.1592653589793;
 				shieldAnchors[i][j].rotateAngleY = a;
 				shields[i][j].rotationPointY = ((float) Math.sin(a / 5.0f) * 3.0f + (i - (shields.length - 1) / 2.0f) * 5.0f - 5.0f) * shieldDistance / 18.0f;

@@ -49,7 +49,7 @@ public class ModuleShield extends ModuleAddon implements IActivatorModule {
 		if (hasShield() && !getCart().hasFuelForModule() && !getCart().world.isRemote) {
 			setShieldStatus(false);
 		}
-		if (shield) {
+		if (hasShield()) {
 			getCart().extinguish();
 		}
 		if (!getShieldStatus() && shieldDistance > 0.0f) {
@@ -66,7 +66,8 @@ public class ModuleShield extends ModuleAddon implements IActivatorModule {
 		}
 	}
 
-	public boolean receiveDamage(final DamageSource source, final int val) {
+	@Override
+	public boolean receiveDamage(DamageSource source, float val) {
 		return !hasShield();
 	}
 
