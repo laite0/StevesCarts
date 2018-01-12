@@ -1,9 +1,9 @@
 package vswe.stevescarts.modules.workers.tools;
 
 import net.minecraft.item.ItemStack;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.helpers.ComponentTypes;
-import vswe.stevescarts.items.ModItems;
 
 import javax.annotation.Nonnull;
 
@@ -24,14 +24,14 @@ public class ModuleWoodcutterHardened extends ModuleWoodcutter {
 
 	@Override
 	public String getRepairItemName() {
-		return ComponentTypes.REINFORCED_METAL.getLocalizedName();
+		return SCConfig.hardenedRepairName.isEmpty() ? ComponentTypes.REINFORCED_METAL.getLocalizedName(): SCConfig.hardenedRepairName;
 	}
 
 	@Override
 	public int getRepairItemUnits(
 		@Nonnull
 			ItemStack item) {
-		if (!item.isEmpty() && item.getItem() == ModItems.COMPONENTS && item.getItemDamage() == 22) {
+		if (!item.isEmpty() && SCConfig.isValidRepairItem(item, "hardened")) {
 			return 320000;
 		}
 		return 0;
