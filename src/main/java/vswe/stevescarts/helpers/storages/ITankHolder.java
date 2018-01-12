@@ -11,11 +11,9 @@ public interface ITankHolder {
 	@Nonnull
 	ItemStack getInputContainer(final int p0);
 
-	void clearInputContainer(final int p0);
+	void setInputContainer(final int p0, ItemStack stack);
 
-	void addToOutputContainer(final int p0,
-	                          @Nonnull
-		                          ItemStack p1);
+	void addToOutputContainer(final int p0, @Nonnull ItemStack p1);
 
 	void onFluidUpdated(final int p0);
 

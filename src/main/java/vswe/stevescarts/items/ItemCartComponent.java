@@ -18,15 +18,13 @@ import vswe.stevescarts.Constants;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.entitys.EntityEasterEgg;
 import vswe.stevescarts.helpers.ComponentTypes;
-import vswe.stevescarts.renders.model.ItemModelManager;
-import vswe.stevescarts.renders.model.TexturedItem;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ItemCartComponent extends Item implements TexturedItem {
-	//	private IIcon[] icons;
-	//	private IIcon unknownIcon;
+public class ItemCartComponent extends Item implements ModItems.IMultipleItemModelDefinition {
 
 	public static int size() {
 		return ComponentTypes.values().length;
@@ -36,16 +34,13 @@ public class ItemCartComponent extends Item implements TexturedItem {
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setCreativeTab(StevesCarts.tabsSC2Components);
-		ItemModelManager.registerItem(this);
 	}
 
 	private String getName(final int dmg) {
 		return ComponentTypes.values()[dmg].getName();
 	}
 
-	public String getName(
-		@Nonnull
-			ItemStack par1ItemStack) {
+	public String getName(@Nonnull ItemStack par1ItemStack) {
 		if (par1ItemStack.isEmpty() || par1ItemStack.getItemDamage() < 0 || par1ItemStack.getItemDamage() >= size() || getName(par1ItemStack.getItemDamage()) == null) {
 			return "Unknown SC2 Component";
 		}
@@ -60,9 +55,7 @@ public class ItemCartComponent extends Item implements TexturedItem {
 	}
 
 	@Override
-	public String getUnlocalizedName(
-		@Nonnull
-			ItemStack item) {
+	public String getUnlocalizedName(@Nonnull ItemStack item) {
 		if (item.isEmpty() || item.getItemDamage() < 0 || item.getItemDamage() >= size() || getName(item.getItemDamage()) == null) {
 			return getUnlocalizedName();
 		}
@@ -76,36 +69,44 @@ public class ItemCartComponent extends Item implements TexturedItem {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(
-		@Nonnull
-			ItemStack par1ItemStack, final World world, final List<String> par3List, final ITooltipFlag par4) {
-		if (par1ItemStack.isEmpty() || par1ItemStack.getItemDamage() < 0 || par1ItemStack.getItemDamage() >= size() || getName(par1ItemStack.getItemDamage()) == null) {
-			if (!par1ItemStack.isEmpty() && par1ItemStack.getItem() instanceof ItemCartComponent) {
-				par3List.add("Component id " + par1ItemStack.getItemDamage());
+	public void addInformation(@Nonnull ItemStack stack, final World world, final List<String> tooltip, final ITooltipFlag flag) {
+		if (stack.isEmpty() || stack.getItemDamage() < 0 || stack.getItemDamage() >= size() || getName(stack.getItemDamage()) == null) {
+			if (!stack.isEmpty() && stack.getItem() instanceof ItemCartComponent) {
+				tooltip.add("Component id " + stack.getItemDamage());
 			} else {
-				par3List.add("Unknown component id");
+				tooltip.add("Unknown component id");
 			}
 		}
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(final CreativeTabs par2CreativeTabs, final NonNullList<ItemStack> par3List) {
-		if (!isInCreativeTab(par2CreativeTabs)) {
+	public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> items) {
+		if (!isInCreativeTab(tab)) {
 			return;
 		}
 		for (int i = 0; i < size(); ++i) {
-			@Nonnull
 			ItemStack iStack = new ItemStack(this, 1, i);
 			if (isValid(iStack)) {
-				par3List.add(iStack);
+				items.add(iStack);
 			}
 		}
 	}
 
-	public boolean isValid(
-		@Nonnull
-			ItemStack item) {
+	@Override
+	public int getItemBurnTime(ItemStack stack) {
+		if (!stack.isEmpty() && stack.getItem() == ModItems.COMPONENTS) {
+			if (ItemCartComponent.isWoodLog(stack)) {
+				return 150;
+			}
+			if (ItemCartComponent.isWoodTwig(stack)) {
+				return 50;
+			}
+		}
+		return 0;
+	}
+
+	public boolean isValid(@Nonnull ItemStack item) {
 		if (item.isEmpty() || !(item.getItem() instanceof ItemCartComponent) || getName(item.getItemDamage()) == null) {
 			return false;
 		}
@@ -123,38 +124,28 @@ public class ItemCartComponent extends Item implements TexturedItem {
 	}
 
 	public static ItemStack getWood(final int type, final boolean isLog, final int count) {
-		return new ItemStack(ModItems.component, count, 72 + type * 2 + (isLog ? 0 : 1));
+		return new ItemStack(ModItems.COMPONENTS, count, 72 + type * 2 + (isLog ? 0 : 1));
 	}
 
-	public static boolean isWoodLog(
-		@Nonnull
-			ItemStack item) {
+	public static boolean isWoodLog(@Nonnull ItemStack item) {
 		return !item.isEmpty() && item.getItemDamage() >= 72 && item.getItemDamage() < 80 && (item.getItemDamage() - 72) % 2 == 0;
 	}
 
-	public static boolean isWoodTwig(
-		@Nonnull
-			ItemStack item) {
+	public static boolean isWoodTwig(@Nonnull ItemStack item) {
 		return !item.isEmpty() && item.getItemDamage() >= 72 && item.getItemDamage() < 80 && (item.getItemDamage() - 72) % 2 == 1;
 	}
 
-	private boolean isEdibleEgg(
-		@Nonnull
-			ItemStack item) {
+	private boolean isEdibleEgg(@Nonnull ItemStack item) {
 		return !item.isEmpty() && item.getItemDamage() >= 66 && item.getItemDamage() < 70;
 	}
 
-	private boolean isThrowableEgg(
-		@Nonnull
-			ItemStack item) {
+	private boolean isThrowableEgg(@Nonnull ItemStack item) {
 		return !item.isEmpty() && item.getItemDamage() == 70;
 	}
 
 	@Override
 	@Nonnull
-	public ItemStack onItemUseFinish(
-		@Nonnull
-			ItemStack item, World world, EntityLivingBase entity) {
+	public ItemStack onItemUseFinish(@Nonnull ItemStack item, World world, EntityLivingBase entity) {
 		if (entity instanceof EntityPlayer && isEdibleEgg(item)) {
 			EntityPlayer player = (EntityPlayer) entity;
 			if (item.getItemDamage() == 66) {
@@ -184,22 +175,17 @@ public class ItemCartComponent extends Item implements TexturedItem {
 	}
 
 	@Override
-	public int getMaxItemUseDuration(
-		@Nonnull
-			ItemStack item) {
+	public int getMaxItemUseDuration(@Nonnull ItemStack item) {
 		return isEdibleEgg(item) ? 32 : super.getMaxItemUseDuration(item);
 	}
 
 	@Override
-	public EnumAction getItemUseAction(
-		@Nonnull
-			ItemStack item) {
+	public EnumAction getItemUseAction(@Nonnull ItemStack item) {
 		return isEdibleEgg(item) ? EnumAction.EAT : super.getItemUseAction(item);
 	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-		@Nonnull
 		ItemStack item = player.getHeldItem(hand);
 		if (isEdibleEgg(item)) {
 			player.setActiveHand(hand);
@@ -209,7 +195,7 @@ public class ItemCartComponent extends Item implements TexturedItem {
 			if (!player.capabilities.isCreativeMode) {
 				item.shrink(1);
 			}
-			world.playSound((EntityPlayer) null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+			world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 			if (!world.isRemote) {
 				world.spawnEntity(new EntityEasterEgg(world, player));
 			}
@@ -219,15 +205,14 @@ public class ItemCartComponent extends Item implements TexturedItem {
 	}
 
 	@Override
-	public String getTextureName(int damage) {
-		if (getRawName(damage) == null) {
-			return "stevescarts:items/unknown_icon";
+	public Map<Integer, ResourceLocation> getModels() {
+		Map<Integer, ResourceLocation> map = new HashMap<>();
+		for (int i = 0; i < ComponentTypes.values().length; i++) {
+			String name = getRawName(i);
+			if (name != null) {
+				map.put(i, new ResourceLocation(Constants.MOD_ID, "component_" + name));
+			}
 		}
-		return "stevescarts:items/" + getRawName(damage).toLowerCase() + "_icon";
-	}
-
-	@Override
-	public int getMaxMeta() {
-		return size();
+		return map;
 	}
 }

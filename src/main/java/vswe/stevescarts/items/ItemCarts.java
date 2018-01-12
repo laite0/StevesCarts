@@ -34,18 +34,12 @@ public class ItemCarts extends ItemMinecart {
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setCreativeTab(null);
+		setUnlocalizedName("SC2:ModularCart");
 	}
 
 	public String getName() {
 		return "Modular cart";
 	}
-
-	//	@SideOnly(Side.CLIENT)
-	//	public void registerIcons(final IIconRegister register) {
-	//		final StringBuilder sb = new StringBuilder();
-	//		StevesCarts.instance.getClass();
-	//		this.itemIcon = register.registerIcon(sb.append("stevescarts").append(":").append("modular_cart").append("_icon").toString());
-	//	}
 
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
@@ -93,9 +87,7 @@ public class ItemCarts extends ItemMinecart {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(
-		@Nonnull
-			ItemStack item, final World world, final List list, final ITooltipFlag useExtraInfo) {
+	public void addInformation(@Nonnull ItemStack item, final World world, final List<String> list, final ITooltipFlag useExtraInfo) {
 		CartVersion.updateItemStack(item);
 		final NBTTagCompound info = item.getTagCompound();
 		if (info != null) {

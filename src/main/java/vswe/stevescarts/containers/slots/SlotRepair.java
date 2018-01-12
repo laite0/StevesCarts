@@ -16,16 +16,12 @@ public class SlotRepair extends SlotBase implements ISpecialItemTransferValidato
 	}
 
 	@Override
-	public boolean isItemValidForTransfer(
-		@Nonnull
-			ItemStack item, final TransferHandler.TRANSFER_TYPE type) {
+	public boolean isItemValidForTransfer(@Nonnull ItemStack item, final TransferHandler.TRANSFER_TYPE type) {
 		return false;
 	}
 
 	@Override
-	public boolean isItemValid(
-		@Nonnull
-			ItemStack itemstack) {
+	public boolean isItemValid(@Nonnull ItemStack itemstack) {
 		return tool.isValidRepairMaterial(itemstack);
 	}
 }

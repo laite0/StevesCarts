@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 36
+    }
+  ],
+  "pattern": [
+    " X ",
+    "XEX",
+    " # "
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "#": {
+      "item": "minecraft:golden_carrot"
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 5
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 36
+  }
+}

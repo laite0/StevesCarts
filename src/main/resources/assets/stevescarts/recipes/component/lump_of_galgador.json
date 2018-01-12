@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#D#",
+    "X#X",
+    "RXR"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 45
+    },
+    "#": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "D": {
+      "type": "forge:ore_dict",
+      "ore": "blockDiamond"
+    },
+    "R": {
+      "item": "stevescarts:modulecomponents",
+      "data": 21
+    }
+  },
+  "result": {
+    "item": "stevescarts:modulecomponents",
+    "data": 46,
+    "count": 2
+  }
+}

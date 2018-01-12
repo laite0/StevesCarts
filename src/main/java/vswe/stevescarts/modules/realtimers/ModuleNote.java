@@ -1,5 +1,6 @@
 package vswe.stevescarts.modules.realtimers;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
@@ -8,7 +9,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.guis.GuiMinecart;
 import vswe.stevescarts.helpers.Localization;
@@ -38,9 +38,7 @@ public class ModuleNote extends ModuleBase {
 	private Button speedButton;
 	private boolean isScrollingX;
 	private boolean isScrollingXTune;
-	private int scrollX;
 	private boolean isScrollingY;
-	private int scrollY;
 	private int pixelScrollX;
 	private int pixelScrollXTune;
 	private int generatedScrollX;
@@ -56,7 +54,6 @@ public class ModuleNote extends ModuleBase {
 	private boolean tooTallModule;
 	private boolean veryLongTrack;
 	private int speedSetting;
-	private short lastModuleHeader;
 
 	private DataParameter<Boolean> PLAYING;
 
@@ -81,8 +78,8 @@ public class ModuleNote extends ModuleBase {
 		tooTallModule = false;
 		veryLongTrack = false;
 		speedSetting = 5;
-		maximumNotesPerTrack = (int) Math.pow(2.0, 12.0) - 1;
-		maximumTracksPerModule = (int) Math.pow(2.0, 4.0) - 1;
+		maximumNotesPerTrack = (int) Math.pow(2.0, maximumNotesPerTrackBitCount) - 1;
+		maximumTracksPerModule = (int) Math.pow(2.0, maximumTracksPerModuleBitCount) - 1;
 		tracks = new ArrayList<>();
 		if (getCart().world.isRemote) {
 			buttons = new ArrayList<>();
@@ -199,7 +196,7 @@ public class ModuleNote extends ModuleBase {
 					trackPacketID = 2;
 				}
 				if (trackPacketID != -1) {
-					final byte info = (byte) (i | trackPacketID << 4);
+					final byte info = (byte) (i | trackPacketID << maximumTracksPerModuleBitCount);
 					sendPacket(1, info);
 				}
 			}
@@ -479,7 +476,7 @@ public class ModuleNote extends ModuleBase {
 						}
 						if (currentInstrument != -1 || note.instrumentId != 0) {
 							byte info = (byte) i;
-							info |= (byte) (instrumentInfo << 4);
+							info |= (byte) (instrumentInfo << maximumTracksPerModuleBitCount);
 							sendPacket(2, new byte[] { info, (byte) j });
 						}
 					}
@@ -496,7 +493,7 @@ public class ModuleNote extends ModuleBase {
 	@Override
 	protected void checkGuiData(final Object[] info) {
 		short moduleHeader = (short) tracks.size();
-		moduleHeader |= (short) (speedSetting << 4);
+		moduleHeader |= (short) (speedSetting << maximumTracksPerModuleBitCount);
 		updateGuiData(info, 0, moduleHeader);
 		for (int i = 0; i < tracks.size(); ++i) {
 			final Track track = tracks.get(i);
@@ -512,7 +509,7 @@ public class ModuleNote extends ModuleBase {
 	public void receiveGuiData(int id, final short data) {
 		if (id == 0) {
 			final int trackCount = data & maximumTracksPerModule;
-			speedSetting = (data & ~maximumTracksPerModule) >> 4;
+			speedSetting = (data & ~maximumTracksPerModule) >> maximumTracksPerModuleBitCount;
 			updateSpeedButton();
 			while (tracks.size() < trackCount) {
 				new Track();
@@ -578,7 +575,7 @@ public class ModuleNote extends ModuleBase {
 			}
 		} else if (id == 1) {
 			final int trackID = data[0] & maximumTracksPerModule;
-			final int trackPacketID = (data[0] & ~maximumTracksPerModule) >> 4;
+			final int trackPacketID = (data[0] & ~maximumTracksPerModule) >> maximumTracksPerModuleBitCount;
 			if (trackID < tracks.size()) {
 				final Track track = tracks.get(trackID);
 				if (trackPacketID == 0) {
@@ -597,7 +594,7 @@ public class ModuleNote extends ModuleBase {
 			final byte info = data[0];
 			final byte noteID = data[1];
 			final byte trackID2 = (byte) (info & maximumTracksPerModule);
-			final byte instrumentInfo = (byte) ((byte) (info & ~(byte) maximumTracksPerModule) >> 4);
+			final byte instrumentInfo = (byte) ((byte) (info & ~(byte) maximumTracksPerModule) >> (byte)maximumTracksPerModuleBitCount);
 			if (trackID2 < tracks.size()) {
 				final Track track2 = tracks.get(trackID2);
 				if (noteID < track2.notes.size()) {
@@ -625,7 +622,7 @@ public class ModuleNote extends ModuleBase {
 	@Override
 	protected void Save(final NBTTagCompound tagCompound, final int id) {
 		short headerInfo = (short) tracks.size();
-		headerInfo |= (short) (speedSetting << 4);
+		headerInfo |= (short) (speedSetting << maximumTracksPerModuleBitCount);
 		tagCompound.setShort(generateNBTName("Header", id), headerInfo);
 		for (int i = 0; i < tracks.size(); ++i) {
 			final Track track = tracks.get(i);
@@ -724,10 +721,10 @@ public class ModuleNote extends ModuleBase {
 
 		public void draw(final GuiMinecart gui, final int x, final int y) {
 			if (!inRect(x, y, getRect())) {
-				GL11.glColor4f((color >> 16) / 255.0f, (color >> 8 & 0xFF) / 255.0f, (color & 0xFF) / 255.0f, 1.0f);
+				GlStateManager.color((color >> 16) / 255.0f, (color >> 8 & 0xFF) / 255.0f, (color & 0xFF) / 255.0f, 1.0f);
 			}
 			drawImage(gui, getRect(), 32, 0);
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 			int srcX = 0;
 			final int srcY = 16;
 			if (down) {
@@ -767,10 +764,10 @@ public class ModuleNote extends ModuleBase {
 			}
 			final int[] rect = getBounds(trackID, noteID);
 			if (instrumentId != 0 && playProgress == noteID + getScrollX() && isPlaying()) {
-				GL11.glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
+				GlStateManager.color(0.3f, 0.3f, 0.3f, 1.0f);
 			}
 			drawImage(gui, rect, srcX, 0);
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 			if (inRect(x, y, rect)) {
 				drawImage(gui, rect, 32, 0);
 			}
@@ -873,7 +870,7 @@ public class ModuleNote extends ModuleBase {
 		public short getInfo() {
 			short info = 0;
 			info |= (short) notes.size();
-			info |= (short) (volume << 12);
+			info |= (short) (volume << maximumNotesPerTrackBitCount);
 			return info;
 		}
 
@@ -885,7 +882,7 @@ public class ModuleNote extends ModuleBase {
 			while (notes.size() > numberofNotes) {
 				notes.remove(notes.size() - 1);
 			}
-			volume = (val & ~maximumNotesPerTrack) >> 12;
+			volume = (val & ~maximumNotesPerTrack) >> maximumNotesPerTrackBitCount;
 			if (getCart().world.isRemote) {
 				volumeButton.imageID = 4 + volume;
 				volumeButton.text = getVolumeText();

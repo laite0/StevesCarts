@@ -1,7 +1,10 @@
 package vswe.stevescarts.arcade.invaders;
 
+import net.minecraft.init.SoundEvents;
 import vswe.stevescarts.arcade.ArcadeGame;
 import vswe.stevescarts.guis.GuiMinecart;
+
+import java.util.Random;
 
 public class InvaderGhast extends Unit {
 	private int tentacleTextureId;
@@ -58,8 +61,8 @@ public class InvaderGhast extends Unit {
 		}
 		if (shooting > -10) {
 			if (shooting == 0) {
-				final ArcadeInvaders game = this.game;
-				ArcadeGame.playDefaultSound("mob.ghast.fireball", 0.1f, 1.0f);
+				Random random = game.getModule().getCart().rand;
+				ArcadeGame.playSound(SoundEvents.ENTITY_GHAST_SHOOT, 0.1f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 				this.game.projectiles.add(new Projectile(this.game, x + 8 - 3, y + 8 - 3, false));
 			}
 			--shooting;

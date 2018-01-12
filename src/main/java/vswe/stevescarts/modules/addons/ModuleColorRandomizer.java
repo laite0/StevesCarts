@@ -1,9 +1,9 @@
 package vswe.stevescarts.modules.addons;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.entitys.CartDataSerializers;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.guis.GuiMinecart;
@@ -54,9 +54,9 @@ public class ModuleColorRandomizer extends ModuleAddon {
 	public void drawBackground(final GuiMinecart gui, final int x, final int y) {
 		ResourceHelper.bindResource("/gui/color_randomizer.png");
 		final float[] color = getColor();
-		GL11.glColor4f(color[0], color[1], color[2], 1.0f);
+		GlStateManager.color(color[0], color[1], color[2], 1.0f);
 		drawImage(gui, 50, 20, 0, 16, 28, 28);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		if (inRect(x, y, button)) {
 			drawImage(gui, 10, 26, 32, 0, 16, 16);
 		} else {

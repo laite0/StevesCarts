@@ -1,10 +1,10 @@
 package vswe.stevescarts.guis;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.blocks.tileentities.TileEntityUpgrade;
 import vswe.stevescarts.containers.ContainerUpgrade;
 import vswe.stevescarts.helpers.ResourceHelper;
@@ -27,7 +27,7 @@ public class GuiUpgrade extends GuiBase {
 
 	@Override
 	public void drawGuiForeground(final int x, final int y) {
-		GL11.glDisable(2896);
+		GlStateManager.disableLighting();
 		if (upgrade.getUpgrade() != null) {
 			getFontRenderer().drawString(upgrade.getUpgrade().getName(), 8, 6, 4210752);
 			final InterfaceEffect gui = upgrade.getUpgrade().getInterfaceEffect();
@@ -36,12 +36,12 @@ public class GuiUpgrade extends GuiBase {
 				gui.drawMouseOver(upgrade, this, x, y);
 			}
 		}
-		GL11.glEnable(2896);
+		GlStateManager.enableLighting();
 	}
 
 	@Override
 	public void drawGuiBackground(final float f, final int x, final int y) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		final int j = getGuiLeft();
 		final int k = getGuiTop();
 		ResourceHelper.bindResource(GuiUpgrade.texture);
@@ -58,7 +58,7 @@ public class GuiUpgrade extends GuiBase {
 				gui.drawBackground(upgrade, this, x, y);
 			}
 		}
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	static {

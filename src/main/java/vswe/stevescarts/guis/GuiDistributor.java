@@ -1,10 +1,10 @@
 package vswe.stevescarts.guis;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.blocks.tileentities.TileEntityDistributor;
 import vswe.stevescarts.blocks.tileentities.TileEntityManager;
 import vswe.stevescarts.containers.ContainerDistributor;
@@ -20,13 +20,11 @@ public class GuiDistributor extends GuiBase {
 	private String mouseOverText;
 	private static ResourceLocation texture;
 	private int activeId;
-	TileEntityDistributor distributor;
-	InventoryPlayer invPlayer;
+	private TileEntityDistributor distributor;
 
 	public GuiDistributor(final InventoryPlayer invPlayer, final TileEntityDistributor distributor) {
 		super(new ContainerDistributor(invPlayer, distributor));
 		activeId = -1;
-		this.invPlayer = invPlayer;
 		setXSize(255);
 		setYSize(186);
 		this.distributor = distributor;
@@ -34,7 +32,7 @@ public class GuiDistributor extends GuiBase {
 
 	@Override
 	public void drawGuiForeground(final int x, final int y) {
-		GL11.glDisable(2896);
+		GlStateManager.disableLighting();
 		getFontRenderer().drawString(Localization.GUI.DISTRIBUTOR.TITLE.translate(), 8, 6, 4210752);
 		final TileEntityManager[] invs = distributor.getInventories();
 		if (invs.length == 0) {
@@ -44,7 +42,7 @@ public class GuiDistributor extends GuiBase {
 			drawMouseOver(mouseOverText, x - getGuiLeft(), y - getGuiTop());
 		}
 		mouseOverText = null;
-		GL11.glEnable(2896);
+		GlStateManager.enableLighting();
 	}
 
 	private void drawMouseMover(final String str, final int x, final int y, final int[] rect) {
@@ -55,7 +53,7 @@ public class GuiDistributor extends GuiBase {
 
 	@Override
 	public void drawGuiBackground(final float f, int x, int y) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		final int j = getGuiLeft();
 		final int k = getGuiTop();
 		ResourceHelper.bindResource(GuiDistributor.texture);

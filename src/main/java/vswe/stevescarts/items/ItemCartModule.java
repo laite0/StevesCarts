@@ -6,32 +6,30 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import vswe.stevescarts.Constants;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.tileentities.TileEntityCartAssembler;
 import vswe.stevescarts.modules.ModuleBase;
 import vswe.stevescarts.modules.data.ModuleData;
-import vswe.stevescarts.renders.model.ItemModelManager;
-import vswe.stevescarts.renders.model.TexturedItem;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ItemCartModule extends Item implements TexturedItem {
-	//	IIcon unknownIcon;
+public class ItemCartModule extends Item implements ModItems.IMultipleItemModelDefinition {
 
 	public ItemCartModule() {
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setCreativeTab(StevesCarts.tabsSC2);
-		ItemModelManager.registerItem(this);
 	}
 
-	public String getName(
-		@Nonnull
-			ItemStack par1ItemStack) {
+	public String getName(@Nonnull ItemStack par1ItemStack) {
 		final ModuleData data = getModuleData(par1ItemStack, true);
 		if (data == null) {
 			return "Unknown SC2 module";
@@ -45,9 +43,7 @@ public class ItemCartModule extends Item implements TexturedItem {
 	}
 
 	@Override
-	public String getUnlocalizedName(
-		@Nonnull
-			ItemStack item) {
+	public String getUnlocalizedName(@Nonnull ItemStack item) {
 		final ModuleData data = getModuleData(item, true);
 		if (data != null) {
 			return "item.SC2:" + data.getRawName();
@@ -57,50 +53,42 @@ public class ItemCartModule extends Item implements TexturedItem {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(final CreativeTabs par2CreativeTabs, final NonNullList<ItemStack> par3List) {
-		if (!isInCreativeTab(par2CreativeTabs)) {
+	public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> items) {
+		if (!isInCreativeTab(tab)) {
 			return;
 		}
 		for (final ModuleData module : ModuleData.getList().values()) {
-			if (module.getIsValid()) {
-				par3List.add(module.getItemStack());
+			if (!module.getIsLocked() && module.getIsValid()) {
+				items.add(module.getItemStack());
 			}
 		}
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(
-		@Nonnull
-			ItemStack par1ItemStack, final World world, final List par3List, ITooltipFlag par4) {
-		final ModuleData module = getModuleData(par1ItemStack, true);
+	public void addInformation(@Nonnull ItemStack stack, final World world, final List<String> tooltip, ITooltipFlag flag) {
+		final ModuleData module = getModuleData(stack, true);
 		if (module != null) {
-			module.addInformation(par3List, par1ItemStack.getTagCompound());
-		} else if (!par1ItemStack.isEmpty() && par1ItemStack.getItem() instanceof ItemCartModule) {
-			par3List.add("Module id " + par1ItemStack.getItemDamage());
+			module.addInformation(tooltip, stack.getTagCompound());
+		} else if (!stack.isEmpty() && stack.getItem() instanceof ItemCartModule) {
+			tooltip.add("Module id " + stack.getItemDamage());
 		} else {
-			par3List.add("Unknown module id");
+			tooltip.add("Unknown module id");
 		}
 	}
 
-	public ModuleData getModuleData(
-		@Nonnull
-			ItemStack itemstack) {
+	public ModuleData getModuleData(@Nonnull ItemStack itemstack) {
 		return getModuleData(itemstack, false);
 	}
 
-	public ModuleData getModuleData(
-		@Nonnull
-			ItemStack itemstack, final boolean ignoreSize) {
+	public ModuleData getModuleData(@Nonnull ItemStack itemstack, final boolean ignoreSize) {
 		if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemCartModule && (ignoreSize || itemstack.getCount() != TileEntityCartAssembler.getRemovedSize())) {
 			return ModuleData.getList().get((byte) itemstack.getItemDamage());
 		}
 		return null;
 	}
 
-	public void addExtraDataToCart(final NBTTagCompound save,
-	                               @Nonnull
-		                               ItemStack module, final int i) {
+	public void addExtraDataToCart(final NBTTagCompound save, @Nonnull ItemStack module, final int i) {
 		if (module.getTagCompound() != null && module.getTagCompound().hasKey("Data")) {
 			save.setByte("Data" + i, module.getTagCompound().getByte("Data"));
 		} else {
@@ -117,9 +105,7 @@ public class ItemCartModule extends Item implements TexturedItem {
 		}
 	}
 
-	public void addExtraDataToModule(
-		@Nonnull
-			ItemStack module, final NBTTagCompound info, final int i) {
+	public void addExtraDataToModule(@Nonnull ItemStack module, final NBTTagCompound info, final int i) {
 		NBTTagCompound save = module.getTagCompound();
 		if (save == null) {
 			module.setTagCompound(save = new NBTTagCompound());
@@ -135,20 +121,15 @@ public class ItemCartModule extends Item implements TexturedItem {
 	}
 
 	@Override
-	public String getTextureName(int damage) {
-		ModuleData data = ModuleData.getList().get((byte) damage);
-		if (data != null) {
-			if (data.getIcon() == null) {
-				data.setIcon("stevescarts:items/" + data.getRawName() + "_icon");
+	public Map<Integer, ResourceLocation> getModels() {
+		Map<Integer, ResourceLocation> map = new HashMap<>();
+		for (ModuleData data: ModuleData.getList().values()) {
+			String name = data.getRawName();
+			if (name != null) {
+				map.put((int) data.getID(), new ResourceLocation(Constants.MOD_ID, "module_" + name));
 			}
-			return data.getIcon();
 		}
-		return "stevescarts:items/unknown_icon";
-	}
-
-	@Override
-	public int getMaxMeta() {
-		return 102;
+		return map;
 	}
 
 }

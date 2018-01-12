@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 29
+    }
+  ],
+  "pattern": [
+    " S ",
+    " XP",
+    "#A#"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 25
+    },
+    "P": {
+      "item": "stevescarts:modulecomponents",
+      "data": 24
+    },
+    "S": {
+      "item": "stevescarts:modulecomponents",
+      "data": 26
+    },
+    "A": {
+      "item": "stevescarts:modulecomponents",
+      "data": 27
+    },
+    "#": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 29
+  }
+}

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import vswe.stevescarts.Constants;
 
 import java.util.HashMap;
 
@@ -13,7 +14,7 @@ public class ResourceHelper {
 	private static HashMap<String, ResourceLocation> pathResources;
 
 	public static ResourceLocation getResource(final String path) {
-		return new ResourceLocation("stevescarts", "textures" + path.toLowerCase());
+		return new ResourceLocation(Constants.MOD_ID, "textures" + path.toLowerCase());
 	}
 
 	public static ResourceLocation getResourceFromPath(final String path) {

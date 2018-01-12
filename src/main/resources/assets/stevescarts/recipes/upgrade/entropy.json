@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GX ",
+    "DLD",
+    " #G"
+  ],
+  "key": {
+    "D": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    },
+    "L": {
+      "item": "minecraft:lapis_block"
+    },
+    "G": {
+      "item": "stevescarts:modulecomponents",
+      "data": 45
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 22
+    },
+    "#": {
+      "item": "stevescarts:upgrade",
+      "data": 15
+    }
+  },
+  "result": {
+    "item": "stevescarts:upgrade",
+    "data": 16
+  }
+}

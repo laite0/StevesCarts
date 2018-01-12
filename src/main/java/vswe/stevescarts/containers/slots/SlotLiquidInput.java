@@ -2,6 +2,9 @@ package vswe.stevescarts.containers.slots;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import reborncore.common.util.FluidUtils;
 import vswe.stevescarts.helpers.storages.SCTank;
 
@@ -22,13 +25,16 @@ public class SlotLiquidInput extends SlotBase {
 		if (maxsize != -1) {
 			return maxsize;
 		}
-		return Math.min(8, tank.getCapacity() / 1000);
+		return Math.min(8, tank.getCapacity() / Fluid.BUCKET_VOLUME);
 	}
 
 	@Override
-	public boolean isItemValid(
-		@Nonnull
-			ItemStack itemstack) {
-		return (FluidUtils.getFluidStackInContainer(itemstack) != null && tank.getFluid() != null) || (FluidUtils.getFluidStackInContainer(itemstack) != null && (tank.getFluid() == null || tank.getFluid().isFluidEqual(FluidUtils.getFluidStackInContainer(itemstack))));
+	public boolean isItemValid(@Nonnull ItemStack itemstack) {
+		IFluidHandler handler = FluidUtils.getFluidHandler(itemstack);
+		if (handler == null) return false;
+
+		FluidStack fluidStack = handler.drain(Fluid.BUCKET_VOLUME, false);
+		return ((fluidStack == null || fluidStack.amount <= 0) && tank.getFluid() != null) ||
+				((fluidStack != null && fluidStack.amount > 0) && (tank.getFluid() == null || tank.getFluid().isFluidEqual(fluidStack)));
 	}
 }

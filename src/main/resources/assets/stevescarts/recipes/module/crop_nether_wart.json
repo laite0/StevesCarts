@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 58
+    }
+  ],
+  "pattern": [
+    "#",
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 28
+    },
+    "#": {
+      "item": "minecraft:nether_wart"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 58
+  }
+}

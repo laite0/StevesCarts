@@ -49,7 +49,7 @@ public class InputChest extends SimpleInventoryEffect {
 					@Nonnull
 					ItemStack itemstack = upgrade.getStackInSlot(slotId);
 					if (!itemstack.isEmpty()) {
-						final ModuleData module = ModItems.modules.getModuleData(itemstack);
+						final ModuleData module = ModItems.MODULES.getModuleData(itemstack);
 						if (module != null) {
 							if (isValidForBluePrint(upgrade.getMaster(), module)) {
 								if (!willInvalidate(upgrade.getMaster(), module)) {

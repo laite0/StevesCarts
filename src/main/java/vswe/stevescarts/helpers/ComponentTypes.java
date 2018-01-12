@@ -1,7 +1,7 @@
 package vswe.stevescarts.helpers;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
 import vswe.stevescarts.items.ModItems;
 
 import javax.annotation.Nonnull;
@@ -51,7 +51,7 @@ public enum ComponentTypes {
 	CLEANING_CORE(41, "Cleaning Core"),
 	CLEANING_TUBE(42, "Cleaning Tube"),
 	FUSE(43, "Fuse"),
-	SOLAR_PANEL(44, "Solar Panel"),
+	SOLAR_PANEL(44, "Solar Panel Component"),
 	EYE_OF_GALGADOR(45, "Eye of Galgador"),
 	LUMP_OF_GALGADOR(46, "Lump of Galgador"),
 	GALGADORIAN_METAL(47, "Galgadorian Metal"),
@@ -107,7 +107,7 @@ public enum ComponentTypes {
 
 	@Nonnull
 	public ItemStack getItemStack(final int count) {
-		return new ItemStack(ModItems.component, count, id);
+		return new ItemStack(ModItems.COMPONENTS, count, id);
 	}
 
 	@Nonnull
@@ -119,13 +119,11 @@ public enum ComponentTypes {
 		return id;
 	}
 
-	public boolean isStackOfType(
-		@Nonnull
-			ItemStack itemstack) {
-		return !itemstack.isEmpty() && itemstack.getItem() == ModItems.component && itemstack.getItemDamage() == id;
+	public boolean isStackOfType(@Nonnull ItemStack itemstack) {
+		return !itemstack.isEmpty() && itemstack.getItem() == ModItems.COMPONENTS && itemstack.getItemDamage() == id;
 	}
 
 	public String getLocalizedName() {
-		return I18n.translateToLocal(ModItems.component.getUnlocalizedName(getItemStack()) + ".name");
+		return I18n.format(ModItems.COMPONENTS.getUnlocalizedName(getItemStack()) + ".name");
 	}
 }

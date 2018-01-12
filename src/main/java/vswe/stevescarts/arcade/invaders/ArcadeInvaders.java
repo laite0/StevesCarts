@@ -1,6 +1,7 @@
 package vswe.stevescarts.arcade.invaders;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -8,6 +9,7 @@ import org.lwjgl.input.Keyboard;
 import vswe.stevescarts.arcade.ArcadeGame;
 import vswe.stevescarts.arcade.tracks.TrackStory;
 import vswe.stevescarts.guis.GuiMinecart;
+import vswe.stevescarts.handlers.SoundHandler;
 import vswe.stevescarts.helpers.Localization;
 import vswe.stevescarts.helpers.ResourceHelper;
 import vswe.stevescarts.modules.realtimers.ModuleArcade;
@@ -91,7 +93,7 @@ public class ArcadeInvaders extends ArcadeGame {
 						if (((InvaderGhast) invader).isPahighast) {
 							hasPahighast = false;
 						}
-						ArcadeGame.playDefaultSound("mob.ghast.scream", 0.03f, 1.0f);
+						ArcadeGame.playSound(SoundEvents.ENTITY_GHAST_HURT, 0.03f, 1.0f);
 						invaders.remove(i);
 						++score;
 					} else if (result == Unit.UPDATE_RESULT.TURN_BACK) {
@@ -136,7 +138,7 @@ public class ArcadeInvaders extends ArcadeGame {
 				}
 				if (fireDelay == 0 && Keyboard.isKeyDown(17)) {
 					projectiles.add(new Projectile(this, player.x + 8 - 2, player.y - 15, true));
-					ArcadeGame.playDefaultSound("random.bow", 0.8f, 1.0f / (getModule().getCart().rand.nextFloat() * 0.4f + 1.2f) + 0.5f);
+					ArcadeGame.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 0.8f, 1.0f / (getModule().getCart().rand.nextFloat() * 0.4f + 1.2f) + 0.5f);
 					fireDelay = 10;
 				} else if (fireDelay > 0) {
 					--fireDelay;
@@ -144,7 +146,7 @@ public class ArcadeInvaders extends ArcadeGame {
 			}
 			if (player.update() == Unit.UPDATE_RESULT.DEAD) {
 				projectiles.clear();
-				ArcadeGame.playSound("hit", 1.0f, 1.0f);
+				ArcadeGame.playSound(SoundHandler.HIT, 1.0f, 1.0f);
 				if (lives.size() != 0) {
 					lives.get(0).setTarget(player.x, player.y);
 					player = lives.get(0);
@@ -168,7 +170,7 @@ public class ArcadeInvaders extends ArcadeGame {
 		} else if (newHighscore && gameoverCounter < 5) {
 			++gameoverCounter;
 			if (gameoverCounter == 5) {
-				ArcadeGame.playSound("highscore", 1.0f, 1.0f);
+				ArcadeGame.playSound(SoundHandler.HIGH_SCORE, 1.0f, 1.0f);
 			}
 		}
 	}

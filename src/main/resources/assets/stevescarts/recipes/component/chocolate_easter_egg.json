@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:is_event",
+      "event": "easter"
+    }
+  ],
+  "pattern": [
+    "#S#",
+    "#X#",
+    "#S#"
+  ],
+  "key": {
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "egg"
+    },
+    "#": {
+      "item": "minecraft:dye",
+      "data": 3
+    },
+    "S": {
+      "item": "minecraft:sugar"
+    }
+  },
+  "result": {
+    "item": "stevescarts:modulecomponents",
+    "data": 69
+  }
+}

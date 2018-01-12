@@ -109,14 +109,12 @@ public abstract class ModuleTank extends ModuleStorage implements IFluidTank, IT
 	}
 
 	@Override
-	public void clearInputContainer(final int tankid) {
+	public void setInputContainer(final int tankid, ItemStack stack) {
 		setStack(0, ItemStack.EMPTY);
 	}
 
 	@Override
-	public void addToOutputContainer(final int tankid,
-	                                 @Nonnull
-		                                 ItemStack item) {
+	public void addToOutputContainer(final int tankid, @Nonnull ItemStack item) {
 		addStack(1, item);
 	}
 

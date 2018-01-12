@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 41
+    }
+  ],
+  "pattern": [
+    "RGB",
+    "#X#",
+    " # "
+  ],
+  "key": {
+    "R": {
+      "item": "stevescarts:modulecomponents",
+      "data": 2
+    },
+    "G": {
+      "item": "stevescarts:modulecomponents",
+      "data": 3
+    },
+    "B": {
+      "item": "stevescarts:modulecomponents",
+      "data": 4
+    },
+    "X": {
+      "item": "minecraft:redstone"
+    },
+    "#": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 41
+  }
+}

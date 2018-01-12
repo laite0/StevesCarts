@@ -21,9 +21,7 @@ public class GiftItem {
 	public static ArrayList<GiftItem> ChristmasList;
 	public static ArrayList<GiftItem> EasterList;
 
-	public GiftItem(
-		@Nonnull
-			ItemStack item, final int costPerItem, final int chanceWeight) {
+	public GiftItem(@Nonnull ItemStack item, final int costPerItem, final int chanceWeight) {
 		this.item = item;
 		this.chanceWeight = chanceWeight;
 		this.costPerItem = costPerItem;
@@ -51,8 +49,8 @@ public class GiftItem {
 
 	public static void addModuleGifts(final ArrayList<GiftItem> gifts) {
 		for (final ModuleData module : ModuleData.getList().values()) {
-			if (module.getIsValid() && !module.getIsLocked() && module.getHasRecipe() && module.getCost() > 0) {
-				final GiftItem item = new GiftItem(new ItemStack(ModItems.modules, 1, module.getID()), module.getCost() * 20, (int) Math.pow(151 - module.getCost(), 2.0));
+			if (!module.getIsLocked() && module.getIsValid() && module.getCost() > 0) {
+				final GiftItem item = new GiftItem(new ItemStack(ModItems.MODULES, 1, module.getID()), module.getCost() * 20, (int) Math.pow(151 - module.getCost(), 2.0));
 				item.fixedSize = true;
 				gifts.add(item);
 			}

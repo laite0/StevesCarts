@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "PFP",
+    "I#I"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 59
+    }
+  },
+  "result": {
+    "item": "stevescarts:upgrade",
+    "data": 7
+  }
+}

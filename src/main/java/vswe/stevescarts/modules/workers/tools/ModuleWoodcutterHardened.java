@@ -31,7 +31,7 @@ public class ModuleWoodcutterHardened extends ModuleWoodcutter {
 	public int getRepairItemUnits(
 		@Nonnull
 			ItemStack item) {
-		if (!item.isEmpty() && item.getItem() == ModItems.component && item.getItemDamage() == 22) {
+		if (!item.isEmpty() && item.getItem() == ModItems.COMPONENTS && item.getItemDamage() == 22) {
 			return 320000;
 		}
 		return 0;

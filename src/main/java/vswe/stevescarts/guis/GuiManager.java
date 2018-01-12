@@ -2,12 +2,12 @@ package vswe.stevescarts.guis;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.blocks.tileentities.TileEntityManager;
 import vswe.stevescarts.containers.ContainerManager;
 import vswe.stevescarts.helpers.Localization;
@@ -15,17 +15,15 @@ import vswe.stevescarts.helpers.Localization;
 @SideOnly(Side.CLIENT)
 public abstract class GuiManager extends GuiBase {
 	private TileEntityManager manager;
-	private InventoryPlayer invPlayer;
 
-	public GuiManager(final InventoryPlayer invPlayer, final TileEntityManager manager, final ContainerManager container) {
+	public GuiManager(final TileEntityManager manager, final ContainerManager container) {
 		super(container);
 		this.manager = manager;
-		this.invPlayer = invPlayer;
 	}
 
 	@Override
 	public void drawGuiForeground(final int x, final int y) {
-		GL11.glDisable(2896);
+		GlStateManager.disableLighting();
 		int[] coords = getMiddleCoords();
 		getFontRenderer().drawString(getManagerName(), coords[0] - 34, 65, 4210752);
 		getFontRenderer().drawString(Localization.GUI.MANAGER.TITLE.translate(), coords[0] + coords[2], 65, 4210752);
@@ -50,7 +48,7 @@ public abstract class GuiManager extends GuiBase {
 				Localization.GUI.MANAGER.SIDE_DISABLED.translate() })[manager.color[i] - 1], x, y, getColorpickerCoords(i));
 		}
 		drawMouseOver(getLayoutString() + "\n" + Localization.GUI.MANAGER.CURRENT_SETTING.translate() + ": " + getLayoutOption(manager.layoutType), x, y, getMiddleCoords());
-		GL11.glEnable(2896);
+		GlStateManager.enableLighting();
 	}
 
 	protected void drawMouseOver(final String str, final int x, final int y, final int[] rect) {
@@ -61,7 +59,7 @@ public abstract class GuiManager extends GuiBase {
 
 	@Override
 	public void drawGuiBackground(final float f, final int x, final int y) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		final int left = getGuiLeft();
 		final int top = getGuiTop();
 		drawBackground(left, top);
@@ -74,11 +72,13 @@ public abstract class GuiManager extends GuiBase {
 		}
 		final RenderItem renderitem = Minecraft.getMinecraft().getRenderItem();
 		final int[] coords = getMiddleCoords();
+		RenderHelper.enableGUIStandardItemLighting();
 		renderitem.renderItemIntoGUI(new ItemStack(getBlock(), 1), left + coords[0], top + coords[1]);
+		RenderHelper.disableStandardItemLighting();
 		for (int j = 0; j < 4; ++j) {
 			drawItems(j, renderitem, left, top);
 		}
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	private void drawArrow(final int id, final int left, final int top) {

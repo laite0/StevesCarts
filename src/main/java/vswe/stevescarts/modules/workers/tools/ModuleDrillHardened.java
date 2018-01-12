@@ -1,9 +1,9 @@
 package vswe.stevescarts.modules.workers.tools;
 
 import net.minecraft.item.ItemStack;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.helpers.ComponentTypes;
-import vswe.stevescarts.items.ModItems;
 
 import javax.annotation.Nonnull;
 
@@ -34,14 +34,12 @@ public class ModuleDrillHardened extends ModuleDrill {
 
 	@Override
 	public String getRepairItemName() {
-		return ComponentTypes.REINFORCED_METAL.getLocalizedName();
+		return SCConfig.hardenedRepairName.isEmpty() ? ComponentTypes.REINFORCED_METAL.getLocalizedName(): SCConfig.hardenedRepairName;
 	}
 
 	@Override
-	public int getRepairItemUnits(
-		@Nonnull
-			ItemStack item) {
-		if (!item.isEmpty() && item.getItem() == ModItems.component && item.getItemDamage() == 22) {
+	public int getRepairItemUnits(@Nonnull ItemStack item) {
+		if (!item.isEmpty() && SCConfig.isValidRepairItem(item, "hardened")) {
 			return 450000;
 		}
 		return 0;

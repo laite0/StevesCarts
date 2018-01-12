@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 30
+    }
+  },
+  "result": {
+    "item": "stevescarts:modulecomponents",
+    "data": 32
+  }
+}

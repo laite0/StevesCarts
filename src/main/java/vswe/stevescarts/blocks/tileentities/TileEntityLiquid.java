@@ -29,7 +29,6 @@ import vswe.stevescarts.helpers.storages.TransferHandler;
 import vswe.stevescarts.helpers.storages.TransferManager;
 import vswe.stevescarts.modules.storages.tanks.ModuleTank;
 import vswe.stevescarts.packet.PacketFluidSync;
-import vswe.stevescarts.packet.PacketStevesCarts;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -93,14 +92,12 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 	}
 
 	@Override
-	public void clearInputContainer(final int tankid) {
-		setInventorySlotContents(tankid * 3, ItemStack.EMPTY);
+	public void setInputContainer(final int tankid, ItemStack stack) {
+		setInventorySlotContents(tankid * 3, stack);
 	}
 
 	@Override
-	public void addToOutputContainer(final int tankid,
-	                                 @Nonnull
-		                                 ItemStack item) {
+	public void addToOutputContainer(final int tankid, @Nonnull ItemStack item) {
 		TransferHandler.TransferItem(item, this, tankid * 3 + 1, tankid * 3 + 1, new ContainerLiquid(null, this), Slot.class, null, -1);
 	}
 

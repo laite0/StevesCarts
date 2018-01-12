@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 54
+    },
+    {
+      "type": "stevescarts:is_event",
+      "event": "christmas"
+    }
+  ],
+  "pattern": [
+    "#",
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 28
+    },
+    "#": {
+      "item": "minecraft:snowball"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 54
+  }
+}

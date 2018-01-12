@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PXP",
+    "TLT",
+    "R#R"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:redstone_torch"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "X": {
+      "item": "minecraft:repeater"
+    },
+    "L": {
+      "item": "stevescarts:modulecomponents",
+      "data": 16
+    },
+    "P": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 59
+    }
+  },
+  "result": {
+    "item": "stevescarts:upgrade",
+    "data": 13
+  }
+}

@@ -1,6 +1,7 @@
 package vswe.stevescarts.guis;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -9,9 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.Constants;
-import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.tileentities.TileEntityCartAssembler;
 import vswe.stevescarts.containers.ContainerCartAssembler;
 import vswe.stevescarts.containers.slots.SlotAssembler;
@@ -38,7 +37,7 @@ public class GuiCartAssembler extends GuiBase {
 	private static final ResourceLocation textureRight;
 	private static final ResourceLocation textureExtra;
 	private int[] assembleRect;
-	String validChars;
+	private String validChars;
 	private int dropdownX;
 	private int dropdownY;
 	private int scrollingX;
@@ -46,7 +45,9 @@ public class GuiCartAssembler extends GuiBase {
 	private boolean isScrolling;
 	private int[] blackBackground;
 	private TileEntityCartAssembler assembler;
-	private InventoryPlayer invPlayer;
+
+	private final int[] assemblingProgRect = { 375, 180, 115, 11 };
+	private final int[] fuelProgRect = { 375, 200, 115, 11 };
 
 	public GuiCartAssembler(final InventoryPlayer invPlayer, final TileEntityCartAssembler assembler) {
 		super(new ContainerCartAssembler(invPlayer, assembler));
@@ -57,7 +58,6 @@ public class GuiCartAssembler extends GuiBase {
 		dropdownY = -1;
 		blackBackground = new int[] { 145, 15, 222, 148 };
 		this.assembler = assembler;
-		this.invPlayer = invPlayer;
 		setXSize(512);
 		setYSize(256);
 	}
@@ -87,6 +87,24 @@ public class GuiCartAssembler extends GuiBase {
 				getFontRenderer().drawString("...", 375, 40 + lineCount * 10, 4210752);
 			}
 		}
+		float assemblingProgress;
+		String assemblingInfo;
+		if (assembler.getIsAssembling()) {
+			assemblingProgress = (float) assembler.getAssemblingTime() / (float) assembler.getMaxAssemblingTime();
+			assemblingInfo = Localization.GUI.ASSEMBLER.ASSEMBLE_PROGRESS.translate() + ": " + formatProgress(assemblingProgress);
+			assemblingInfo = assemblingInfo + "\n" + Localization.GUI.ASSEMBLER.TIME_LEFT.translate() + ": " + formatTime((int) ((assembler.getMaxAssemblingTime() - assembler.getAssemblingTime()) / assembler.getEfficiency()));
+		} else {
+			assemblingInfo = Localization.GUI.ASSEMBLER.IDLE_MESSAGE.translate();
+		}
+		if (!hasErrors) {
+			if (assembler.getIsDisassembling()) {
+				drawProgressBarInfo(assembleRect, x, y, Localization.GUI.ASSEMBLER.MODIFY_CART.translate());
+			} else {
+				drawProgressBarInfo(assembleRect, x, y, Localization.GUI.ASSEMBLER.ASSEMBLE_CART.translate());
+			}
+		}
+		drawProgressBarInfo(assemblingProgRect, x, y, assemblingInfo);
+		drawProgressBarInfo(fuelProgRect, x, y, Localization.GUI.ASSEMBLER.FUEL_LEVEL.translate() + ": " + assembler.getFuelLevel() + "/" + assembler.getMaxFuelLevel());
 	}
 
 	private void updateErrorList() {
@@ -95,7 +113,7 @@ public class GuiCartAssembler extends GuiBase {
 			this.addText(lines, Localization.GUI.ASSEMBLER.ASSEMBLE_INSTRUCTION.translate());
 			this.hasErrors = true;
 		} else {
-			final ModuleData hulldata = ModItems.modules.getModuleData(this.assembler.getStackInSlot(0));
+			final ModuleData hulldata = ModItems.MODULES.getModuleData(this.assembler.getStackInSlot(0));
 			if (hulldata == null || !(hulldata instanceof ModuleDataHull)) {
 				this.addText(lines, Localization.GUI.ASSEMBLER.INVALID_HULL.translate(), 10357518);
 				this.hasErrors = true;
@@ -141,7 +159,7 @@ public class GuiCartAssembler extends GuiBase {
 			updateErrorList();
 			firstLoad = false;
 		}
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		final int j = getGuiLeft();
 		final int k = getGuiTop();
 		ResourceHelper.bindResource(GuiCartAssembler.backgrounds[assembler.getSimulationInfo().getBackground()]);
@@ -193,14 +211,13 @@ public class GuiCartAssembler extends GuiBase {
 			final int targetY2 = box.getY() - 12;
 			final int targetX2 = box.getX();
 			drawTexturedModalRect(j + targetX2, k + targetY2, 0, 40, 115, 11);
-			GL11.glColor4f((box.getColor() >> 16) / 255.0f, (box.getColor() >> 8 & 0xFF) / 255.0f, (box.getColor() & 0xFF) / 255.0f, 1.0f);
+			GlStateManager.color((box.getColor() >> 16) / 255.0f, (box.getColor() >> 8 & 0xFF) / 255.0f, (box.getColor() & 0xFF) / 255.0f, 1.0f);
 			drawTexturedModalRect(j + targetX2 + 8, k + targetY2 + 2, 0, 51 + box.getID() * 7, 115, 7);
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+			GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		}
-		final boolean isDisassembling = assembler.getIsDisassembling();
 		int srcX2 = 42;
 		int srcY2 = 0;
-		if (isDisassembling) {
+		if (assembler.getIsDisassembling()) {
 			srcX2 = 158;
 			srcY2 = 40;
 		}
@@ -210,30 +227,14 @@ public class GuiCartAssembler extends GuiBase {
 			srcY2 += 11;
 		}
 		drawTexturedModalRect(j + assembleRect[0], k + assembleRect[1], srcX2, srcY2, assembleRect[2], assembleRect[3]);
-		final int[] assemblingProgRect = { 375, 180, 115, 11 };
-		final int[] fuelProgRect = { 375, 200, 115, 11 };
 		float assemblingProgress = 0.0f;
-		String assemblingInfo;
 		if (assembler.getIsAssembling()) {
 			assemblingProgress = (float) assembler.getAssemblingTime() / (float) assembler.getMaxAssemblingTime();
-			assemblingInfo = Localization.GUI.ASSEMBLER.ASSEMBLE_PROGRESS.translate() + ": " + formatProgress(assemblingProgress);
-			assemblingInfo = assemblingInfo + "\n" + Localization.GUI.ASSEMBLER.TIME_LEFT.translate() + ": " + formatTime((int) ((assembler.getMaxAssemblingTime() - assembler.getAssemblingTime()) / assembler.getEfficiency()));
-		} else {
-			assemblingInfo = Localization.GUI.ASSEMBLER.IDLE_MESSAGE.translate();
 		}
 		drawProgressBar(assemblingProgRect, assemblingProgress, 22, x, y);
 		drawProgressBar(fuelProgRect, (float) assembler.getFuelLevel() / (float) assembler.getMaxFuelLevel(), 31, x, y);
 		renderDropDownMenu(x, y);
 		render3DCart();
-		if (!hasErrors) {
-			if (isDisassembling) {
-				drawProgressBarInfo(assembleRect, x, y, Localization.GUI.ASSEMBLER.MODIFY_CART.translate());
-			} else {
-				drawProgressBarInfo(assembleRect, x, y, Localization.GUI.ASSEMBLER.ASSEMBLE_CART.translate());
-			}
-		}
-		drawProgressBarInfo(assemblingProgRect, x, y, assemblingInfo);
-		drawProgressBarInfo(fuelProgRect, x, y, Localization.GUI.ASSEMBLER.FUEL_LEVEL.translate() + ": " + assembler.getFuelLevel() + "/" + assembler.getMaxFuelLevel());
 	}
 
 	private String formatProgress(final float progress) {
@@ -253,7 +254,7 @@ public class GuiCartAssembler extends GuiBase {
 
 	private void drawProgressBarInfo(final int[] rect, final int x, final int y, final String str) {
 		if (inRect(x - getGuiLeft(), y - getGuiTop(), rect)) {
-			drawMouseOver(str, x, y);
+			drawMouseOver(str, x - getGuiLeft(), y - getGuiTop());
 		}
 	}
 
@@ -275,30 +276,29 @@ public class GuiCartAssembler extends GuiBase {
 
 	private void render3DCart() {
 		assembler.createPlaceholder();
-		final int left = guiLeft;
-		final int top = guiTop;
-		GL11.glEnable(32826);
-		GL11.glEnable(2903);
-		GL11.glPushMatrix();
-		final float n = left + 256;
-		final int n2 = top;
-		final StevesCarts instance = StevesCarts.instance;
-		GL11.glTranslatef(n, n2 + (Constants.renderSteve ? 50 : 100), 100.0f);
-		final float scale = 50.0f;
-		GL11.glScalef(-scale, scale, scale);
-		GL11.glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
-		GL11.glRotatef(135.0f, 0.0f, 1.0f, 0.0f);
+		int left = guiLeft;
+		int top = guiTop;
+		GlStateManager.enableRescaleNormal();
+		GlStateManager.enableColorMaterial();
+		GlStateManager.pushMatrix();
+		float n = left + 256;
+		int n2 = top;
+		GlStateManager.translate(n, n2 + (Constants.renderSteve ? 50 : 100), 100.0f);
+		float scale = 50.0f;
+		GlStateManager.scale(-scale, scale, scale);
+		GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f);
+		GlStateManager.rotate(135.0f, 0.0f, 1.0f, 0.0f);
 		RenderHelper.enableStandardItemLighting();
-		GL11.glRotatef(-135.0f, 0.0f, 1.0f, 0.0f);
-		GL11.glRotatef(assembler.getRoll(), 1.0f, 0.0f, 0.0f);
-		GL11.glRotatef(assembler.getYaw(), 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(-135.0f, 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(assembler.getRoll(), 1.0f, 0.0f, 0.0f);
+		GlStateManager.rotate(assembler.getYaw(), 0.0f, 1.0f, 0.0f);
 		Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0f;
 		if (Constants.renderSteve) {
 			final EntityPlayer player = Minecraft.getMinecraft().player;
 			@Nonnull
 			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
 			player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, assembler.getCartFromModules(true));
-			final float temp = player.rotationPitch;
+			float temp = player.rotationPitch;
 			player.rotationPitch = 0.7853982f;
 			Minecraft.getMinecraft().getRenderManager().renderEntity(player, 0.0, 0.0, 0.0, 0.0f, 1.0f, false);
 			player.rotationPitch = temp;
@@ -306,15 +306,15 @@ public class GuiCartAssembler extends GuiBase {
 		} else {
 			Minecraft.getMinecraft().getRenderManager().renderEntity(assembler.getPlaceholder(), 0.0, 0.0, 0.0, 0.0f, 1.0f, false);
 		}
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		RenderHelper.disableStandardItemLighting();
-		GL11.glDisable(32826);
+		GlStateManager.disableRescaleNormal();
 		assembler.getPlaceholder().keepAlive = 0;
 	}
 
 	private void renderDropDownMenu(final int x, final int y) {
-		GL11.glPushMatrix();
-		GL11.glTranslatef(0.0f, 0.0f, 200.0f);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(0.0f, 0.0f, 200.0f);
 		final int j = getGuiLeft();
 		final int k = getGuiTop();
 		if (dropdownX != -1 && dropdownY != -1) {
@@ -369,7 +369,7 @@ public class GuiCartAssembler extends GuiBase {
 				}
 			}
 		}
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	private void drawString(String str, final int x, final int y) {

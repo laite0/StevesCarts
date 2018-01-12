@@ -53,7 +53,7 @@ public class EventHandler implements ForgeChunkManager.LoadingCallback {
 	}
 
 	@SubscribeEvent
-	public void invoke(final EntityEvent.EnteringChunk event) {
+	public void enterChunk(final EntityEvent.EnteringChunk event) {
 		if (!event.getEntity().isDead && event.getEntity() instanceof EntityMinecartModular) {
 			((EntityMinecartModular) event.getEntity()).loadChunks(event.getNewChunkX(), event.getNewChunkZ());
 		}
@@ -64,10 +64,8 @@ public class EventHandler implements ForgeChunkManager.LoadingCallback {
 		onCrafting(event.player, event.crafting, event.craftMatrix);
 	}
 
-	private void onCrafting(final EntityPlayer player,
-	                        @Nonnull
-		                        ItemStack item, final IInventory craftMatrix) {
-		if (item.getItem() == ModItems.component || item.getItem() == ModItems.modules) {
+	private void onCrafting(final EntityPlayer player, @Nonnull ItemStack item, final IInventory craftMatrix) {
+		if (item.getItem() == ModItems.COMPONENTS || item.getItem() == ModItems.MODULES) {
 			for (int i = 0; i < craftMatrix.getSizeInventory(); ++i) {
 				@Nonnull
 				ItemStack sItem = craftMatrix.getStackInSlot(i);

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 37
+    }
+  ],
+  "pattern": [
+    "# #",
+    "###",
+    "X X"
+  ],
+  "key": {
+    "#": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 0
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 37
+  }
+}

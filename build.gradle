@@ -31,7 +31,7 @@ if (ENV.BUILD_NUMBER) {
 group= "vswe.stevescarts" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
 minecraft {
-	version = "1.12.2-14.23.0.2500"
+	version = project.forgeversion
 	mappings = "snapshot_20171003"
 	replace "@MODVERSION@", project.version
 	//  makeObfSourceJar = false

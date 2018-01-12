@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 34
+    }
+  ],
+  "pattern": [
+    "O#O",
+    "MXM",
+    "O#O"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:nether_brick"
+    },
+    "#": {
+      "type": "forge:ore_dict",
+      "ore": "obsidian"
+    },
+    "X": {
+      "item": "minecraft:lava_bucket"
+    },
+    "M": {
+      "item": "stevescarts:cartmodule",
+      "data": 33
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 34
+  }
+}

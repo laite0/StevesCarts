@@ -1,41 +1,49 @@
 package vswe.stevescarts.blocks;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import reborncore.RebornRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.IForgeRegistry;
+import vswe.stevescarts.Constants;
+import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.tileentities.*;
-import vswe.stevescarts.helpers.ComponentTypes;
-import vswe.stevescarts.helpers.RecipeHelper;
-import vswe.stevescarts.items.ItemBlockDetector;
-import vswe.stevescarts.items.ItemBlockStorage;
-import vswe.stevescarts.items.ItemUpgrade;
-import vswe.stevescarts.items.ModItems;
 
-import javax.annotation.Nonnull;
-import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+@Mod.EventBusSubscriber(modid = Constants.MOD_ID)
 public enum ModBlocks {
+	CART_ASSEMBLER("BlockCartAssembler", BlockCartAssembler.class, TileEntityCartAssembler.class, "assembler"),
 	CARGO_MANAGER("BlockCargoManager", BlockCargoManager.class, TileEntityCargo.class, "cargo"),
+	LIQUID_MANAGER("BlockLiquidManager", BlockLiquidManager.class, TileEntityLiquid.class, "liquid"),
+	EXTERNAL_DISTRIBUTOR("BlockDistributor", BlockDistributor.class, TileEntityDistributor.class, "distributor"),
+	MODULE_TOGGLER("BlockActivator", BlockActivator.class, TileEntityActivator.class, "activator"),
+	DETECTOR_UNIT("BlockDetector", BlockDetector.class, TileEntityDetector.class, "detector"),
+	UPGRADE("upgrade", BlockUpgrade.class, TileEntityUpgrade.class, "upgrade"),
 	JUNCTION("BlockJunction", BlockRailJunction.class),
 	ADVANCED_DETECTOR("BlockAdvDetector", BlockRailAdvDetector.class),
-	CART_ASSEMBLER("BlockCartAssembler", BlockCartAssembler.class, TileEntityCartAssembler.class, "assembler"),
-	MODULE_TOGGLER("BlockActivator", BlockActivator.class, TileEntityActivator.class, "activator"),
-	EXTERNAL_DISTRIBUTOR("BlockDistributor", BlockDistributor.class, TileEntityDistributor.class, "distributor"),
-	DETECTOR_UNIT("BlockDetector", BlockDetector.class, TileEntityDetector.class, "detector", ItemBlockDetector.class),
-	UPGRADE("upgrade", BlockUpgrade.class, TileEntityUpgrade.class, "upgrade", ItemUpgrade.class),
-	LIQUID_MANAGER("BlockLiquidManager", BlockLiquidManager.class, TileEntityLiquid.class, "liquid"),
-	STORAGE("BlockMetalStorage", BlockMetalStorage.class, ItemBlockStorage.class);
+	STORAGE("BlockMetalStorage", BlockMetalStorage.class);
+
+	public static final List<ItemBlock> ITEM_BLOCKS = new ArrayList<>();
 
 	private final String name;
 	private final Class<? extends Block> clazz;
 	private final Class<? extends TileEntity> tileEntityClazz;
 	private final String tileEntityName;
-	private final Class<? extends ItemBlock> itemClazz;
 	private Block block;
 
 	ModBlocks(final String name, final Class<? extends Block> clazz) {
@@ -43,86 +51,130 @@ public enum ModBlocks {
 	}
 
 	ModBlocks(final String name, final Class<? extends Block> clazz, final Class<? extends TileEntity> tileEntityClazz, final String tileEntityName) {
-		this(name, clazz, tileEntityClazz, tileEntityName, ItemBlock.class);
-	}
-
-	ModBlocks(final String name, final Class<? extends Block> clazz, final Class<? extends ItemBlock> itemClazz) {
-		this(name, clazz, null, null, itemClazz);
-	}
-
-	ModBlocks(final String name,
-	          final Class<? extends Block> clazz,
-	          final Class<? extends TileEntity> tileEntityClazz,
-	          final String tileEntityName,
-	          final Class<? extends ItemBlock> itemClazz) {
 		this.name = name;
 		this.clazz = clazz;
 		this.tileEntityClazz = tileEntityClazz;
 		this.tileEntityName = tileEntityName;
-		this.itemClazz = itemClazz;
 	}
 
-	public static void init() {
-		for (final ModBlocks blockInfo : values()) {
+	public static void preInit() {
+		for (final ModBlocks info : values()) {
 			try {
-				if (Block.class.isAssignableFrom(blockInfo.clazz)) {
-					final Constructor<? extends Block> blockConstructor = blockInfo.clazz.getConstructor(new Class[0]);
-					final Object blockInstance = blockConstructor.newInstance();
-					final Block blockBase = (Block) blockInstance;
-					final Block block = (Block) blockInstance;
+				if (Block.class.isAssignableFrom(info.clazz)) {
+					final Block block = info.clazz.getConstructor().newInstance();
 					block.setHardness(2.0f);
-					RebornRegistry.registerBlock(block, blockInfo.itemClazz, blockInfo.name);
-					blockBase.setUnlocalizedName("SC2:" + blockInfo.name);
-					blockInfo.block = block;
-					if (blockInfo.tileEntityClazz != null) {
-						GameRegistry.registerTileEntity(blockInfo.tileEntityClazz, blockInfo.tileEntityName);
+					block.setRegistryName(Constants.MOD_ID, info.name.toLowerCase()).setUnlocalizedName("SC2:" + info.name);
+					info.block = block;
+
+					ItemBlock item;
+					if (block instanceof ICustomItemBlock)
+						item = ((ICustomItemBlock) block).getItemBlock();
+					else
+						item = new ItemBlock(block);
+
+					ITEM_BLOCKS.add(item);
+					item.setRegistryName(Constants.MOD_ID + ":" + info.name).setUnlocalizedName(Constants.MOD_ID + ":" + info.name);
+
+					if (info.tileEntityClazz != null) {
+						GameRegistry.registerTileEntity(info.tileEntityClazz, info.tileEntityName);
 					}
 				} else {
-					System.out.println("This is not a block (" + blockInfo.name + ")");
+					StevesCarts.logger.error("This is not a block (" + info.name + ")");
 				}
 			} catch (Exception e) {
-				System.out.println("Failed to create block (" + blockInfo.name + ")");
-				e.printStackTrace();
+				StevesCarts.logger.error("Failed to create block (" + info.name + ")");
+				StevesCarts.logger.throwing(e);
 			}
 		}
-		ModBlocks.STORAGE.block.setHardness(5.0f).setResistance(10.0f);
 	}
 
-	public static void addRecipes() {
-		final String blue = "dyeBlue";
-		final String orange = "dyeOrange";
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.CARGO_MANAGER.block, 1), new Object[][] {
-			{ ComponentTypes.LARGE_IRON_PANE.getItemStack(), ComponentTypes.HUGE_IRON_PANE.getItemStack(), ComponentTypes.LARGE_IRON_PANE.getItemStack() },
-			{ ComponentTypes.HUGE_IRON_PANE.getItemStack(), ComponentTypes.LARGE_DYNAMIC_PANE.getItemStack(), ComponentTypes.HUGE_IRON_PANE.getItemStack() },
-			{ ComponentTypes.LARGE_IRON_PANE.getItemStack(), ComponentTypes.HUGE_IRON_PANE.getItemStack(), ComponentTypes.LARGE_IRON_PANE.getItemStack() } });
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.MODULE_TOGGLER.block, 1), new Object[][] { { orange, Items.GOLD_INGOT, blue }, { Blocks.STONE, Items.IRON_INGOT, Blocks.STONE },
-			{ Items.REDSTONE, ComponentTypes.ADVANCED_PCB.getItemStack(), Items.REDSTONE } });
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.EXTERNAL_DISTRIBUTOR.block, 1), new Object[][] { { Blocks.STONE, ComponentTypes.SIMPLE_PCB.getItemStack(), Blocks.STONE },
-			{ ComponentTypes.SIMPLE_PCB.getItemStack(), Items.REDSTONE, ComponentTypes.SIMPLE_PCB.getItemStack() }, { Blocks.STONE, ComponentTypes.SIMPLE_PCB.getItemStack(), Blocks.STONE } });
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.CART_ASSEMBLER.block, 1), new Object[][] { { Items.IRON_INGOT, Blocks.STONE, Items.IRON_INGOT },
-			{ Blocks.STONE, Items.IRON_INGOT, Blocks.STONE }, { ComponentTypes.SIMPLE_PCB.getItemStack(), Blocks.STONE, ComponentTypes.SIMPLE_PCB.getItemStack() } });
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.JUNCTION.block, 1), new Object[][] { { null, Items.REDSTONE, null }, { Items.REDSTONE, Blocks.RAIL, Items.REDSTONE },
-			{ null, Items.REDSTONE, null } });
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.ADVANCED_DETECTOR.block, 2), new Object[][] { { Items.IRON_INGOT, Blocks.STONE_PRESSURE_PLATE, Items.IRON_INGOT },
-			{ Items.IRON_INGOT, Items.REDSTONE, Items.IRON_INGOT }, { Items.IRON_INGOT, Blocks.STONE_PRESSURE_PLATE, Items.IRON_INGOT } });
-		@Nonnull
-		ItemStack unit = new ItemStack(ModBlocks.DETECTOR_UNIT.block, 1, 1);
-		RecipeHelper.addRecipe(unit, new Object[][] { { Blocks.COBBLESTONE, Blocks.STONE_PRESSURE_PLATE, Blocks.COBBLESTONE },
-			{ Items.IRON_INGOT, ComponentTypes.SIMPLE_PCB.getItemStack(), Items.IRON_INGOT }, { Blocks.COBBLESTONE, Items.REDSTONE, Blocks.COBBLESTONE } });
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.DETECTOR_UNIT.block, 1, 0), new Object[][] { { ComponentTypes.SIMPLE_PCB.getItemStack() }, { unit } });
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.DETECTOR_UNIT.block, 1, 2), new Object[][] { { Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT }, { null, unit, null },
-			{ null, ComponentTypes.SIMPLE_PCB.getItemStack(), null } });
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.DETECTOR_UNIT.block, 1, 3), new Object[][] { { Blocks.REDSTONE_TORCH, null, Blocks.REDSTONE_TORCH }, { Items.REDSTONE, unit, Items.REDSTONE },
-			{ null, ComponentTypes.SIMPLE_PCB.getItemStack(), null } });
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.DETECTOR_UNIT.block, 1, 4), new Object[][] { { Items.REDSTONE, Items.REDSTONE, Items.REDSTONE }, { Items.REDSTONE, unit, Items.REDSTONE },
-			{ Items.REDSTONE, Items.REDSTONE, Items.REDSTONE } });
-		@Nonnull
-		ItemStack advtank = new ItemStack(ModItems.modules, 1, 66);
-		RecipeHelper.addRecipe(new ItemStack(ModBlocks.LIQUID_MANAGER.block, 1), new Object[][] { { advtank, Items.IRON_INGOT, advtank },
-			{ Items.IRON_INGOT, ComponentTypes.TANK_VALVE, Items.IRON_INGOT }, { advtank, Items.IRON_INGOT, advtank } });
+	@SubscribeEvent
+	public static void registerBlocks(final RegistryEvent.Register<Block> event) {
+		final IForgeRegistry<Block> registry = event.getRegistry();
+		for (final ModBlocks info: values())
+			registry.register(info.block);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public static void registerBlockRenderers(ModelRegistryEvent event) {
+		for (final ModBlocks info: values()) {
+			Block block = info.block;
+			if (block instanceof IStateMappedBlock) {
+				StateMap.Builder builder = new StateMap.Builder();
+				((IStateMappedBlock) block).setStateMapper(builder);
+				ModelLoader.setCustomStateMapper(block, builder.build());
+			}
+			if (block instanceof ICustomItemBlock) {
+				ICustomItemBlock customItemBlock = (ICustomItemBlock) block;
+				ItemStack renderedItem = customItemBlock.getRenderedItem();
+				if (!renderedItem.isEmpty()) {
+					Map<Integer, ResourceLocation> map = StevesCarts.proxy.getItemModelMap(renderedItem.getItem());
+					ModelResourceLocation model = (ModelResourceLocation) map.get(renderedItem.getMetadata());
+					ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, model);
+					continue;
+				}
+			}
+			ResourceLocation name = block.getRegistryName();
+			if (block instanceof ISubtypeItemBlockModelDefinition) {
+				ISubtypeItemBlockModelDefinition subtypeBlock = (ISubtypeItemBlockModelDefinition) block;
+				for (int i = 0; i < subtypeBlock.getSubtypeNumber(); i++) {
+					int meta = subtypeBlock.getSubtypeMeta(i);
+					ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(name.getResourceDomain() + ":" + String.format(subtypeBlock.getSubtypeName(meta), name.getResourcePath()), "inventory"));
+				}
+			} else {
+				ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(name, "inventory"));
+			}
+		}
 	}
 
 	public Block getBlock() {
 		return block;
+	}
+
+	public interface ISubtypeItemBlockModelDefinition {
+		/**
+		 * Returns the amount of subtypes
+		 *
+		 * @return
+		 */
+		int getSubtypeNumber();
+
+		/**
+		 * Returns the name of this subtype.
+		 * String is formatted, use %s for the normal registry name.
+		 *
+		 * @param meta
+		 * @return
+		 */
+		String getSubtypeName(int meta);
+
+		/**
+		 * Returns the metadata for the specified subtype
+		 *
+		 * @param subtype
+		 * @return
+		 */
+		default int getSubtypeMeta(int subtype) {
+			return subtype;
+		}
+	}
+
+	public interface IStateMappedBlock {
+		@SideOnly(Side.CLIENT)
+		void setStateMapper(StateMap.Builder builder);
+	}
+
+	public interface ICustomItemBlock {
+		ItemBlock getItemBlock();
+
+		/**
+		 * Returns which item this block should be rendered as
+		 * @return
+		 */
+		@SideOnly(Side.CLIENT)
+		default ItemStack getRenderedItem() {
+			return ItemStack.EMPTY;
+		}
 	}
 }

@@ -1,10 +1,10 @@
 package vswe.stevescarts.renders;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagByteArray;
 import net.minecraft.nbt.NBTTagCompound;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.items.ModItems;
 import vswe.stevescarts.models.ModelCartbase;
 import vswe.stevescarts.modules.data.ModuleData;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class ItemStackRenderer extends TileEntityItemStackRenderer {
 
-	TileEntityItemStackRenderer renderer;
+	private TileEntityItemStackRenderer renderer;
 
 	public ItemStackRenderer(TileEntityItemStackRenderer renderer) {
 		this.renderer = renderer;
@@ -21,17 +21,12 @@ public class ItemStackRenderer extends TileEntityItemStackRenderer {
 
 	@Override
 	public void renderByItem(ItemStack itemStack) {
-		if (itemStack.getItem() != ModItems.carts) {
+		if (itemStack.getItem() != ModItems.CARTS) {
 			renderer.renderByItem(itemStack);
 			return;
 		}
-		//		if (type == IItemRenderer.ItemRenderType.EQUIPPED) {
-		//			GL11.glTranslatef(0.0f, -1.0f, 1.0f);
-		//		} else if (type == IItemRenderer.ItemRenderType.INVENTORY) {
-		//			GL11.glTranslatef(0.0f, 0.1f, 0.0f);
-		//		}
-		GL11.glPushMatrix();
-		GL11.glScalef(-1.0f, -1.0f, 1.0f);
+		GlStateManager.pushMatrix();
+		GlStateManager.scale(-1.0f, -1.0f, 1.0f);
 		final NBTTagCompound info = itemStack.getTagCompound();
 		if (info != null) {
 			final NBTTagByteArray moduleIDTag = (NBTTagByteArray) info.getTag("Modules");
@@ -55,13 +50,13 @@ public class ItemStackRenderer extends TileEntityItemStackRenderer {
 					}
 				}
 			}
-			GL11.glRotated(90D, 0D, 1, 0);
-			GL11.glTranslated(-1, -0.75, 0);
-			GL11.glScalef(lowestMult, lowestMult, lowestMult);
+			GlStateManager.rotate(90F, 0F, 1, 0);
+			GlStateManager.translate(-1, -0.75, 0);
+			GlStateManager.scale(lowestMult, lowestMult, lowestMult);
 			for (final ModelCartbase model : models.values()) {
 				model.render(null, null, 0.0f, 0.0f, 0.0f, 0.0625f, 0.0f);
 			}
 		}
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

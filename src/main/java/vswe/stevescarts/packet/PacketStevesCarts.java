@@ -2,15 +2,17 @@ package vswe.stevescarts.packet;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
+import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,97 +36,103 @@ import java.io.IOException;
  */
 public class PacketStevesCarts implements INetworkPacket<PacketStevesCarts> {
 
-	int id;
-	byte[] bytes;
+	private byte[] bytes;
 
-	public PacketStevesCarts(int id, byte[] bytes) {
-		this.id = id;
+	public PacketStevesCarts(byte[] bytes) {
 		this.bytes = bytes;
 	}
 
-	public PacketStevesCarts() {
-	}
+	public PacketStevesCarts() {}
 
 	@Override
-	public void writeData(ExtendedPacketBuffer buffer) throws IOException {
-		buffer.writeInt(id);
+	public void writeData(ExtendedPacketBuffer buffer) {
 		buffer.writeByteArray(bytes);
 	}
 
 	@Override
-	public void readData(ExtendedPacketBuffer buffer) throws IOException {
-		id = buffer.readInt();
+	public void readData(ExtendedPacketBuffer buffer) {
 		bytes = buffer.readByteArray();
 	}
 
 	@Override
 	public void processData(PacketStevesCarts message, MessageContext context) {
 		if (context.side == Side.CLIENT) {
-			processDataClient(message, context);
+			FMLClientHandler.instance().getClient().addScheduledTask(() -> processDataClient(message, context));
 		} else { //Server
-			EntityPlayer player = context.getServerHandler().player;
-			final ByteArrayDataInput reader = ByteStreams.newDataInput(message.bytes);
-			int id = reader.readByte();
-			if (player.openContainer instanceof ContainerPlayer) {
-				final int entityid = reader.readInt();
-				final int len = bytes.length - 5;
-				final byte[] data = new byte[len];
-				for (int i = 0; i < len; ++i) {
-					data[i] = reader.readByte();
-				}
-				final EntityMinecartModular cart = getCart(entityid, context.getServerHandler().player.world);
-				if (cart != null) {
-					receivePacketAtCart(cart, id, data, player);
-				}
-			} else {
-				final int len2 = bytes.length - 1;
-				final byte[] data2 = new byte[len2];
-				for (int j = 0; j < len2; ++j) {
-					data2[j] = reader.readByte();
-				}
-				final Container con = player.openContainer;
-				if (con instanceof ContainerMinecart) {
-					final ContainerMinecart conMC = (ContainerMinecart) con;
-					final EntityMinecartModular cart2 = conMC.cart;
-					receivePacketAtCart(cart2, id, data2, player);
-				} else if (con instanceof ContainerBase) {
-					final ContainerBase conBase = (ContainerBase) con;
-					final TileEntityBase base = conBase.getTileEntity();
-					if (base != null) {
-						base.receivePacket(id, data2, player);
-					}
-				}
-			}
+			FMLCommonHandler.instance().getMinecraftServerInstance().callFromMainThread(() -> processDataServer(message, context));
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
-	public void processDataClient(PacketStevesCarts message, MessageContext context) {
-		EntityPlayer player = Minecraft.getMinecraft().player;
+	private boolean processDataServer(PacketStevesCarts message, MessageContext context) {
+		EntityPlayer player = context.getServerHandler().player;
+		World world = player.world;
 		final ByteArrayDataInput reader = ByteStreams.newDataInput(message.bytes);
+		int id = reader.readByte();
+
+		if (player.openContainer instanceof ContainerPlayer) {
+			final int entityid = reader.readInt();
+			final int len = bytes.length - 5;
+			final byte[] data = new byte[len];
+			for (int i = 0; i < len; ++i) {
+				data[i] = reader.readByte();
+			}
+			final EntityMinecartModular cart = getCart(entityid, world);
+			if (cart != null) {
+				receivePacketAtCart(cart, id, data, player);
+			}
+		} else {
+			final int len = bytes.length - 1;
+			final byte[] data2 = new byte[len];
+			for (int j = 0; j < len; ++j) {
+				data2[j] = reader.readByte();
+			}
+
+			final Container con = player.openContainer;
+
+			if (con instanceof ContainerMinecart) {
+				final ContainerMinecart conMC = (ContainerMinecart) con;
+				final EntityMinecartModular cart2 = conMC.cart;
+
+				receivePacketAtCart(cart2, id, data2, player);
+			} else if (con instanceof ContainerBase) {
+				final ContainerBase conBase = (ContainerBase) con;
+				final TileEntityBase base = conBase.getTileEntity();
+				if (base != null) {
+					base.receivePacket(id, data2, player);
+				}
+			}
+		}
+		return true;
+	}
+
+	@SideOnly(Side.CLIENT)
+	private void processDataClient(PacketStevesCarts message, MessageContext context) {
+		EntityPlayer player = FMLClientHandler.instance().getClient().player;
+		final ByteArrayDataInput reader = ByteStreams.newDataInput(message.bytes);
+		final World world = player.world;
 		int id = reader.readByte();
 		if (id == -1) {
 			final int x = reader.readInt();
 			final int y = reader.readInt();
 			final int z = reader.readInt();
+
 			final int len = bytes.length - 13;
 			final byte[] data = new byte[len];
 			for (int i = 0; i < len; ++i) {
 				data[i] = reader.readByte();
 			}
-			final World world = player.world;
+
 			((BlockCartAssembler) ModBlocks.CART_ASSEMBLER.getBlock()).updateMultiBlock(world, new BlockPos(x, y, z));
 		} else {
 			final int entityid = reader.readInt();
-			final int len2 = bytes.length - 5;
-			final byte[] data2 = new byte[len2];
-			for (int j = 0; j < len2; ++j) {
-				data2[j] = reader.readByte();
+			final int len = bytes.length - 5;
+			final byte[] data = new byte[len];
+			for (int j = 0; j < len; ++j) {
+				data[j] = reader.readByte();
 			}
-			final World world2 = player.world;
-			final EntityMinecartModular cart = getCart(entityid, world2);
+			final EntityMinecartModular cart = getCart(entityid, world);
 			if (cart != null) {
-				receivePacketAtCart(cart, id, data2, player);
+				receivePacketAtCart(cart, id, data, player);
 			}
 		}
 	}
@@ -156,7 +164,7 @@ public class PacketStevesCarts implements INetworkPacket<PacketStevesCarts> {
 				ds.writeByte(b);
 			}
 		} catch (IOException ex) {}
-		NetworkManager.sendToServer(new PacketStevesCarts(id, bs.toByteArray()));
+		NetworkManager.sendToServer(new PacketStevesCarts(bs.toByteArray()));
 	}
 
 	public static void sendPacket(final EntityMinecartModular cart, final int id, final byte[] extraData) {
@@ -169,7 +177,7 @@ public class PacketStevesCarts implements INetworkPacket<PacketStevesCarts> {
 				ds.writeByte(b);
 			}
 		} catch (IOException ex) {}
-		NetworkManager.sendToServer(new PacketStevesCarts(id, bs.toByteArray()));
+		NetworkManager.sendToServer(new PacketStevesCarts(bs.toByteArray()));
 	}
 
 	public static void sendPacketToPlayer(final int id, final byte[] data, final EntityPlayer player, final EntityMinecartModular cart) {
@@ -182,7 +190,7 @@ public class PacketStevesCarts implements INetworkPacket<PacketStevesCarts> {
 				ds.writeByte(b);
 			}
 		} catch (IOException ex) {}
-		NetworkManager.sendToPlayer(new PacketStevesCarts(id, bs.toByteArray()), (EntityPlayerMP) player);
+		NetworkManager.sendToPlayer(new PacketStevesCarts(bs.toByteArray()), (EntityPlayerMP) player);
 	}
 
 	public static void sendBlockInfoToClients(final World world, final byte[] data, final BlockPos pos) {
@@ -197,6 +205,29 @@ public class PacketStevesCarts implements INetworkPacket<PacketStevesCarts> {
 				ds.writeByte(b);
 			}
 		} catch (IOException ex) {}
-		NetworkManager.sendToAllAround(new PacketStevesCarts(-1, bs.toByteArray()), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 64.0));
+		sendToAllAround(new PacketStevesCarts(bs.toByteArray()), pos, world);
+	}
+
+	// see https://github.com/MinecraftForge/MinecraftForge/issues/3677
+	private static void sendToAllAround(INetworkPacket packet, BlockPos pos, World world) {
+		if (!(world instanceof WorldServer)) {
+			return;
+		}
+
+		WorldServer worldServer = (WorldServer) world;
+		PlayerChunkMap playerManager = worldServer.getPlayerChunkMap();
+
+		int chunkX = pos.getX() >> 4;
+		int chunkZ = pos.getZ() >> 4;
+
+		for (Object playerObj : world.playerEntities) {
+			if (playerObj instanceof EntityPlayerMP) {
+				EntityPlayerMP player = (EntityPlayerMP) playerObj;
+
+				if (playerManager.isPlayerWatchingChunk(player, chunkX, chunkZ)) {
+					NetworkManager.sendToPlayer(packet, player);
+				}
+			}
+		}
 	}
 }

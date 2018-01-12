@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 64
+    }
+  ],
+  "pattern": [
+    "#X#",
+    "LCL",
+    "#X#"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 61
+    },
+    "L": {
+      "item": "stevescarts:modulecomponents",
+      "data": 62
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 63
+    },
+    "C": {
+      "item": "stevescarts:modulecomponents",
+      "data": 60
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 64
+  }
+}

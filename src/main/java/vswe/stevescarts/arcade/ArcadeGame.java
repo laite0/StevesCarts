@@ -3,9 +3,10 @@ package vswe.stevescarts.arcade;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import vswe.stevescarts.StevesCarts;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.guis.GuiMinecart;
 import vswe.stevescarts.handlers.SoundHandler;
 import vswe.stevescarts.helpers.Localization;
@@ -30,7 +31,7 @@ public abstract class ArcadeGame {
 
 	@SideOnly(Side.CLIENT)
 	public void update() {
-		if (StevesCarts.instance.useArcadeSounds) {
+		if (SCConfig.useArcadeSounds) {
 			getModule().getCart().silent();
 		}
 	}
@@ -79,16 +80,9 @@ public abstract class ArcadeGame {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static void playSound(final String sound, final float volume, final float pitch) {
-		if (StevesCarts.instance.useArcadeSounds && sound != null) {
+	public static void playSound(SoundEvent sound, float volume, float pitch) {
+		if (SCConfig.useArcadeSounds && sound != null) {
 			SoundHandler.playSound(sound, SoundCategory.BLOCKS, volume, pitch);
-		}
-	}
-
-	@SideOnly(Side.CLIENT)
-	public static void playDefaultSound(final String sound, final float volume, final float pitch) {
-		if (StevesCarts.instance.useArcadeSounds && sound != null) {
-			SoundHandler.playDefaultSound(sound, SoundCategory.BLOCKS, volume, pitch);
 		}
 	}
 

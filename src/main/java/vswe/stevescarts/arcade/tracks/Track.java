@@ -3,6 +3,7 @@ package vswe.stevescarts.arcade.tracks;
 import vswe.stevescarts.arcade.ArcadeGame;
 import vswe.stevescarts.guis.GuiBase;
 import vswe.stevescarts.guis.GuiMinecart;
+import vswe.stevescarts.handlers.SoundHandler;
 import vswe.stevescarts.modules.realtimers.ModuleArcade;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class Track {
 
 	public void flip() {
 		if (orientation.getOpposite() != null) {
-			ArcadeGame.playSound("gearswitch", 1.0f, 1.0f);
+			ArcadeGame.playSound(SoundHandler.GEAR_SWITCH, 1.0f, 1.0f);
 			setOrientation(orientation.getOpposite());
 		}
 	}

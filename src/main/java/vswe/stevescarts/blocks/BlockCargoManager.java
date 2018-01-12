@@ -2,9 +2,8 @@ package vswe.stevescarts.blocks;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -14,8 +13,6 @@ import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.tileentities.TileEntityCargo;
 
-import javax.annotation.Nonnull;
-
 public class BlockCargoManager extends BlockContainerBase {
 
 	public BlockCargoManager() {
@@ -24,38 +21,12 @@ public class BlockCargoManager extends BlockContainerBase {
 	}
 
 	@Override
-	public void breakBlock(World par1World, BlockPos pos, IBlockState state) {
-		final TileEntityCargo var7 = (TileEntityCargo) par1World.getTileEntity(pos);
-		if (var7 != null) {
-			for (int var8 = 0; var8 < var7.getSizeInventory(); ++var8) {
-				@Nonnull
-				ItemStack var9 = var7.getStackInSlot(var8);
-				if (!var9.isEmpty()) {
-					final float var10 = par1World.rand.nextFloat() * 0.8f + 0.1f;
-					final float var11 = par1World.rand.nextFloat() * 0.8f + 0.1f;
-					final float var12 = par1World.rand.nextFloat() * 0.8f + 0.1f;
-					while (var9.getCount() > 0) {
-						int var13 = par1World.rand.nextInt(21) + 10;
-						if (var13 > var9.getCount()) {
-							var13 = var9.getCount();
-						}
-						@Nonnull
-						ItemStack itemStack = var9;
-						itemStack.shrink(var13);
-						final EntityItem var14 = new EntityItem(par1World, pos.getX() + var10, pos.getY() + var11, pos.getZ() + var12, new ItemStack(var9.getItem(), var13, var9.getItemDamage()));
-						final float var15 = 0.05f;
-						var14.motionX = (float) par1World.rand.nextGaussian() * var15;
-						var14.motionY = (float) par1World.rand.nextGaussian() * var15 + 0.2f;
-						var14.motionZ = (float) par1World.rand.nextGaussian() * var15;
-						if (var9.hasTagCompound()) {
-							var14.getItem().setTagCompound(var9.getTagCompound().copy());
-						}
-						par1World.spawnEntity(var14);
-					}
-				}
-			}
+	public void breakBlock(World world, BlockPos pos, IBlockState state) {
+		final TileEntityCargo tile = (TileEntityCargo) world.getTileEntity(pos);
+		if (tile != null) {
+			InventoryHelper.dropInventoryItems(world, pos, tile);
 		}
-		super.breakBlock(par1World, pos, state);
+		super.breakBlock(world, pos, state);
 	}
 
 	@Override

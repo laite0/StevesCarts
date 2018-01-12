@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 12
+    }
+  ],
+  "pattern": [
+    " R ",
+    "X#X",
+    " P "
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:brick_block"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 12
+  }
+}

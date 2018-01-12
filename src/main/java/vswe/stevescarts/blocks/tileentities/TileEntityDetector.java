@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import vswe.stevescarts.blocks.BlockDetector;
 import vswe.stevescarts.blocks.ModBlocks;
 import vswe.stevescarts.containers.ContainerBase;
 import vswe.stevescarts.containers.ContainerDetector;
@@ -93,7 +94,7 @@ public class TileEntityDetector extends TileEntityBase {
 			Block block = blockState.getBlock();
 			if (block == ModBlocks.DETECTOR_UNIT.getBlock()) {
 				DetectorType.getTypeFromSate(blockState).deactivate(this);
-				world.setBlockState(pos, blockState.withProperty(DetectorType.POWERED, false), 3);
+				world.setBlockState(pos, blockState.withProperty(BlockDetector.POWERED, false), 3);
 			}
 		}
 	}
@@ -252,7 +253,7 @@ public class TileEntityDetector extends TileEntityBase {
 	public void handleCart(final EntityMinecartModular cart) {
 		final boolean truthValue = evaluate(cart, 0);
 		IBlockState blockState = world.getBlockState(pos);
-		boolean isOn = blockState.getValue(DetectorType.POWERED);
+		boolean isOn = blockState.getValue(BlockDetector.POWERED);
 		boolean power = false;
 		if (truthValue) {
 			DetectorType.getTypeFromSate(blockState).activate(this, cart);
@@ -262,7 +263,7 @@ public class TileEntityDetector extends TileEntityBase {
 			power &= false;
 		}
 		if (power != isOn) {
-			world.setBlockState(pos, blockState.withProperty(DetectorType.POWERED, power), 3);
+			world.setBlockState(pos, blockState.withProperty(BlockDetector.POWERED, power), 3);
 		}
 
 		if (truthValue) {
@@ -281,6 +282,6 @@ public class TileEntityDetector extends TileEntityBase {
 	}
 
 	public DetectorType getType() {
-		return world.getBlockState(pos).getValue(DetectorType.SATE);
+		return world.getBlockState(pos).getValue(BlockDetector.SATE);
 	}
 }

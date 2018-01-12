@@ -56,32 +56,32 @@ public class DistributorSetting {
 	static {
 		(DistributorSetting.settings = new ArrayList<>()).add(new DistributorSetting(0, true, Localization.GUI.DISTRIBUTOR.SETTING_ALL));
 		DistributorSetting.settings.add(new DistributorSetting(1, false, Localization.GUI.DISTRIBUTOR.SETTING_ALL));
-		DistributorSetting.settings.add(new distributorSettingColor(2, true, Localization.GUI.DISTRIBUTOR.SETTING_RED, 1));
-		DistributorSetting.settings.add(new distributorSettingColor(3, false, Localization.GUI.DISTRIBUTOR.SETTING_RED, 1));
-		DistributorSetting.settings.add(new distributorSettingColor(4, true, Localization.GUI.DISTRIBUTOR.SETTING_BLUE, 2));
-		DistributorSetting.settings.add(new distributorSettingColor(5, false, Localization.GUI.DISTRIBUTOR.SETTING_BLUE, 2));
-		DistributorSetting.settings.add(new distributorSettingColor(6, true, Localization.GUI.DISTRIBUTOR.SETTING_YELLOW, 3));
-		DistributorSetting.settings.add(new distributorSettingColor(7, false, Localization.GUI.DISTRIBUTOR.SETTING_YELLOW, 3));
-		DistributorSetting.settings.add(new distributorSettingColor(8, true, Localization.GUI.DISTRIBUTOR.SETTING_GREEN, 4));
-		DistributorSetting.settings.add(new distributorSettingColor(9, false, Localization.GUI.DISTRIBUTOR.SETTING_GREEN, 4));
-		DistributorSetting.settings.add(new distributorSettingChunk(10, true, Localization.GUI.DISTRIBUTOR.SETTING_TOP_LEFT, 0));
-		DistributorSetting.settings.add(new distributorSettingChunk(11, false, Localization.GUI.DISTRIBUTOR.SETTING_TOP_LEFT, 0));
-		DistributorSetting.settings.add(new distributorSettingChunk(12, true, Localization.GUI.DISTRIBUTOR.SETTING_TOP_RIGHT, 1));
-		DistributorSetting.settings.add(new distributorSettingChunk(13, false, Localization.GUI.DISTRIBUTOR.SETTING_TOP_RIGHT, 1));
-		DistributorSetting.settings.add(new distributorSettingChunk(14, true, Localization.GUI.DISTRIBUTOR.SETTING_BOTTOM_LEFT, 2));
-		DistributorSetting.settings.add(new distributorSettingChunk(15, false, Localization.GUI.DISTRIBUTOR.SETTING_BOTTOM_LEFT, 2));
-		DistributorSetting.settings.add(new distributorSettingChunk(16, true, Localization.GUI.DISTRIBUTOR.SETTING_BOTTOM_RIGHT, 3));
-		DistributorSetting.settings.add(new distributorSettingChunk(17, false, Localization.GUI.DISTRIBUTOR.SETTING_BOTTOM_RIGHT, 3));
-		DistributorSetting.settings.add(new distributorSettingDirection(18, true, Localization.GUI.DISTRIBUTOR.SETTING_TO_CART, true));
-		DistributorSetting.settings.add(new distributorSettingDirection(19, false, Localization.GUI.DISTRIBUTOR.SETTING_TO_CART, true));
-		DistributorSetting.settings.add(new distributorSettingDirection(20, true, Localization.GUI.DISTRIBUTOR.SETTING_FROM_CART, false));
-		DistributorSetting.settings.add(new distributorSettingDirection(21, false, Localization.GUI.DISTRIBUTOR.SETTING_FROM_CART, false));
+		DistributorSetting.settings.add(new DistributorSettingColor(2, true, Localization.GUI.DISTRIBUTOR.SETTING_RED, 1));
+		DistributorSetting.settings.add(new DistributorSettingColor(3, false, Localization.GUI.DISTRIBUTOR.SETTING_RED, 1));
+		DistributorSetting.settings.add(new DistributorSettingColor(4, true, Localization.GUI.DISTRIBUTOR.SETTING_BLUE, 2));
+		DistributorSetting.settings.add(new DistributorSettingColor(5, false, Localization.GUI.DISTRIBUTOR.SETTING_BLUE, 2));
+		DistributorSetting.settings.add(new DistributorSettingColor(6, true, Localization.GUI.DISTRIBUTOR.SETTING_YELLOW, 3));
+		DistributorSetting.settings.add(new DistributorSettingColor(7, false, Localization.GUI.DISTRIBUTOR.SETTING_YELLOW, 3));
+		DistributorSetting.settings.add(new DistributorSettingColor(8, true, Localization.GUI.DISTRIBUTOR.SETTING_GREEN, 4));
+		DistributorSetting.settings.add(new DistributorSettingColor(9, false, Localization.GUI.DISTRIBUTOR.SETTING_GREEN, 4));
+		DistributorSetting.settings.add(new DistributorSettingChunk(10, true, Localization.GUI.DISTRIBUTOR.SETTING_TOP_LEFT, 0));
+		DistributorSetting.settings.add(new DistributorSettingChunk(11, false, Localization.GUI.DISTRIBUTOR.SETTING_TOP_LEFT, 0));
+		DistributorSetting.settings.add(new DistributorSettingChunk(12, true, Localization.GUI.DISTRIBUTOR.SETTING_TOP_RIGHT, 1));
+		DistributorSetting.settings.add(new DistributorSettingChunk(13, false, Localization.GUI.DISTRIBUTOR.SETTING_TOP_RIGHT, 1));
+		DistributorSetting.settings.add(new DistributorSettingChunk(14, true, Localization.GUI.DISTRIBUTOR.SETTING_BOTTOM_LEFT, 2));
+		DistributorSetting.settings.add(new DistributorSettingChunk(15, false, Localization.GUI.DISTRIBUTOR.SETTING_BOTTOM_LEFT, 2));
+		DistributorSetting.settings.add(new DistributorSettingChunk(16, true, Localization.GUI.DISTRIBUTOR.SETTING_BOTTOM_RIGHT, 3));
+		DistributorSetting.settings.add(new DistributorSettingChunk(17, false, Localization.GUI.DISTRIBUTOR.SETTING_BOTTOM_RIGHT, 3));
+		DistributorSetting.settings.add(new DistributorSettingDirection(18, true, Localization.GUI.DISTRIBUTOR.SETTING_TO_CART, true));
+		DistributorSetting.settings.add(new DistributorSettingDirection(19, false, Localization.GUI.DISTRIBUTOR.SETTING_TO_CART, true));
+		DistributorSetting.settings.add(new DistributorSettingDirection(20, true, Localization.GUI.DISTRIBUTOR.SETTING_FROM_CART, false));
+		DistributorSetting.settings.add(new DistributorSettingDirection(21, false, Localization.GUI.DISTRIBUTOR.SETTING_FROM_CART, false));
 	}
 
-	private static class distributorSettingColor extends DistributorSetting {
+	private static class DistributorSettingColor extends DistributorSetting {
 		private int color;
 
-		public distributorSettingColor(final int id, final boolean top, final Localization.GUI.DISTRIBUTOR name, final int color) {
+		public DistributorSettingColor(final int id, final boolean top, final Localization.GUI.DISTRIBUTOR name, final int color) {
 			super(id, top, name);
 			this.color = color;
 		}
@@ -95,10 +95,10 @@ public class DistributorSetting {
 		}
 	}
 
-	private static class distributorSettingChunk extends DistributorSetting {
+	private static class DistributorSettingChunk extends DistributorSetting {
 		private int chunk;
 
-		public distributorSettingChunk(final int id, final boolean top, final Localization.GUI.DISTRIBUTOR name, final int chunk) {
+		public DistributorSettingChunk(final int id, final boolean top, final Localization.GUI.DISTRIBUTOR name, final int chunk) {
 			super(id, top, name);
 			this.chunk = chunk;
 		}
@@ -112,10 +112,10 @@ public class DistributorSetting {
 		}
 	}
 
-	private static class distributorSettingDirection extends DistributorSetting {
+	private static class DistributorSettingDirection extends DistributorSetting {
 		private boolean toCart;
 
-		public distributorSettingDirection(final int id, final boolean top, final Localization.GUI.DISTRIBUTOR name, final boolean toCart) {
+		public DistributorSettingDirection(final int id, final boolean top, final Localization.GUI.DISTRIBUTOR name, final boolean toCart) {
 			super(id, top, name);
 			this.toCart = toCart;
 		}

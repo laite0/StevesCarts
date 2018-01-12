@@ -16,26 +16,21 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.tileentities.TileEntityUpgrade;
-import vswe.stevescarts.renders.model.ItemModelManager;
-import vswe.stevescarts.renders.model.TexturedItem;
 import vswe.stevescarts.upgrades.AssemblerUpgrade;
 import vswe.stevescarts.upgrades.BaseEffect;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class ItemUpgrade extends ItemBlock implements TexturedItem {
+public class ItemUpgrade extends ItemBlock {
 	public ItemUpgrade(final Block block) {
 		super(block);
 		setHasSubtypes(true);
 		setMaxDamage(0);
 		setCreativeTab(StevesCarts.tabsSC2Blocks);
-		ItemModelManager.registerItem(this);
 	}
 
-	public String getName(
-		@Nonnull
-			ItemStack item) {
+	public String getName(@Nonnull ItemStack item) {
 		final AssemblerUpgrade upgrade = AssemblerUpgrade.getUpgrade(item.getItemDamage());
 		if (upgrade != null) {
 			return upgrade.getName();
@@ -56,14 +51,14 @@ public class ItemUpgrade extends ItemBlock implements TexturedItem {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(final CreativeTabs par2CreativeTabs, final NonNullList<ItemStack> par3List) {
-		if (!isInCreativeTab(par2CreativeTabs)) {
+	public void getSubItems(final CreativeTabs tab, final NonNullList<ItemStack> stacks) {
+		if (!isInCreativeTab(tab)) {
 			return;
 		}
 		for (final AssemblerUpgrade upgrade : AssemblerUpgrade.getUpgradesList()) {
 			@Nonnull
 			ItemStack iStack = new ItemStack(this, 1, upgrade.getId());
-			par3List.add(iStack);
+			stacks.add(iStack);
 		}
 	}
 
@@ -82,31 +77,12 @@ public class ItemUpgrade extends ItemBlock implements TexturedItem {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(
-		@Nonnull
-			ItemStack par1ItemStack, final World world, final List par3List, final ITooltipFlag par4) {
+	public void addInformation(@Nonnull ItemStack par1ItemStack, final World world, final List<String> tooltip, final ITooltipFlag flag) {
 		final AssemblerUpgrade upgrade = AssemblerUpgrade.getUpgrade(par1ItemStack.getItemDamage());
 		if (upgrade != null) {
 			for (final BaseEffect effect : upgrade.getEffects()) {
-				par3List.add(effect.getName());
+				tooltip.add(effect.getName());
 			}
 		}
-	}
-
-	@Override
-	public String getTextureName(int damage) {
-		AssemblerUpgrade data = AssemblerUpgrade.getUpgrade(damage);
-		if (data != null) {
-			if (data.getIcon() == null) {
-				data.setIcon("stevescarts:blocks/" + data.getRawName().toLowerCase() + "_icon");
-			}
-			return data.getIcon();
-		}
-		return "stevescarts:items/unknown_icon";
-	}
-
-	@Override
-	public int getMaxMeta() {
-		return AssemblerUpgrade.getUpgradesList().size();
 	}
 }

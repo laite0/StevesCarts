@@ -151,21 +151,21 @@ public class OperatorObject {
 			if (this.x == 0 && this.y == 0 && this.z == 0) {
 				return detector.getWorld().isBlockPowered(new BlockPos(x, y, z));
 			}
-			int direction; //TODO EnumFacing
+			EnumFacing facing;
 			if (this.y > 0) {
-				direction = 0;
+				facing = EnumFacing.DOWN;
 			} else if (this.y < 0) {
-				direction = 1;
+				facing = EnumFacing.UP;
 			} else if (this.x > 0) {
-				direction = 4;
+				facing = EnumFacing.WEST;
 			} else if (this.x < 0) {
-				direction = 5;
+				facing = EnumFacing.EAST;
 			} else if (this.z > 0) {
-				direction = 2;
+				facing = EnumFacing.NORTH;
 			} else {
-				direction = 3;
+				facing = EnumFacing.SOUTH;
 			}
-			return detector.getWorld().getRedstonePower(new BlockPos(x, y, z), EnumFacing.getFront(direction)) > 0;
+			return detector.getWorld().getRedstonePower(new BlockPos(x, y, z), facing) > 0;
 		}
 	}
 }

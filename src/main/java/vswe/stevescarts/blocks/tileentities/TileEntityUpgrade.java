@@ -445,7 +445,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	}
 
 	@Override
-	public void clearInputContainer(final int tankid) {
+	public void setInputContainer(final int tankid, ItemStack stack) {
 		setInventorySlotContents(0, ItemStack.EMPTY);
 	}
 

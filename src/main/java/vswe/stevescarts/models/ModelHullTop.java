@@ -1,11 +1,11 @@
 package vswe.stevescarts.models;
 
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.modules.ModuleBase;
 
 @SideOnly(Side.CLIENT)
@@ -41,9 +41,9 @@ public class ModelHullTop extends ModelCartbase {
 	public void render(final Render render, final ModuleBase module, final float yaw, final float pitch, final float roll, final float mult, final float partialtime) {
 		if (useColors && module != null) {
 			final float[] color = module.getCart().getColor();
-			GL11.glColor4f(color[0], color[1], color[2], 1.0f);
+			GlStateManager.color(color[0], color[1], color[2], 1.0f);
 		}
 		super.render(render, module, yaw, pitch, roll, mult, partialtime);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 }

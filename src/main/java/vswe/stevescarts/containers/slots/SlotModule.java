@@ -16,6 +16,6 @@ public class SlotModule extends Slot {
 	public boolean isItemValid(
 		@Nonnull
 			ItemStack itemstack) {
-		return itemstack.getItem() == ModItems.modules;
+		return itemstack.getItem() == ModItems.MODULES;
 	}
 }

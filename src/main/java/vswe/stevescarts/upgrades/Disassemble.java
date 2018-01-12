@@ -1,7 +1,5 @@
 package vswe.stevescarts.upgrades;
 
-import java.util.ArrayList;
-
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -118,7 +116,7 @@ public class Disassemble extends InventoryEffect {
 
 	private boolean updateCart(final TileEntityUpgrade upgrade, final ItemStack cart) {
 		if (upgrade.getMaster() != null) {
-			if (cart.isEmpty() || cart.getItem() != ModItems.carts || cart.getTagCompound() == null || cart.getTagCompound().hasKey("maxTime")) {
+			if (cart.isEmpty() || cart.getItem() != ModItems.CARTS || cart.getTagCompound() == null || cart.getTagCompound().hasKey("maxTime")) {
 				this.resetMaster(upgrade.getMaster(), false);
 				this.setLastCart(upgrade, ItemStack.EMPTY);
 				if (!cart.isEmpty()) {

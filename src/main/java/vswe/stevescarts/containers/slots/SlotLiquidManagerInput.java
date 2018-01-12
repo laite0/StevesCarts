@@ -1,6 +1,9 @@
 package vswe.stevescarts.containers.slots;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import reborncore.common.util.FluidUtils;
 import vswe.stevescarts.blocks.tileentities.TileEntityLiquid;
 import vswe.stevescarts.helpers.storages.SCTank;
@@ -18,19 +21,19 @@ public class SlotLiquidManagerInput extends SlotBase {
 	}
 
 	@Override
-	public boolean isItemValid(
-		@Nonnull
-			ItemStack itemstack) {
+	public boolean isItemValid(@Nonnull ItemStack itemstack) {
 		return isItemStackValid(itemstack, manager, tankid);
 	}
 
-	public static boolean isItemStackValid(
-		@Nonnull
-			ItemStack itemstack, final TileEntityLiquid manager, final int tankid) {
-		if (tankid < 0 || tankid >= 4) {
-			return FluidUtils.getFluidStackInContainer(itemstack) != null;
-		}
+	public static boolean isItemStackValid(@Nonnull ItemStack itemstack, final TileEntityLiquid manager, final int tankid) {
+		IFluidHandler handler = FluidUtils.getFluidHandler(itemstack);
+		if (handler == null) return false;
+		if (tankid < 0 || tankid >= 4) return true;
+
 		final SCTank tank = manager.getTanks()[tankid];
-		return (FluidUtils.getFluidStackInContainer(itemstack) != null && tank.getFluid() != null) || (FluidUtils.getFluidStackInContainer(itemstack) != null && (tank.getFluid() == null || tank.getFluid().isFluidEqual(FluidUtils.getFluidStackInContainer(itemstack))));
+
+		FluidStack fluidStack = handler.drain(Fluid.BUCKET_VOLUME, false);
+		return ((fluidStack == null || fluidStack.amount <= 0) && tank.getFluid() != null) ||
+				((fluidStack != null && fluidStack.amount > 0) && (tank.getFluid() == null || tank.getFluid().isFluidEqual(fluidStack)));
 	}
 }

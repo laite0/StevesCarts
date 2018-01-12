@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 72
+    }
+  },
+  "result": {
+    "item": "minecraft:planks",
+    "data": 0,
+    "count": 2
+  }
+}

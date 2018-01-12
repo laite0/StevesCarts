@@ -1,14 +1,14 @@
 package vswe.stevescarts.blocks;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -25,38 +25,36 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.tileentities.TileEntityUpgrade;
-import vswe.stevescarts.items.ModItems;
+import vswe.stevescarts.items.ItemUpgrade;
+import vswe.stevescarts.upgrades.AssemblerUpgrade;
 
-import javax.annotation.Nonnull;
-
-public class BlockUpgrade extends BlockContainerBase {
+public class BlockUpgrade extends BlockContainerBase implements ModBlocks.ICustomItemBlock, ModBlocks.ISubtypeItemBlockModelDefinition {
 
 	public static PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-	public static final PropertyInteger TYPE = PropertyInteger.create("type", 0, 20); //Set to number of upgrades
+	public static final PropertyInteger TYPE = PropertyInteger.create("type", 0, 19); //Set to number of upgrades
 
 	public BlockUpgrade() {
 		super(Material.ROCK);
 		setCreativeTab(StevesCarts.tabsSC2Blocks);
-		setDefaultState(
-			blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, 0));
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, 0));
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] { FACING, TYPE });
+		return new BlockStateContainer(this, FACING, TYPE);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return getSideFromEnum(state.getValue(FACING));
+		return getMetaFromEnum(state.getValue(FACING));
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(FACING, getSideFromint(meta));
+		return getDefaultState().withProperty(FACING, getSideFromMeta(meta));
 	}
 
-	public EnumFacing getSideFromint(int i) {
+	public EnumFacing getSideFromMeta(int i) {
 		if (i == 0) {
 			return EnumFacing.NORTH;
 		} else if (i == 1) {
@@ -69,7 +67,7 @@ public class BlockUpgrade extends BlockContainerBase {
 		return EnumFacing.NORTH;
 	}
 
-	public int getSideFromEnum(EnumFacing facing) {
+	public int getMetaFromEnum(EnumFacing facing) {
 		if (facing == EnumFacing.NORTH) {
 			return 0;
 		} else if (facing == EnumFacing.SOUTH) {
@@ -128,41 +126,12 @@ public class BlockUpgrade extends BlockContainerBase {
 		final TileEntity tile = world.getTileEntity(pos);
 		if (tile != null && tile instanceof TileEntityUpgrade) {
 			final TileEntityUpgrade upgrade = (TileEntityUpgrade) tile;
-			if (upgrade.getUpgrade() != null) {
+			if (upgrade.getUpgrade() != null)
 				upgrade.getUpgrade().removed(upgrade);
-			}
-			if (upgrade.getType() != 1) {
-				spawnAsEntity(world, pos, new ItemStack(ModItems.upgrades, 1, upgrade.getType()));
-			}
-			if (upgrade.hasInventory()) {
-				for (int var8 = 0; var8 < upgrade.getSizeInventory(); ++var8) {
-					@Nonnull
-					ItemStack var9 = upgrade.getStackInSlotOnClosing(var8);
-					if (!var9.isEmpty()) {
-						final float var10 = world.rand.nextFloat() * 0.8f + 0.1f;
-						final float var11 = world.rand.nextFloat() * 0.8f + 0.1f;
-						final float var12 = world.rand.nextFloat() * 0.8f + 0.1f;
-						while (var9.getCount() > 0) {
-							int var13 = world.rand.nextInt(21) + 10;
-							if (var13 > var9.getCount()) {
-								var13 = var9.getCount();
-							}
-							@Nonnull
-							ItemStack itemStack = var9;
-							itemStack.shrink(var13);
-							final EntityItem var14 = new EntityItem(world, pos.getX() + var10, pos.getY() + var11, pos.getZ() + var12, new ItemStack(var9.getItem(), var13, var9.getItemDamage()));
-							final float var15 = 0.05f;
-							var14.motionX = (float) world.rand.nextGaussian() * var15;
-							var14.motionY = (float) world.rand.nextGaussian() * var15 + 0.2f;
-							var14.motionZ = (float) world.rand.nextGaussian() * var15;
-							if (var9.hasTagCompound()) {
-								var14.getItem().setTagCompound(var9.getTagCompound().copy());
-							}
-							world.spawnEntity(var14);
-						}
-					}
-				}
-			}
+			if (upgrade.getType() != 1)
+				spawnAsEntity(world, pos, new ItemStack(this, 1, upgrade.getType()));
+			if (upgrade.hasInventory())
+				InventoryHelper.dropInventoryItems(world, pos, upgrade);
 		}
 		super.breakBlock(world, pos, state);
 		((BlockCartAssembler) ModBlocks.CART_ASSEMBLER.getBlock()).removeUpgrade(world, pos);
@@ -219,6 +188,7 @@ public class BlockUpgrade extends BlockContainerBase {
 		return FULL_BLOCK_AABB;
 	}
 
+	//TODO make idle model
 	public AxisAlignedBB getIdleBlockBounds() {
 		final float margin = 0.1875f;
 		final float width = 0.125f;
@@ -262,5 +232,27 @@ public class BlockUpgrade extends BlockContainerBase {
 			return new ItemStack(this, 1, upgrade.getType());
 		}
 		return super.getPickBlock(state, target, world, pos, player);
+	}
+
+	@Override
+	public ItemBlock getItemBlock() {
+		return new ItemUpgrade(this);
+	}
+
+	@Override
+	public int getSubtypeNumber() {
+		return AssemblerUpgrade.getUpgradesList().size();
+	}
+
+	@Override
+	public String getSubtypeName(int meta) {
+		AssemblerUpgrade data = AssemblerUpgrade.getUpgrade(meta);
+		if (data != null) {
+			if (data.getIcon() == null) {
+				data.setIcon("upgrade_" + data.getRawName().toLowerCase());
+			}
+			return data.getIcon();
+		}
+		return "unknown_icon";
 	}
 }

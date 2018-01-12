@@ -1,7 +1,7 @@
 package vswe.stevescarts.modules.workers.tools;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.helpers.Localization;
 
@@ -19,14 +19,12 @@ public class ModuleFarmerDiamond extends ModuleFarmer {
 
 	@Override
 	public String getRepairItemName() {
-		return Localization.MODULES.TOOLS.DIAMONDS.translate();
+		return SCConfig.diamondRepairName.isEmpty() ? Localization.MODULES.TOOLS.DIAMONDS.translate(): SCConfig.diamondRepairName;
 	}
 
 	@Override
-	public int getRepairItemUnits(
-		@Nonnull
-			ItemStack item) {
-		if (!item.isEmpty() && item.getItem() == Items.DIAMOND) {
+	public int getRepairItemUnits(@Nonnull ItemStack item) {
+		if (!item.isEmpty() && SCConfig.isValidRepairItem(item, "diamond")) {
 			return 150000;
 		}
 		return 0;

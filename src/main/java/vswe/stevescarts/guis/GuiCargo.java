@@ -1,6 +1,7 @@
 package vswe.stevescarts.guis;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -8,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.blocks.ModBlocks;
 import vswe.stevescarts.blocks.tileentities.TileEntityCargo;
 import vswe.stevescarts.containers.ContainerCargo;
@@ -22,7 +22,7 @@ public class GuiCargo extends GuiManager {
 	private static ResourceLocation[] texturesRight;
 
 	public GuiCargo(final InventoryPlayer invPlayer, final TileEntityCargo cargo) {
-		super(invPlayer, cargo, new ContainerCargo(invPlayer, cargo));
+		super(cargo, new ContainerCargo(invPlayer, cargo));
 		setXSize(305);
 		setYSize(222);
 	}
@@ -98,26 +98,17 @@ public class GuiCargo extends GuiManager {
 
 	@Override
 	protected void drawItems(final int id, final RenderItem renderitem, final int left, final int top) {
-		ItemStack cartIcon = null;
-		Label_0103:
-		{
-			if (getCargo().target[id] >= 0) {
-				final int n = getCargo().target[id];
-				getCargo();
-				if (n < TileEntityCargo.itemSelections.size()) {
-					getCargo();
-					if (!TileEntityCargo.itemSelections.get(getCargo().target[id]).getIcon().isEmpty()) {
-						cartIcon = TileEntityCargo.itemSelections.get(getCargo().target[id]).getIcon();
-						break Label_0103;
-					}
-				}
-			}
+		ItemStack cartIcon;
+		if (getCargo().target[id] < 0 || getCargo().target[id] >= TileEntityCargo.itemSelections.size() || TileEntityCargo.itemSelections.get(getCargo().target[id]).getIcon().isEmpty()) {
 			cartIcon = new ItemStack(Items.MINECART, 1);
+		} else {
+			cartIcon = TileEntityCargo.itemSelections.get(getCargo().target[id]).getIcon();
 		}
+
 		final int[] coords = getBoxCoords(id);
-		GL11.glDisable(2896);
+		RenderHelper.enableGUIStandardItemLighting();
 		renderitem.renderItemIntoGUI(cartIcon, left + coords[0], top + coords[1]);
-		GL11.glEnable(2896);
+		RenderHelper.disableStandardItemLighting();
 	}
 
 	@Override

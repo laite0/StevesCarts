@@ -1,10 +1,10 @@
 package vswe.stevescarts.guis;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.blocks.tileentities.TileEntityActivator;
 import vswe.stevescarts.containers.ContainerActivator;
 import vswe.stevescarts.helpers.ActivatorOption;
@@ -28,7 +28,7 @@ public class GuiActivator extends GuiBase {
 
 	@Override
 	public void drawGuiForeground(final int x, final int y) {
-		GL11.glDisable(2896);
+		GlStateManager.disableLighting();
 		getFontRenderer().drawString(Localization.GUI.TOGGLER.TITLE.translate(), 8, 6, 4210752);
 		for (int i = 0; i < activator.getOptions().size(); ++i) {
 			final ActivatorOption option = activator.getOptions().get(i);
@@ -40,7 +40,7 @@ public class GuiActivator extends GuiBase {
 			final int[] box = getBoxRect(i);
 			drawMouseMover(option.getInfo(), x, y, box);
 		}
-		GL11.glEnable(2896);
+		GlStateManager.enableLighting();
 	}
 
 	private void drawMouseMover(final String str, final int x, final int y, final int[] rect) {
@@ -51,7 +51,7 @@ public class GuiActivator extends GuiBase {
 
 	@Override
 	public void drawGuiBackground(final float f, int x, int y) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		final int j = getGuiLeft();
 		final int k = getGuiTop();
 		ResourceHelper.bindResource(GuiActivator.texture);

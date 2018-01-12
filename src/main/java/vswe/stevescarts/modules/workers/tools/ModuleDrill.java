@@ -206,9 +206,7 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 		return true;
 	}
 
-	protected boolean minedItem(World world,
-	                            @Nonnull
-		                            ItemStack iStack, BlockPos Coords) {
+	protected boolean minedItem(World world, @Nonnull ItemStack iStack, BlockPos Coords) {
 		if (iStack.isEmpty() || iStack.getCount() <= 0) {
 			return true;
 		}

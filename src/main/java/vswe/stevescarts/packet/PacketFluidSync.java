@@ -2,8 +2,10 @@ package vswe.stevescarts.packet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import reborncore.common.network.ExtendedPacketBuffer;
@@ -14,10 +16,10 @@ import java.io.IOException;
 
 public class PacketFluidSync implements INetworkPacket<PacketFluidSync> {
 
-	FluidStack fluidStack;
-	BlockPos pos;
-	int worldID;
-	int tankID;
+	private FluidStack fluidStack;
+	private BlockPos pos;
+	private int worldID;
+	private int tankID;
 
 	public PacketFluidSync(FluidStack fluidStack, BlockPos pos, int worldID, int tankID) {
 		this.fluidStack = fluidStack;
@@ -30,7 +32,7 @@ public class PacketFluidSync implements INetworkPacket<PacketFluidSync> {
 	}
 
 	@Override
-	public void writeData(ExtendedPacketBuffer buffer) throws IOException {
+	public void writeData(ExtendedPacketBuffer buffer) {
 		NBTTagCompound compound = new NBTTagCompound();
 		fluidStack.writeToNBT(compound);
 		buffer.writeCompoundTag(compound);
@@ -50,9 +52,13 @@ public class PacketFluidSync implements INetworkPacket<PacketFluidSync> {
 	@Override
 	public void processData(PacketFluidSync message, MessageContext context) {
 		if(context.side == Side.CLIENT){
-			TileEntity tile = Minecraft.getMinecraft().world.getTileEntity(message.pos);
-			if(tile!=null && tile instanceof TileEntityLiquid){
-				((TileEntityLiquid)tile).tanks[message.tankID].setFluid(message.fluidStack);
+			if (!FMLClientHandler.instance().getClient().isCallingFromMinecraftThread()) {
+				FMLClientHandler.instance().getClient().addScheduledTask(() -> processData(message, context));
+			} else {
+				TileEntity tile = Minecraft.getMinecraft().world.getTileEntity(message.pos);
+				if(tile != null && tile instanceof TileEntityLiquid){
+					((TileEntityLiquid)tile).tanks[message.tankID].setFluid(message.fluidStack);
+				}
 			}
 		}
 	}

@@ -28,9 +28,7 @@ public class DefaultTreeModule implements ITreeModule {
 	}
 
 	@Override
-	public boolean isSapling(
-		@Nonnull
-			ItemStack sapling) {
+	public boolean isSapling(@Nonnull ItemStack sapling) {
 		if (!sapling.isEmpty()) {
 			if (isStackSapling(sapling)) {
 				return true;
@@ -59,9 +57,7 @@ public class DefaultTreeModule implements ITreeModule {
 		return false;
 	}
 
-	private boolean isStackSapling(
-		@Nonnull
-			ItemStack sapling) {
+	private boolean isStackSapling(@Nonnull ItemStack sapling) {
 		final int[] ids = OreDictionary.getOreIDs(sapling);
 		for (int id : ids) {
 			final String name = OreDictionary.getOreName(id);

@@ -2,11 +2,13 @@ package vswe.stevescarts.arcade.tetris;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.arcade.ArcadeGame;
 import vswe.stevescarts.arcade.tracks.TrackStory;
 import vswe.stevescarts.guis.GuiMinecart;
+import vswe.stevescarts.handlers.SoundHandler;
 import vswe.stevescarts.helpers.Localization;
 import vswe.stevescarts.helpers.ResourceHelper;
 import vswe.stevescarts.modules.realtimers.ModuleArcade;
@@ -14,7 +16,7 @@ import vswe.stevescarts.modules.realtimers.ModuleArcade;
 public class ArcadeTetris extends ArcadeGame {
 	private TetrisBlock[][] board;
 	private TetrisPiece piece;
-	private static String[] removalSounds;
+	private static SoundEvent[] removalSounds;
 	private int ticks;
 	private boolean isPlaying;
 	private boolean quickMove;
@@ -108,7 +110,7 @@ public class ArcadeTetris extends ArcadeGame {
 						quickMove = false;
 						gameOverTicks = 0;
 						newHighScore();
-						ArcadeGame.playSound("gameover", 1.0f, 1.0f);
+						ArcadeGame.playSound(SoundHandler.GAME_OVER, 1.0f, 1.0f);
 					}
 				} else {
 					generatePiece();
@@ -120,7 +122,7 @@ public class ArcadeTetris extends ArcadeGame {
 		} else if (gameOverTicks < 170) {
 			gameOverTicks = Math.min(170, gameOverTicks + 5);
 		} else if (newHighScore) {
-			ArcadeGame.playSound("highscore", 1.0f, 1.0f);
+			ArcadeGame.playSound(SoundHandler.HIGH_SCORE, 1.0f, 1.0f);
 			newHighScore = false;
 		}
 	}
@@ -241,7 +243,7 @@ public class ArcadeTetris extends ArcadeGame {
 	}
 
 	static {
-		ArcadeTetris.removalSounds = new String[] { "1lines", "2lines", "3lines", "4lines" };
+		ArcadeTetris.removalSounds = new SoundEvent[] { SoundHandler.LINES_1, SoundHandler.LINES_2, SoundHandler.LINES_3, SoundHandler.LINES_4 };
 		ArcadeTetris.texture = "/gui/tetris.png";
 	}
 }

@@ -6,6 +6,7 @@ import net.minecraft.block.BlockVine;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -27,7 +28,6 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.containers.ContainerMinecart;
 import vswe.stevescarts.containers.slots.SlotBase;
 import vswe.stevescarts.entitys.EntityMinecartModular;
@@ -286,16 +286,14 @@ public abstract class ModuleBase {
 		}
 	}
 
-	public void drawItemInInterface(final GuiMinecart gui,
-	                                @Nonnull
-		                                ItemStack item, final int x, final int y) {
+	public void drawItemInInterface(final GuiMinecart gui, @Nonnull ItemStack item, final int x, final int y) {
 		final int[] rect = { x, y, 16, 16 };
 		handleScroll(rect);
 		if (rect[3] == 16) {
 			final RenderItem renderitem = Minecraft.getMinecraft().getRenderItem();
-			GL11.glDisable(2896);
+			RenderHelper.enableGUIStandardItemLighting();
 			renderitem.renderItemIntoGUI(item, gui.getGuiLeft() + rect[0] + getX(), gui.getGuiTop() + rect[1] + getY());
-			GL11.glEnable(2896);
+			RenderHelper.enableGUIStandardItemLighting();
 		}
 	}
 
@@ -657,16 +655,16 @@ public abstract class ModuleBase {
 		final int globalId = id + getGuiDataStart();
 		final List players = (List) info[1];
 		boolean flag;
-		final boolean isNew = flag = (boolean) info[2];
-		if (!flag) {
+		boolean isNew = (boolean) info[2];
+		if (!isNew) {
 			if (con.cache != null) {
 				final Short val = con.cache.get((short) globalId);
-				flag = (val == null || val != data);
+				isNew = (val == null || val != data);
 			} else {
-				flag = true;
+				isNew = true;
 			}
 		}
-		if (flag) {
+		if (isNew) {
 			if (con.cache == null) {
 				con.cache = new HashMap<>();
 			}

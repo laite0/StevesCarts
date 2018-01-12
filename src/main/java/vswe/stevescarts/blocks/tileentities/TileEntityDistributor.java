@@ -1,5 +1,6 @@
 package vswe.stevescarts.blocks.tileentities;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -8,13 +9,17 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -30,15 +35,66 @@ import vswe.stevescarts.helpers.storages.SCTank;
 import vswe.stevescarts.packet.PacketStevesCarts;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TileEntityDistributor extends TileEntityBase implements IInventory, ISidedInventory {
 	private ArrayList<DistributorSide> sides;
 	private boolean dirty;
-	private boolean dirty2;
+
 	private TileEntityManager[] inventories;
 	public boolean hasTop;
 	public boolean hasBot;
+
+	private Map<EnumFacing, IFluidHandler> fluidHandlerMap;
+
+	public TileEntityDistributor() {
+		dirty = true;
+		(sides = new ArrayList<>()).add(new DistributorSide(0, Localization.GUI.DISTRIBUTOR.SIDE_ORANGE, EnumFacing.UP));
+		sides.add(new DistributorSide(1, Localization.GUI.DISTRIBUTOR.SIDE_PURPLE, EnumFacing.DOWN));
+		sides.add(new DistributorSide(2, Localization.GUI.DISTRIBUTOR.SIDE_YELLOW, EnumFacing.NORTH));
+		sides.add(new DistributorSide(3, Localization.GUI.DISTRIBUTOR.SIDE_GREEN, EnumFacing.WEST));
+		sides.add(new DistributorSide(4, Localization.GUI.DISTRIBUTOR.SIDE_BLUE, EnumFacing.SOUTH));
+		sides.add(new DistributorSide(5, Localization.GUI.DISTRIBUTOR.SIDE_RED, EnumFacing.EAST));
+		fluidHandlerMap = new HashMap<>();
+		for (EnumFacing facing: EnumFacing.values()) {
+			fluidHandlerMap.put(facing, new IFluidHandler() {
+				@Override
+				public IFluidTankProperties[] getTankProperties() {
+					final IFluidTank[] tanks = getTanks(facing);
+					final IFluidTankProperties[] infos = new IFluidTankProperties[tanks.length];
+					for (int i = 0; i < infos.length; ++i) {
+						infos[i] = new FluidTankProperties(tanks[i].getFluid(), tanks[i].getCapacity());
+					}
+					return infos;
+				}
+
+				@Override
+				public int fill(FluidStack resource, boolean doFill) {
+					final IFluidTank[] tanks = getTanks(facing);
+					int amount = 0;
+					for (final IFluidTank tank : tanks) {
+						amount += tank.fill(resource, doFill);
+					}
+					return amount;
+				}
+
+				@Nullable
+				@Override
+				public FluidStack drain(FluidStack resource, boolean doDrain) {
+					return TileEntityDistributor.this.drain(facing, resource, (resource == null) ? 0 : resource.amount, doDrain);
+				}
+
+				@Nullable
+				@Override
+				public FluidStack drain(int maxDrain, boolean doDrain) {
+					return TileEntityDistributor.this.drain(facing, null, maxDrain, doDrain);
+				}
+			});
+		}
+	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -53,17 +109,6 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 
 	public ArrayList<DistributorSide> getSides() {
 		return sides;
-	}
-
-	public TileEntityDistributor() {
-		dirty = true;
-		dirty2 = true;
-		(sides = new ArrayList<>()).add(new DistributorSide(0, Localization.GUI.DISTRIBUTOR.SIDE_ORANGE, EnumFacing.UP));
-		sides.add(new DistributorSide(1, Localization.GUI.DISTRIBUTOR.SIDE_PURPLE, EnumFacing.DOWN));
-		sides.add(new DistributorSide(2, Localization.GUI.DISTRIBUTOR.SIDE_YELLOW, EnumFacing.NORTH));
-		sides.add(new DistributorSide(3, Localization.GUI.DISTRIBUTOR.SIDE_GREEN, EnumFacing.WEST));
-		sides.add(new DistributorSide(4, Localization.GUI.DISTRIBUTOR.SIDE_BLUE, EnumFacing.SOUTH));
-		sides.add(new DistributorSide(5, Localization.GUI.DISTRIBUTOR.SIDE_RED, EnumFacing.EAST));
 	}
 
 	@Override
@@ -86,7 +131,6 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	@Override
 	public void updateEntity() {
 		dirty = true;
-		dirty2 = true;
 	}
 
 	protected void sendPacket(final int id) {
@@ -113,12 +157,31 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 					getSides().get(sideId).reset(settingId);
 				}
 			}
+			IBlockState state = world.getBlockState(pos);
+			world.notifyBlockUpdate(pos, state, state, 3);
 		}
 	}
 
+	@Nullable
 	@Override
-	public void initGuiData(final Container con, final IContainerListener crafting) {
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(pos, -1, getUpdateTag());
 	}
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		handleUpdateTag(pkt.getNbtCompound());
+		IBlockState state = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, state, state, 3);
+	}
+
+	@Override
+	public void initGuiData(final Container con, final IContainerListener crafting) { }
 
 	@Override
 	public void checkGuiData(final Container con, final IContainerListener crafting) {
@@ -164,7 +227,7 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 		inventories = populateManagers(top, bot, hasTop, hasBot);
 	}
 
-	private TileEntityManager[] populateManagers(final TileEntityManager topElement, final TileEntityManager botElement, final boolean hasTopElement, final boolean hasBotElement) {
+	private TileEntityManager[] populateManagers(TileEntityManager topElement, TileEntityManager botElement, boolean hasTopElement, boolean hasBotElement) {
 		if (!hasTopElement && !hasBotElement) {
 			return new TileEntityManager[0];
 		}
@@ -178,9 +241,9 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	}
 
 	private TileEntityManager generateManager(final int y) {
-		final TileEntity TE = world.getTileEntity(pos.up(y));
-		if (TE != null && TE instanceof TileEntityManager) {
-			return (TileEntityManager) TE;
+		final TileEntity te = world.getTileEntity(pos.add(0, y, 0));
+		if (te != null && te instanceof TileEntityManager) {
+			return (TileEntityManager) te;
 		}
 		return null;
 	}
@@ -237,9 +300,7 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	}
 
 	@Override
-	public void setInventorySlotContents(final int slot,
-	                                     @Nonnull
-		                                     ItemStack itemstack) {
+	public void setInventorySlotContents(final int slot, @Nonnull ItemStack itemstack) {
 		final TileEntityManager manager = getManagerFromSlotId(slot);
 		if (manager != null) {
 			manager.setInventorySlotContents(translateSlotId(slot), itemstack);
@@ -262,12 +323,10 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {
-	}
+	public void closeInventory(EntityPlayer player) {}
 
 	@Override
-	public void openInventory(EntityPlayer player) {
-	}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
 	@Nonnull
@@ -288,37 +347,15 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 		return false;
 	}
 
-	//	@Override
-	//	public int fill(final EnumFacing from, final FluidStack resource, final boolean doFill) {
-	//		final IFluidTank[] tanks = this.getTanks(from);
-	//		int amount = 0;
-	//		for (final IFluidTank tank : tanks) {
-	//			amount += tank.fill(resource, doFill);
-	//		}
-	//		return amount;
-	//	}
-	//
-	//	@Override
-	//	public FluidStack drain(final EnumFacing from, final int maxDrain, final boolean doDrain) {
-	//		return this.drain(from, null, maxDrain, doDrain);
-	//	}
-	//
-	//	@Override
-	//	public FluidStack drain(final EnumFacing from, final FluidStack resource, final boolean doDrain) {
-	//		return this.drain(from, resource, (resource == null) ? 0 : resource.amount, doDrain);
-	//	}
-
 	private FluidStack drain(final EnumFacing from, final FluidStack resource, int maxDrain, final boolean doDrain) {
 		FluidStack ret = resource;
 		if (ret != null) {
 			ret = ret.copy();
 			ret.amount = 0;
 		}
-		final IFluidTank[] arr$;
-		final IFluidTank[] tanks = arr$ = getTanks(from);
-		for (final IFluidTank tank : arr$) {
-			FluidStack temp = null;
-			temp = tank.drain(maxDrain, doDrain);
+		final IFluidTank[] tanks = getTanks(from);
+		for (final IFluidTank tank : tanks) {
+			FluidStack temp = tank.drain(maxDrain, doDrain);
 			if (temp != null && (ret == null || ret.isFluidEqual(temp))) {
 				if (ret == null) {
 					ret = temp;
@@ -338,28 +375,8 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 		return ret;
 	}
 
-	private SCTank getTankForSide(final EnumFacing direction) {
-		final TileEntityManager[] invs = getInventories();
-		if (invs.length > 0) {
-			for (final DistributorSide side : getSides()) {
-				if (side.getSide() == direction) {
-					final ArrayList<IFluidTank> tanks = new ArrayList<>();
-					if (hasTop && hasBot) {
-						populateTanks(tanks, side, invs[0], false);
-						populateTanks(tanks, side, invs[1], true);
-					} else if (hasTop) {
-						populateTanks(tanks, side, invs[0], true);
-					} else if (hasBot) {
-						populateTanks(tanks, side, invs[0], false);
-					}
-					if(!tanks.isEmpty()){
-						return (SCTank) tanks.get(0);
-					}
-					return null;
-				}
-			}
-		}
-		return null;
+	private boolean hasAnyTank(EnumFacing facing) {
+		return facing != null && getInventories().length > 0 && getTanks(facing).length > 0;
 	}
 
 	private SCTank[] getTanks(final EnumFacing direction) {
@@ -367,7 +384,7 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 		if (invs.length > 0) {
 			for (final DistributorSide side : getSides()) {
 				if (side.getSide() == direction) {
-					final ArrayList<IFluidTank> tanks = new ArrayList<>();
+					final ArrayList<SCTank> tanks = new ArrayList<>();
 					if (hasTop && hasBot) {
 						populateTanks(tanks, side, invs[0], false);
 						populateTanks(tanks, side, invs[1], true);
@@ -383,7 +400,7 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 		return new SCTank[0];
 	}
 
-	private void populateTanks(final ArrayList<IFluidTank> tanks, final DistributorSide side, final TileEntityManager manager, final boolean top) {
+	private void populateTanks(final ArrayList<SCTank> tanks, final DistributorSide side, final TileEntityManager manager, final boolean top) {
 		if (manager != null && manager instanceof TileEntityLiquid) {
 			final TileEntityLiquid fluid = (TileEntityLiquid) manager;
 			final SCTank[] managerTanks = fluid.getTanks();
@@ -409,45 +426,19 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	}
 
 	@Override
-	public boolean canInsertItem(final int slot,
-	                             @Nonnull
-		                             ItemStack item, EnumFacing side) {
+	public boolean canInsertItem(final int slot, @Nonnull ItemStack item, EnumFacing side) {
 		return true;
 	}
 
 	@Override
-	public boolean canExtractItem(final int slot,
-	                              @Nonnull
-		                              ItemStack item, EnumFacing side) {
+	public boolean canExtractItem(final int slot, @Nonnull ItemStack item, EnumFacing side) {
 		return true;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(final int slotId,
-	                                  @Nonnull
-		                                  ItemStack item) {
+	public boolean isItemValidForSlot(final int slotId, @Nonnull ItemStack item) {
 		return true;
 	}
-
-	//	@Override
-	//	public boolean canFill(final EnumFacing from, final Fluid fluid) {
-	//		return true;
-	//	}
-	//
-	//	@Override
-	//	public boolean canDrain(final EnumFacing from, final Fluid fluid) {
-	//		return true;
-	//	}
-	//
-	//	@Override
-	//	public FluidTankInfo[] getTankInfo(final EnumFacing from) {
-	//		final IFluidTank[] tanks = this.getTanks(from);
-	//		final FluidTankInfo[] infos = new FluidTankInfo[tanks.length];
-	//		for (int i = 0; i < infos.length; ++i) {
-	//			infos[i] = new FluidTankInfo(tanks[i].getFluid(), tanks[i].getCapacity());
-	//		}
-	//		return infos;
-	//	}
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
@@ -485,9 +476,7 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	}
 
 	@Override
-	public void setField(int id, int value) {
-
-	}
+	public void setField(int id, int value) {}
 
 	@Override
 	public int getFieldCount() {
@@ -495,16 +484,11 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	}
 
 	@Override
-	public void clear() {
-
-	}
+	public void clear() {}
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return true;
-		}
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && getTankForSide(facing) != null) {
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && hasAnyTank(facing)) {
 			return true;
 		}
 		return super.hasCapability(capability, facing);
@@ -515,8 +499,8 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			return (T) new SidedInvWrapper(this, facing);
 		}
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			return (T) getTankForSide(facing);
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && hasAnyTank(facing)) {
+			return (T) fluidHandlerMap.get(facing);
 		}
 		return super.getCapability(capability, facing);
 	}

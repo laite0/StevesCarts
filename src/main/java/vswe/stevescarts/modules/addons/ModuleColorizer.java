@@ -1,9 +1,9 @@
 package vswe.stevescarts.modules.addons;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.entitys.CartDataSerializers;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.guis.GuiMinecart;
@@ -63,9 +63,9 @@ public class ModuleColorizer extends ModuleAddon {
 			drawMarker(gui, x, y, i);
 		}
 		final float[] color = getColor();
-		GL11.glColor4f(color[0], color[1], color[2], 1.0f);
+		GlStateManager.color(color[0], color[1], color[2], 1.0f);
 		drawImage(gui, scrollWidth + 25, 29, 4, 7, 28, 28);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	@Override
@@ -89,11 +89,11 @@ public class ModuleColorizer extends ModuleAddon {
 				colorMarker[i] = 0.0f;
 			}
 		}
-		GL11.glColor4f(colorArea[0], colorArea[1], colorArea[2], 1.0f);
+		GlStateManager.color(colorArea[0], colorArea[1], colorArea[2], 1.0f);
 		drawImage(gui, getArea(id), 0, 0);
-		GL11.glColor4f(colorMarker[0], colorMarker[1], colorMarker[2], 1.0f);
+		GlStateManager.color(colorMarker[0], colorMarker[1], colorMarker[2], 1.0f);
 		drawImage(gui, getMovableMarker(id), 0, 7);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	@Override

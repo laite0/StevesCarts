@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "X",
+    "X"
+  ],
+  "key": {
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "gunpowder"
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 43
+    }
+  },
+  "result": {
+    "item": "stevescarts:modulecomponents",
+    "data": 6
+  }
+}

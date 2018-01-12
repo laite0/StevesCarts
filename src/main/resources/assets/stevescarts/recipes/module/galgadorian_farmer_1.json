@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 84
+    }
+  ],
+  "pattern": [
+    "DDD",
+    " I ",
+    "#X#"
+  ],
+  "key": {
+    "I": {
+      "item": "stevescarts:modulecomponents",
+      "data": 22
+    },
+    "X": {
+      "item": "minecraft:gold_ingot"
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 16
+    },
+    "D": {
+      "item": "stevescarts:modulecomponents",
+      "data": 47
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 84
+  }
+}

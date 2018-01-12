@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 94
+    }
+  ],
+  "pattern": [
+    "XXX",
+    "IGI",
+    "#S#"
+  ],
+  "key": {
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "paneGlass"
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "S": {
+      "item": "minecraft:sign"
+    },
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 94
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 32
+    }
+  ],
+  "pattern": [
+    "O#O",
+    "#X#",
+    "O#O"
+  ],
+  "key": {
+    "O": {
+      "type": "forge:ore_dict",
+      "ore": "obsidian"
+    },
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "blockDiamond"
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 19
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 32
+  }
+}

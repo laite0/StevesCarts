@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockRailDetector;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,7 +28,7 @@ import vswe.stevescarts.upgrades.Transposer;
 
 import javax.annotation.Nonnull;
 
-public class BlockRailAdvDetector extends BlockRailDetector {
+public class BlockRailAdvDetector extends BlockRailDetector implements ModBlocks.IStateMappedBlock {
 
 	public BlockRailAdvDetector() {
 		super();
@@ -210,4 +211,8 @@ public class BlockRailAdvDetector extends BlockRailDetector {
 		new BlockRailBase.Rail(world, pos, state).place(flag, false);
 	}
 
+	@Override
+	public void setStateMapper(StateMap.Builder builder) {
+		builder.ignore(POWERED);
+	}
 }

@@ -1,6 +1,7 @@
 package vswe.stevescarts.modules.realtimers;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +12,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.guis.GuiMinecart;
 import vswe.stevescarts.helpers.Localization;
@@ -74,10 +74,10 @@ public class ModuleAdvControl extends ModuleBase implements ILeverModule {
 				final int lowerBarLength = engineInformation[i * 2 + 1] & 0x3F;
 				final ModuleEngine engine = getCart().getEngines().get(i);
 				final float[] rgb = engine.getGuiBarColor();
-				GL11.glColor4f(rgb[0], rgb[1], rgb[2], 1.0f);
+				GlStateManager.color(rgb[0], rgb[1], rgb[2], 1.0f);
 				drawImage(7, i * 15 + 2, 66, 0, upperBarLength, 5);
 				drawImage(7, i * 15 + 2 + 6, 66, 6, lowerBarLength, 5);
-				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+				GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 				drawImage(5, i * 15, 66 + engine.getPriority() * 7, 11, 7, 15);
 			}
 		}

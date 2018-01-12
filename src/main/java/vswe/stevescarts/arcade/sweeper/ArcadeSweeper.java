@@ -1,12 +1,14 @@
 package vswe.stevescarts.arcade.sweeper;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.arcade.ArcadeGame;
 import vswe.stevescarts.arcade.tracks.TrackStory;
 import vswe.stevescarts.guis.GuiMinecart;
+import vswe.stevescarts.handlers.SoundHandler;
 import vswe.stevescarts.helpers.Localization;
 import vswe.stevescarts.helpers.ResourceHelper;
 import vswe.stevescarts.modules.realtimers.ModuleArcade;
@@ -58,7 +60,7 @@ public class ArcadeSweeper extends ArcadeGame {
 			++highscoreTicks;
 			if (highscoreTicks == 78) {
 				highscoreTicks = 0;
-				ArcadeGame.playSound("highscore", 1.0f, 1.0f);
+				ArcadeGame.playSound(SoundHandler.HIGH_SCORE, 1.0f, 1.0f);
 			}
 		}
 	}
@@ -138,10 +140,10 @@ public class ArcadeSweeper extends ArcadeGame {
 			openTile(xc, yc, true);
 		} else if (button == 1 && isValidCoordinate(xc, yc)) {
 			hasStarted = true;
-			ArcadeGame.playSound("flagclick", 1.0f, 1.0f);
+			ArcadeGame.playSound(SoundHandler.FLAG_CLICK, 1.0f, 1.0f);
 			tiles[xc][yc].mark();
 		} else if (button == 2 && isValidCoordinate(xc, yc) && tiles[xc][yc].getState() == Tile.TILE_STATE.OPENED) {
-			ArcadeGame.playSound("click", 1.0f, 1.0f);
+			ArcadeGame.playSound(SoundHandler.CLICK, 1.0f, 1.0f);
 			int nearby = tiles[xc][yc].getNearbyCreepers();
 			if (nearby != 0) {
 				for (int i = -1; i <= 1; ++i) {
@@ -175,7 +177,7 @@ public class ArcadeSweeper extends ArcadeGame {
 			if (emptyLeft == 0) {
 				hasFinished = true;
 				isPlaying = false;
-				ArcadeGame.playSound("goodjob", 1.0f, 1.0f);
+				ArcadeGame.playSound(SoundHandler.GOOD_JOB, 1.0f, 1.0f);
 				if (highscore[currentGameType] > ticks / 20) {
 					highscoreTicks = 1;
 					final int val = ticks / 20;
@@ -185,7 +187,7 @@ public class ArcadeSweeper extends ArcadeGame {
 				}
 			} else if (result == Tile.TILE_OPEN_RESULT.BLOB) {
 				if (first) {
-					ArcadeGame.playSound("blobclick", 1.0f, 1.0f);
+					ArcadeGame.playSound(SoundHandler.BLOB_CLICK, 1.0f, 1.0f);
 				}
 				for (int i = -1; i <= 1; ++i) {
 					for (int j = -1; j <= 1; ++j) {
@@ -194,9 +196,9 @@ public class ArcadeSweeper extends ArcadeGame {
 				}
 			} else if (result == Tile.TILE_OPEN_RESULT.DEAD) {
 				isPlaying = false;
-				ArcadeGame.playDefaultSound("random.explode", 1.0f, (1.0f + (getModule().getCart().rand.nextFloat() - getModule().getCart().rand.nextFloat()) * 0.2f) * 0.7f);
+				ArcadeGame.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 1.0f, (1.0f + (getModule().getCart().rand.nextFloat() - getModule().getCart().rand.nextFloat()) * 0.2f) * 0.7f);
 			} else if (result == Tile.TILE_OPEN_RESULT.OK && first) {
-				ArcadeGame.playSound("click", 1.0f, 1.0f);
+				ArcadeGame.playSound(SoundHandler.CLICK, 1.0f, 1.0f);
 			}
 		}
 	}

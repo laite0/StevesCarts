@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GXG",
+    "#L#",
+    "# #"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "#": {
+      "item": "minecraft:redstone"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "L": {
+      "item": "stevescarts:modulecomponents",
+      "data": 16
+    }
+  },
+  "result": {
+    "item": "stevescarts:modulecomponents",
+    "data": 26
+  }
+}

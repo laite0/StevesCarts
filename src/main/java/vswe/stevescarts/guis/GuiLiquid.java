@@ -17,7 +17,7 @@ public class GuiLiquid extends GuiManager {
 	private static ResourceLocation textureExtra;
 
 	public GuiLiquid(final InventoryPlayer invPlayer, final TileEntityLiquid liquid) {
-		super(invPlayer, liquid, new ContainerLiquid(invPlayer, liquid));
+		super(liquid, new ContainerLiquid(invPlayer, liquid));
 		setXSize(230);
 		setYSize(222);
 	}

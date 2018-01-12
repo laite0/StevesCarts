@@ -1,6 +1,6 @@
 package vswe.stevescarts.arcade.monopoly;
 
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 import vswe.stevescarts.guis.GuiMinecart;
 
 import java.util.EnumSet;
@@ -37,18 +37,18 @@ public class Place {
 	public void applyColorFilter(final GuiMinecart gui, final EnumSet<PLACE_STATE> states) {
 		if (states.contains(PLACE_STATE.SELECTED)) {
 			if (states.contains(PLACE_STATE.HOVER)) {
-				GL11.glColor4f(1.0f, 0.8f, 0.5f, 1.0f);
+				GlStateManager.color(1.0f, 0.8f, 0.5f, 1.0f);
 			} else {
-				GL11.glColor4f(1.0f, 1.0f, 0.75f, 1.0f);
+				GlStateManager.color(1.0f, 1.0f, 0.75f, 1.0f);
 			}
 		} else if (states.contains(PLACE_STATE.MARKED)) {
 			if (states.contains(PLACE_STATE.HOVER)) {
-				GL11.glColor4f(1.0f, 0.75f, 1.0f, 1.0f);
+				GlStateManager.color(1.0f, 0.75f, 1.0f, 1.0f);
 			} else {
-				GL11.glColor4f(1.0f, 0.85f, 0.85f, 1.0f);
+				GlStateManager.color(1.0f, 0.85f, 0.85f, 1.0f);
 			}
 		} else if (states.contains(PLACE_STATE.HOVER)) {
-			GL11.glColor4f(0.9f, 0.9f, 1.0f, 1.0f);
+			GlStateManager.color(0.9f, 0.9f, 1.0f, 1.0f);
 		}
 	}
 

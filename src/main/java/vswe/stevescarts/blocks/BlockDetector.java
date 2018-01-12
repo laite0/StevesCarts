@@ -1,10 +1,14 @@
 package vswe.stevescarts.blocks;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,8 +21,13 @@ import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.tileentities.TileEntityDetector;
 import vswe.stevescarts.helpers.DetectorType;
+import vswe.stevescarts.items.ItemBlockDetector;
 
-public class BlockDetector extends BlockContainerBase {
+public class BlockDetector extends BlockContainerBase implements ModBlocks.ICustomItemBlock, ModBlocks.ISubtypeItemBlockModelDefinition, ModBlocks.IStateMappedBlock {
+
+	public static PropertyEnum<DetectorType> SATE = PropertyEnum.create("detectortype", DetectorType.class);
+	public static PropertyBool POWERED = PropertyBool.create("powered");
+
 	public BlockDetector() {
 		super(Material.CIRCUITS);
 		setCreativeTab(StevesCarts.tabsSC2Blocks);
@@ -43,15 +52,7 @@ public class BlockDetector extends BlockContainerBase {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world,
-	                                BlockPos pos,
-	                                IBlockState state,
-	                                EntityPlayer entityPlayer,
-	                                EnumHand hand,
-	                                EnumFacing side,
-	                                float hitX,
-	                                float hitY,
-	                                float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityPlayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (entityPlayer.isSneaking()) {
 			return false;
 		}
@@ -64,7 +65,7 @@ public class BlockDetector extends BlockContainerBase {
 
 	@Override
 	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return blockState.getValue(DetectorType.POWERED) && DetectorType.getTypeFromSate(blockState).shouldEmitRedstone() ? 15 : 0;
+		return blockState.getValue(POWERED) && DetectorType.getTypeFromSate(blockState).shouldEmitRedstone() ? 15 : 0;
 	}
 
 	@Override
@@ -102,17 +103,37 @@ public class BlockDetector extends BlockContainerBase {
 		if (meta > DetectorType.values().length) {
 			powered = true;
 		}
-		return getDefaultState().withProperty(DetectorType.SATE, DetectorType.getTypeFromint(meta - (powered ? DetectorType.values().length + 1 : 0))).withProperty(DetectorType.POWERED, powered);
+		return getDefaultState().withProperty(SATE, DetectorType.getTypeFromint(meta - (powered ? DetectorType.values().length + 1 : 0))).withProperty(POWERED, powered);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		boolean powered = state.getValue(DetectorType.POWERED);
-		return (state.getValue(DetectorType.SATE)).getMeta() + (powered ? DetectorType.values().length + 1 : 0);
+		boolean powered = state.getValue(POWERED);
+		return (state.getValue(SATE)).getMeta() + (powered ? DetectorType.values().length + 1 : 0);
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, DetectorType.SATE, DetectorType.POWERED);
+		return new BlockStateContainer(this, SATE, POWERED);
+	}
+
+	@Override
+	public ItemBlock getItemBlock() {
+		return new ItemBlockDetector(this);
+	}
+
+	@Override
+	public int getSubtypeNumber() {
+		return DetectorType.values().length;
+	}
+
+	@Override
+	public String getSubtypeName(int meta) {
+		return "block_detector_" + DetectorType.values()[meta].getName();
+	}
+
+	@Override
+	public void setStateMapper(StateMap.Builder builder) {
+		builder.ignore(POWERED);
 	}
 }

@@ -1,8 +1,8 @@
 package vswe.stevescarts.arcade.monopoly;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.arcade.ArcadeGame;
 import vswe.stevescarts.guis.GuiMinecart;
 import vswe.stevescarts.helpers.Localization;
@@ -616,21 +616,21 @@ public class ArcadeMonopoly extends ArcadeGame {
 	}
 
 	private void drawCard(final GuiMinecart gui, final boolean isFront) {
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		final int x = 150;
 		final int y = 44;
 		final float s = cardScale;
 		final float posX = gui.getGuiLeft() + 71;
 		final float posY = gui.getGuiTop() + 40;
-		GL11.glTranslatef(0.0f, 0.0f, 100.0f);
-		GL11.glTranslatef(posX + x, posY + y, 0.0f);
-		GL11.glScalef(s, s, 1.0f);
-		GL11.glRotatef(cardRotation + (isFront ? 0 : 180), 0.0f, 1.0f, 0.0f);
-		GL11.glTranslatef(-posX, -posY, 0.0f);
+		GlStateManager.translate(0.0f, 0.0f, 100.0f);
+		GlStateManager.translate(posX + x, posY + y, 0.0f);
+		GlStateManager.scale(s, s, 1.0f);
+		GlStateManager.rotate(cardRotation + (isFront ? 0 : 180), 0.0f, 1.0f, 0.0f);
+		GlStateManager.translate(-posX, -posY, 0.0f);
 		loadTexture(gui, 0);
 		final int[] rect = { 0, 0, 142, 80 };
 		currentCard.render(this, gui, rect, isFront);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -825,16 +825,8 @@ public class ArcadeMonopoly extends ArcadeGame {
 		drawPropertyOnBoardWithPositionRotationAndScale(gui, place, id, false, hover, offX, offY, rotation, 0.17f);
 	}
 
-	private void drawPropertyOnBoardWithPositionRotationAndScale(final GuiMinecart gui,
-	                                                             final Place place,
-	                                                             final int id,
-	                                                             final boolean zoom,
-	                                                             final boolean hover,
-	                                                             final int x,
-	                                                             final int y,
-	                                                             final int r,
-	                                                             final float s) {
-		GL11.glPushMatrix();
+	private void drawPropertyOnBoardWithPositionRotationAndScale(final GuiMinecart gui, final Place place, final int id, final boolean zoom, final boolean hover, final int x, final int y, final int r, final float s) {
+		GlStateManager.pushMatrix();
 		final EnumSet<Place.PLACE_STATE> states = EnumSet.noneOf(Place.PLACE_STATE.class);
 		if (zoom) {
 			states.add(Place.PLACE_STATE.ZOOMED);
@@ -852,10 +844,10 @@ public class ArcadeMonopoly extends ArcadeGame {
 		}
 		final float posX = gui.getGuiLeft();
 		final float posY = gui.getGuiTop();
-		GL11.glTranslatef(posX + x * s, posY + y * s, 0.0f);
-		GL11.glScalef(s, s, 1.0f);
-		GL11.glRotatef(r, 0.0f, 0.0f, 1.0f);
-		GL11.glTranslatef(-posX, -posY, 0.0f);
+		GlStateManager.translate(posX + x * s, posY + y * s, 0.0f);
+		GlStateManager.scale(s, s, 1.0f);
+		GlStateManager.rotate(r, 0.0f, 0.0f, 1.0f);
+		GlStateManager.translate(-posX, -posY, 0.0f);
 		place.draw(gui, states);
 		final int[] total = new int[place.getPieceAreaCount()];
 		for (int i = 0; i < pieces.size(); ++i) {
@@ -874,7 +866,7 @@ public class ArcadeMonopoly extends ArcadeGame {
 			}
 		}
 		place.drawText(gui, states);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -918,7 +910,7 @@ public class ArcadeMonopoly extends ArcadeGame {
 
 	public void loadTexture(final GuiMinecart gui, final int number) {
 		ResourceHelper.bindResource(ArcadeMonopoly.textures[number]);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	public Place[] getPlaces() {

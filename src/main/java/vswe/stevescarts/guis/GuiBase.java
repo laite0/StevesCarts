@@ -4,21 +4,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.modules.data.ModuleData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
@@ -35,60 +33,21 @@ public abstract class GuiBase extends GuiContainer {
 	}
 
 	public void drawMouseOver(final String str, final int x, final int y) {
-		final List text = new ArrayList();
 		final String[] split = str.split("\n");
-		for (int i = 0; i < split.length; ++i) {
-			text.add(split[i]);
-		}
-		drawMouseOver(text, x, y);
+		final List<String> text = new ArrayList<>(Arrays.asList(split));
+        drawHoveringText(text, x, y);
+	}
+
+	@Override
+	protected void renderToolTip(ItemStack stack, int x, int y) {
+		FontRenderer font = stack.getItem().getFontRenderer(stack);
+		net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
+		this.drawHoveringText(this.getItemToolTip(stack), x, y, (font == null ? fontRenderer : font));
+		net.minecraftforge.fml.client.config.GuiUtils.postItemToolTip();
 	}
 
 	public boolean inRect(final int x, final int y, final int[] coords) {
 		return coords != null && x >= coords[0] && x < coords[0] + coords[2] && y >= coords[1] && y < coords[1] + coords[3];
-	}
-
-	public void drawMouseOver(final List<String> text, final int x, final int y) {
-		GL11.glDisable(2896);
-		GL11.glDisable(2929);
-		int var5 = 0;
-		for (final String var7 : text) {
-			final int var8 = getFontRenderer().getStringWidth(var7);
-			if (var8 > var5) {
-				var5 = var8;
-			}
-		}
-		final int var9 = x + 10;
-		int var10 = y;
-		int var11 = 8;
-		if (text.size() > 1) {
-			var11 += 2 + (text.size() - 1) * 10;
-		}
-		zLevel = 300.0f;
-		//GuiBase.itemRender.zLevel = 300.0f;
-		final int var12 = -267386864;
-		drawGradientRect(var9 - 3, var10 - 4, var9 + var5 + 3, var10 - 3, var12, var12);
-		drawGradientRect(var9 - 3, var10 + var11 + 3, var9 + var5 + 3, var10 + var11 + 4, var12, var12);
-		drawGradientRect(var9 - 3, var10 - 3, var9 + var5 + 3, var10 + var11 + 3, var12, var12);
-		drawGradientRect(var9 - 4, var10 - 3, var9 - 3, var10 + var11 + 3, var12, var12);
-		drawGradientRect(var9 + var5 + 3, var10 - 3, var9 + var5 + 4, var10 + var11 + 3, var12, var12);
-		final int var13 = 1347420415;
-		final int var14 = (var13 & 0xFEFEFE) >> 1 | (var13 & 0xFF000000);
-		drawGradientRect(var9 - 3, var10 - 3 + 1, var9 - 3 + 1, var10 + var11 + 3 - 1, var13, var14);
-		drawGradientRect(var9 + var5 + 2, var10 - 3 + 1, var9 + var5 + 3, var10 + var11 + 3 - 1, var13, var14);
-		drawGradientRect(var9 - 3, var10 - 3, var9 + var5 + 3, var10 - 3 + 1, var13, var13);
-		drawGradientRect(var9 - 3, var10 + var11 + 2, var9 + var5 + 3, var10 + var11 + 3, var14, var14);
-		for (int var15 = 0; var15 < text.size(); ++var15) {
-			final String var16 = text.get(var15);
-			getFontRenderer().drawStringWithShadow(var16, var9, var10, -1);
-			if (var15 == 0) {
-				var10 += 2;
-			}
-			var10 += 10;
-		}
-		zLevel = 0.0f;
-		//GuiBase.itemRender.zLevel = 0.0f;
-		GL11.glEnable(2929);
-		GL11.glEnable(2896);
 	}
 
 	public Minecraft getMinecraft() {
@@ -160,7 +119,7 @@ public abstract class GuiBase extends GuiContainer {
 		this.drawDefaultBackground();
 		super.drawScreen(scaleX(x), scaleY(y), f);
 		this.renderHoveredToolTip(x, y);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 
 	protected float getScale() {
@@ -177,11 +136,11 @@ public abstract class GuiBase extends GuiContainer {
 	}
 
 	private void startScaling() {
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		final float scale = getScale();
-		GL11.glScalef(scale, scale, 1.0f);
-		GL11.glTranslatef((-guiLeft), (-guiTop), 0.0f);
-		GL11.glTranslatef((width - xSize * scale) / (2.0f * scale), (height - ySize * scale) / (2.0f * scale), 0.0f);
+		GlStateManager.scale(scale, scale, 1.0f);
+		GlStateManager.translate((-guiLeft), (-guiTop), 0.0f);
+		GlStateManager.translate((width - xSize * scale) / (2.0f * scale), (height - ySize * scale) / (2.0f * scale), 0.0f);
 	}
 
 	@Override

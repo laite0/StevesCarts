@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SBS",
+    "ILI",
+    "X#X"
+  ],
+  "key": {
+    "B": {
+      "type": "minecraft:item_nbt",
+      "item": "minecraft:enchanted_book",
+      "nbt": "{StoredEnchantments: [{lvl: 3s, id: 32s}]}"
+    },
+    "L": {
+      "item": "stevescarts:modulecomponents",
+      "data": 16
+    },
+    "S": {
+      "item": "minecraft:redstone"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 22
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 59
+    }
+  },
+  "result": {
+    "item": "stevescarts:upgrade",
+    "data": 4
+  }
+}

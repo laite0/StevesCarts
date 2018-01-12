@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XBX",
+    "XLX",
+    "X#X"
+  ],
+  "key": {
+    "B": {
+      "type": "minecraft:item_nbt",
+      "item": "minecraft:enchanted_book",
+      "nbt": "{StoredEnchantments: [{lvl: 5s, id: 32s}]}"
+    },
+    "L": {
+      "item": "stevescarts:modulecomponents",
+      "data": 16
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 47
+    },
+    "#": {
+      "item": "stevescarts:upgrade",
+      "data": 4
+    }
+  },
+  "result": {
+    "item": "stevescarts:upgrade",
+    "data": 5
+  }
+}

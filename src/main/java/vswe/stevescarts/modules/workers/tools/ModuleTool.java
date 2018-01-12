@@ -38,9 +38,7 @@ public abstract class ModuleTool extends ModuleWorker {
 
 	public abstract String getRepairItemName();
 
-	public abstract int getRepairItemUnits(
-		@Nonnull
-			ItemStack p0);
+	public abstract int getRepairItemUnits(@Nonnull ItemStack p0);
 
 	public abstract int getRepairSpeed();
 
@@ -76,9 +74,7 @@ public abstract class ModuleTool extends ModuleWorker {
 		}
 	}
 
-	public boolean isValidRepairMaterial(
-		@Nonnull
-			ItemStack item) {
+	public boolean isValidRepairMaterial(@Nonnull ItemStack item) {
 		return getRepairItemUnits(item) > 0;
 	}
 

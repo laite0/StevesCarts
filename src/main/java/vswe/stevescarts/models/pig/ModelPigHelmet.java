@@ -1,11 +1,11 @@
 package vswe.stevescarts.models.pig;
 
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.models.ModelCartbase;
 import vswe.stevescarts.modules.ModuleBase;
 import vswe.stevescarts.modules.hull.ModulePig;
@@ -44,16 +44,16 @@ public class ModelPigHelmet extends ModelCartbase {
 			return;
 		}
 		final float sizemult = 1.09375f + (isOverlay ? 0.020833334f : 0.0f);
-		GL11.glScalef(sizemult, sizemult, sizemult);
+		GlStateManager.scale(sizemult, sizemult, sizemult);
 		if (pig.hasHelmetColor(isOverlay)) {
 			final int color = pig.getHelmetColor(isOverlay);
 			final float red = (color >> 16 & 0xFF) / 255.0f;
 			final float green = (color >> 8 & 0xFF) / 255.0f;
 			final float blue = (color & 0xFF) / 255.0f;
-			GL11.glColor3f(red, green, blue);
+			GlStateManager.color(red, green, blue);
 		}
 		super.render(render, module, yaw, pitch, roll, mult, partialtime);
-		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		GL11.glScalef(1.0f / sizemult, 1.0f / sizemult, 1.0f / sizemult);
+		GlStateManager.color(1.0f, 1.0f, 1.0f);
+		GlStateManager.scale(1.0f / sizemult, 1.0f / sizemult, 1.0f / sizemult);
 	}
 }

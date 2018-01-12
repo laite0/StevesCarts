@@ -2,12 +2,17 @@ package vswe.stevescarts;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import vswe.stevescarts.blocks.tileentities.TileEntityBase;
 import vswe.stevescarts.entitys.EntityMinecartModular;
+
+import java.util.Collections;
+import java.util.Map;
 
 public class CommonProxy implements IGuiHandler {
 	public void init() {
@@ -54,15 +59,13 @@ public class CommonProxy implements IGuiHandler {
 		return null;
 	}
 
-	public World getClientWorld() {
-		return null;
-	}
-
 	public void preInit() {}
 
-	public void initItemModels() {}
+	public void registerDefaultItemRenderer(Item item) { }
+
+	public Map<Integer, ResourceLocation> getItemModelMap(Item item) {
+		return Collections.emptyMap();
+	}
 
 	public void loadComplete() {}
-
-	public void postInit() {}
 }

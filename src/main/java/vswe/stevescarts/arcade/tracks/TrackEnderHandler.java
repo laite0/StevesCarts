@@ -1,5 +1,6 @@
 package vswe.stevescarts.arcade.tracks;
 
+import net.minecraft.init.SoundEvents;
 import vswe.stevescarts.arcade.ArcadeGame;
 
 public class TrackEnderHandler extends Track {
@@ -20,7 +21,7 @@ public class TrackEnderHandler extends Track {
 		} else if (game.getEnderman().isAlive()) {
 			game.getEnderman().setAlive(false);
 		}
-		ArcadeGame.playDefaultSound("mob.endermen.portal", 1.0f, 1.0f);
+		ArcadeGame.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0f, 1.0f);
 	}
 
 	@Override

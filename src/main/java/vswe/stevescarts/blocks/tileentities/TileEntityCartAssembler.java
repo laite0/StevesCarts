@@ -382,7 +382,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 					}
 				}
 				if (validSize) {
-					final ModuleData module = ModItems.modules.getModuleData(item, true);
+					final ModuleData module = ModItems.MODULES.getModuleData(item, true);
 					if (module != null) {
 						modules.add(module);
 					}
@@ -394,7 +394,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 
 	public ModuleDataHull getHullModule() {
 		if (!getStackInSlot(0).isEmpty()) {
-			final ModuleData hulldata = ModItems.modules.getModuleData(getStackInSlot(0));
+			final ModuleData hulldata = ModItems.MODULES.getModuleData(getStackInSlot(0));
 			if (hulldata instanceof ModuleDataHull) {
 				return (ModuleDataHull) hulldata;
 			}
@@ -411,7 +411,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		if (hullSlot.getStack().isEmpty()) {
 			errors.add(Localization.GUI.ASSEMBLER.HULL_ERROR.translate());
 		} else {
-			final ModuleData hulldata = ModItems.modules.getModuleData(getStackInSlot(0));
+			final ModuleData hulldata = ModItems.MODULES.getModuleData(getStackInSlot(0));
 			if (hulldata == null || !(hulldata instanceof ModuleDataHull)) {
 				errors.add(Localization.GUI.ASSEMBLER.INVALID_HULL_SHORT.translate());
 			} else {
@@ -423,7 +423,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 				final ArrayList<ModuleData> modules = new ArrayList<>();
 				for (int i = 0; i < getSizeInventory() - nonModularSlots(); ++i) {
 					if (!getStackInSlot(i).isEmpty()) {
-						final ModuleData data = ModItems.modules.getModuleData(getStackInSlot(i));
+						final ModuleData data = ModItems.MODULES.getModuleData(getStackInSlot(i));
 						if (data != null) {
 							modules.add(data);
 						}
@@ -442,7 +442,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		final ArrayList<ModuleData> modules = new ArrayList<>();
 		for (int i = 0; i < getSizeInventory() - nonModularSlots(); ++i) {
 			if (!getStackInSlot(i).isEmpty()) {
-				final ModuleData data = ModItems.modules.getModuleData(getStackInSlot(i));
+				final ModuleData data = ModItems.MODULES.getModuleData(getStackInSlot(i));
 				if (data != null) {
 					modules.add(data);
 				}
@@ -534,7 +534,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		@Nonnull
 			ItemStack hullitem) {
 		if (!hullitem.isEmpty()) {
-			final ModuleData data = ModItems.modules.getModuleData(hullitem);
+			final ModuleData data = ModItems.MODULES.getModuleData(hullitem);
 			if (data != null && data instanceof ModuleDataHull) {
 				final ModuleDataHull hull = (ModuleDataHull) data;
 				return getValidSlotFromHull(hull);
@@ -743,11 +743,11 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		if (!isAssembling && outputSlot != null && !outputSlot.getStack().isEmpty()) {
 			@Nonnull
 			ItemStack itemInSlot = outputSlot.getStack();
-			if (itemInSlot.getItem() == ModItems.carts) {
+			if (itemInSlot.getItem() == ModItems.CARTS) {
 				final NBTTagCompound info = itemInSlot.getTagCompound();
 				if (info != null && info.hasKey("maxTime")) {
 					@Nonnull
-					ItemStack newItem = new ItemStack(ModItems.carts);
+					ItemStack newItem = new ItemStack(ModItems.CARTS);
 					final NBTTagCompound save = new NBTTagCompound();
 					save.setByteArray("Modules", info.getByteArray("Modules"));
 					newItem.setTagCompound(save);
@@ -760,8 +760,8 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 						for (int i = 0; i < moduleIDs.length; ++i) {
 							final byte id = moduleIDs[i];
 							@Nonnull
-							ItemStack module = new ItemStack(ModItems.modules, 1, id);
-							ModItems.modules.addExtraDataToModule(module, info, i + modulecount);
+							ItemStack module = new ItemStack(ModItems.MODULES, 1, id);
+							ModItems.MODULES.addExtraDataToModule(module, info, i + modulecount);
 							spareModules.add(module);
 						}
 					}
@@ -940,7 +940,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		final ArrayList<Byte> datalist = new ArrayList<>();
 		for (int i = 0; i < getSizeInventory() - nonModularSlots(); ++i) {
 			if (!getStackInSlot(i).isEmpty()) {
-				final ModuleData data = ModItems.modules.getModuleData(getStackInSlot(i));
+				final ModuleData data = ModItems.MODULES.getModuleData(getStackInSlot(i));
 				if (data != null) {
 					datalist.add((byte) getStackInSlot(i).getItemDamage());
 				}
@@ -994,7 +994,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 				return false;
 			}
 		}
-		return true;
+		return getOutputInfo() == null;
 	}
 
 	@Override
@@ -1071,7 +1071,6 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		for (int i = 0; i < items.tagCount(); ++i) {
 			final NBTTagCompound item = items.getCompoundTagAt(i);
 			final int slot = item.getByte("Slot") & 0xFF;
-			@Nonnull
 			ItemStack iStack = new ItemStack(item);
 			if (slot >= 0 && slot < getSizeInventory()) {
 				setInventorySlotContents(slot, iStack);
@@ -1081,7 +1080,6 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		spareModules.clear();
 		for (int j = 0; j < spares.tagCount(); ++j) {
 			final NBTTagCompound item2 = spares.getCompoundTagAt(j);
-			@Nonnull
 			ItemStack iStack = new ItemStack(item2);
 			spareModules.add(iStack);
 		}
@@ -1104,7 +1102,6 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		super.writeToNBT(tagCompound);
 		final NBTTagList items = new NBTTagList();
 		for (int i = 0; i < getSizeInventory(); ++i) {
-			@Nonnull
 			ItemStack iStack = getStackInSlot(i);
 			if (!iStack.isEmpty()) {
 				final NBTTagCompound item = new NBTTagCompound();
@@ -1116,7 +1113,6 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		tagCompound.setTag("Items", items);
 		final NBTTagList spares = new NBTTagList();
 		for (int j = 0; j < spareModules.size(); ++j) {
-			@Nonnull
 			ItemStack iStack2 = spareModules.get(j);
 			if (!iStack2.isEmpty()) {
 				final NBTTagCompound item2 = new NBTTagCompound();
@@ -1137,15 +1133,19 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		return tagCompound;
 	}
 
-	@Nonnull
-	public ItemStack getOutputOnInterupt() {
+	public NBTTagCompound getOutputInfo() {
 		if (outputItem.isEmpty()) {
-			return ItemStack.EMPTY;
+			return null;
 		}
 		if (!outputItem.hasTagCompound()) {
-			return ItemStack.EMPTY;
+			return null;
 		}
-		final NBTTagCompound info = outputItem.getTagCompound();
+		return outputItem.getTagCompound();
+	}
+
+	@Nonnull
+	public ItemStack getOutputOnInterupt() {
+		final NBTTagCompound info = getOutputInfo();
 		if (info == null) {
 			return ItemStack.EMPTY;
 		}
@@ -1155,12 +1155,11 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		final NBTTagCompound spares = new NBTTagCompound();
 		final byte[] moduleIDs = new byte[spareModules.size()];
 		for (int i = 0; i < spareModules.size(); ++i) {
-			@Nonnull
 			ItemStack item = spareModules.get(i);
-			final ModuleData data = ModItems.modules.getModuleData(item);
+			final ModuleData data = ModItems.MODULES.getModuleData(item);
 			if (data != null) {
 				moduleIDs[i] = data.getID();
-				ModItems.modules.addExtraDataToCart(info, item, i + modulecount);
+				ModItems.MODULES.addExtraDataToCart(info, item, i + modulecount);
 			}
 		}
 		info.setByteArray("Spares", moduleIDs);
@@ -1168,9 +1167,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 	}
 
 	@Override
-	public boolean isItemValidForSlot(final int slotId,
-	                                  @Nonnull
-		                                  ItemStack item) {
+	public boolean isItemValidForSlot(final int slotId, @Nonnull ItemStack item) {
 		return slotId >= 0 && slotId < slots.size() && slots.get(slotId).isItemValid(item);
 	}
 
@@ -1180,16 +1177,12 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 	}
 
 	@Override
-	public boolean canInsertItem(final int slot,
-	                             @Nonnull
-		                             ItemStack item, EnumFacing side) {
+	public boolean canInsertItem(final int slot, @Nonnull ItemStack item, EnumFacing side) {
 		return (side == EnumFacing.DOWN || side == EnumFacing.UP) && isItemValidForSlot(slot, item);
 	}
 
 	@Override
-	public boolean canExtractItem(final int slot,
-	                              @Nonnull
-		                              ItemStack item, EnumFacing side) {
+	public boolean canExtractItem(final int slot, @Nonnull ItemStack item, EnumFacing side) {
 		return true;
 	}
 

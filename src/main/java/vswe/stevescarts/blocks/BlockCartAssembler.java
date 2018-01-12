@@ -4,6 +4,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -15,7 +16,6 @@ import vswe.stevescarts.blocks.tileentities.TileEntityCartAssembler;
 import vswe.stevescarts.blocks.tileentities.TileEntityUpgrade;
 import vswe.stevescarts.packet.PacketStevesCarts;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class BlockCartAssembler extends BlockContainerBase {
@@ -157,39 +157,12 @@ public class BlockCartAssembler extends BlockContainerBase {
 
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		final TileEntityCartAssembler var7 = (TileEntityCartAssembler) world.getTileEntity(pos);
-		var7.isDead = true;
+		final TileEntityCartAssembler tile = (TileEntityCartAssembler) world.getTileEntity(pos);
+		tile.isDead = true;
 		updateMultiBlock(world, pos);
-		if (!var7.isEmpty()) {
-			for (int var8 = 0; var8 < var7.getSizeInventory(); ++var8) {
-				@Nonnull
-				ItemStack var9 = var7.removeStackFromSlot(var8);
-				if (!var9.isEmpty()) {
-					final float var10 = world.rand.nextFloat() * 0.8f + 0.1f;
-					final float var11 = world.rand.nextFloat() * 0.8f + 0.1f;
-					final float var12 = world.rand.nextFloat() * 0.8f + 0.1f;
-					while (var9.getCount() > 0) {
-						int var13 = world.rand.nextInt(21) + 10;
-						if (var13 > var9.getCount()) {
-							var13 = var9.getCount();
-						}
-						@Nonnull
-						ItemStack itemStack = var9;
-						itemStack.shrink(var13);
-						final EntityItem var14 = new EntityItem(world, pos.getX() + var10, pos.getY() + var11, pos.getZ() + var12, new ItemStack(var9.getItem(), var13, var9.getItemDamage()));
-						final float var15 = 0.05f;
-						var14.motionX = (float) world.rand.nextGaussian() * var15;
-						var14.motionY = (float) world.rand.nextGaussian() * var15 + 0.2f;
-						var14.motionZ = (float) world.rand.nextGaussian() * var15;
-						if (var9.hasTagCompound()) {
-							var14.getItem().setTagCompound(var9.getTagCompound().copy());
-						}
-						world.spawnEntity(var14);
-					}
-				}
-			}
-			@Nonnull
-			ItemStack outputItem = var7.getOutputOnInterupt();
+		if (!tile.isEmpty()) {
+			InventoryHelper.dropInventoryItems(world, pos, tile);
+			ItemStack outputItem = tile.getOutputOnInterupt();
 			if (!outputItem.isEmpty()) {
 				final EntityItem eItem = new EntityItem(world, pos.getX() + 0.20000000298023224, pos.getY() + 0.20000000298023224, pos.getZ() + 0.2f, outputItem);
 				eItem.motionX = (float) world.rand.nextGaussian() * 0.05f;

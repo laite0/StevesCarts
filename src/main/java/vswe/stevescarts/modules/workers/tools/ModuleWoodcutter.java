@@ -96,18 +96,14 @@ public abstract class ModuleWoodcutter extends ModuleTool implements ISuppliesMo
 				plantSize = (ModulePlantSize) module;
 			}
 		}
-		for (ITreeModule treeModule : APIHelper.treeModules) {
-			treeModules.add(treeModule);
-		}
+		treeModules.addAll(APIHelper.treeModules);
 	}
 
 	public abstract int getPercentageDropChance();
 
 	public NonNullList<ItemStack> getTierDrop(List<ItemStack> baseItems) {
 		NonNullList<ItemStack> nerfedItems = NonNullList.create();
-		for (
-			@Nonnull
-				ItemStack item : baseItems) {
+		for (@Nonnull ItemStack item : baseItems) {
 			if (!item.isEmpty()) {
 				dropItemByMultiplierChance(nerfedItems, item, getPercentageDropChance());
 			}
@@ -115,9 +111,7 @@ public abstract class ModuleWoodcutter extends ModuleTool implements ISuppliesMo
 		return nerfedItems;
 	}
 
-	private void dropItemByMultiplierChance(List<ItemStack> items,
-	                                        @Nonnull
-		                                        ItemStack item, int percentage) {
+	private void dropItemByMultiplierChance(List<ItemStack> items, @Nonnull ItemStack item, int percentage) {
 		int drop = 0;
 		while (percentage > 0) {
 			if (getCart().rand.nextInt(100) < percentage) {
@@ -300,9 +294,7 @@ public abstract class ModuleWoodcutter extends ModuleTool implements ISuppliesMo
 		}
 		List<ItemStack> nerfedstuff = getTierDrop(stuff);
 		boolean first = true;
-		for (
-			@Nonnull
-				ItemStack iStack : nerfedstuff) {
+		for (@Nonnull ItemStack iStack : nerfedstuff) {
 			getCart().addItemToChest(iStack, Slot.class, SlotFuel.class);
 			if (iStack.getCount() != 0) {
 				if (first) {
@@ -418,9 +410,7 @@ public abstract class ModuleWoodcutter extends ModuleTool implements ISuppliesMo
 		return null;
 	}
 
-	public boolean isSaplingHandler(
-		@Nonnull
-			ItemStack sapling) {
+	public boolean isSaplingHandler(@Nonnull ItemStack sapling) {
 		for (final ITreeModule module : treeModules) {
 			if (module.isSapling(sapling)) {
 				return true;

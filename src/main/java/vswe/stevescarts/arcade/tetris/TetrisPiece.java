@@ -1,14 +1,17 @@
 package vswe.stevescarts.arcade.tetris;
 
-import vswe.stevescarts.StevesCarts;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundEvent;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.arcade.ArcadeGame;
 import vswe.stevescarts.guis.GuiMinecart;
+import vswe.stevescarts.handlers.SoundHandler;
 
 public class TetrisPiece {
 	private TetrisPiecePart[] parts;
 	private int x;
 	private int y;
-	private String sound;
+	private SoundEvent sound;
 	private float volume;
 	private int rotationOffset;
 
@@ -19,46 +22,46 @@ public class TetrisPiece {
 	}
 
 	public static TetrisPiece createPiece(final int type) {
-		String sound = null;
+		SoundEvent sound = null;
 		float volume = 0.5f;
 		int rotationOffset = 0;
 		TetrisPiecePart[] parts = null;
 		switch (type) {
 			case 0: {
 				parts = createEndermanParts();
-				sound = "mob.endermen.hit";
+				sound = SoundEvents.ENTITY_ENDERMEN_HURT;
 				break;
 			}
 			case 1: {
 				parts = createSlimeParts();
-				sound = "mob.slime.big";
+				sound = SoundEvents.ENTITY_SLIME_JUMP;
 				rotationOffset = 1;
 				break;
 			}
 			case 2: {
 				parts = createWitherParts();
-				sound = "mob.wither.hurt";
+				sound = SoundEvents.ENTITY_WITHER_HURT;
 				volume = 0.25f;
 				break;
 			}
 			case 3: {
 				parts = createWitchParts();
-				sound = "mob.cat.hitt";
+				sound = SoundEvents.ENTITY_CAT_HURT;
 				break;
 			}
 			case 4: {
 				parts = createPigParts();
-				sound = "mob.pig.say";
+				sound = SoundEvents.ENTITY_PIG_AMBIENT;
 				break;
 			}
 			case 5: {
 				parts = createSteveParts();
-				sound = "damage.hit";
+				sound = SoundEvents.ENTITY_PLAYER_HURT;
 				break;
 			}
 			case 6: {
 				parts = createSheepParts();
-				sound = "mob.sheep.say";
+				sound = SoundEvents.ENTITY_SHEEP_AMBIENT;
 				break;
 			}
 			default: {
@@ -143,12 +146,12 @@ public class TetrisPiece {
 							isGameOver = true;
 						}
 					}
-					if (StevesCarts.instance.useArcadeMobSounds) {
+					if (SCConfig.useArcadeMobSounds) {
 						if (sound != null) {
-							ArcadeGame.playDefaultSound(sound, volume, (game.getModule().getCart().rand.nextFloat() - game.getModule().getCart().rand.nextFloat()) * 0.2f + 1.0f);
+							ArcadeGame.playSound(sound, volume, (game.getModule().getCart().rand.nextFloat() - game.getModule().getCart().rand.nextFloat()) * 0.2f + 1.0f);
 						}
 					} else {
-						ArcadeGame.playSound("boop", 1.0f, 1.0f);
+						ArcadeGame.playSound(SoundHandler.BOOP, 1.0f, 1.0f);
 					}
 				}
 				return isGameOver ? MOVE_RESULT.GAME_OVER : MOVE_RESULT.FAIL;

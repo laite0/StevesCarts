@@ -1,9 +1,9 @@
 package vswe.stevescarts.helpers;
 
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.blocks.tileentities.TileEntityDetector;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.guis.GuiDetector;
@@ -151,7 +151,7 @@ public class LogicObject {
 			if (!tooClose) {
 				Gui.drawRect(px1, py2, px2, py2 + 1, -12566464);
 				Gui.drawRect(px1, py1, px1 + 1, py2, -12566464);
-				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+				GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 			}
 		}
 		for (final LogicObject child : childs) {

@@ -1,6 +1,7 @@
 package vswe.stevescarts.models;
 
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -119,19 +120,19 @@ public class ModelDynamite extends ModelCartbase {
 			super.render(render, module, yaw, pitch, roll, mult, partialtime);
 		} else {
 			final float fusemult = (float) Math.abs(Math.sin(((ModuleDynamite) module).getFuse() / ((ModuleDynamite) module).getFuseLength() * 3.141592653589793 * 6.0));
-			GL11.glScalef(sizemult = fusemult * 0.5f + 1.0f, sizemult, sizemult);
+			GlStateManager.scale(sizemult = fusemult * 0.5f + 1.0f, sizemult, sizemult);
 			super.render(render, module, yaw, pitch, roll, mult, partialtime);
-			GL11.glDisable(3553);
-			GL11.glDisable(2896);
-			GL11.glEnable(3042);
-			GL11.glBlendFunc(770, 772);
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, fusemult);
-			super.render(render, module, yaw, pitch, roll, mult, partialtime);
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			GL11.glDisable(3042);
-			GL11.glEnable(2896);
-			GL11.glEnable(3553);
-			GL11.glScalef(1.0f / sizemult, 1.0f / sizemult, 1.0f / sizemult);
+			GlStateManager.disableTexture2D();
+			GlStateManager.disableLighting();
+			GlStateManager.enableBlend();
+			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_DST_ALPHA);
+			GlStateManager.color(1.0F, 1.0F, 1.0F, fusemult);
+			super.render(render,module,yaw,pitch,roll, mult, partialtime);
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+			GlStateManager.disableBlend();
+			GlStateManager.enableLighting();
+			GlStateManager.enableTexture2D();
+			GlStateManager.scale(1.0f / sizemult, 1.0f / sizemult, 1.0f / sizemult);
 		}
 	}
 

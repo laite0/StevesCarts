@@ -2,7 +2,7 @@ package vswe.stevescarts.containers.slots;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import vswe.stevescarts.StevesCarts;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.helpers.ComponentTypes;
 
 import javax.annotation.Nonnull;
@@ -14,7 +14,7 @@ public class SlotExplosion extends SlotBase implements ISlotExplosions {
 
 	@Override
 	public int getSlotStackLimit() {
-		return StevesCarts.instance.maxDynamites;
+		return SCConfig.maxDynamites;
 	}
 
 	@Override

@@ -1,8 +1,6 @@
 package vswe.stevescarts.modules.data;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -11,9 +9,11 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.Constants;
-import vswe.stevescarts.StevesCarts;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.entitys.EntityMinecartModular;
-import vswe.stevescarts.helpers.*;
+import vswe.stevescarts.helpers.CartVersion;
+import vswe.stevescarts.helpers.Localization;
+import vswe.stevescarts.helpers.ResourceHelper;
 import vswe.stevescarts.items.ModItems;
 import vswe.stevescarts.models.*;
 import vswe.stevescarts.models.engines.ModelEngineFrame;
@@ -68,10 +68,8 @@ public class ModuleData {
 	private ArrayList<ModuleData> nemesis;
 	private ArrayList<ModuleDataGroup> requirement;
 	private ModuleData parent;
-	private boolean isValid;
 	private boolean isLocked;
 	private boolean defaultLock;
-	private boolean hasRecipe;
 	private ArrayList<Localization.MODULE_INFO> message;
 	private HashMap<String, ModelCartbase> models;
 	private HashMap<String, ModelCartbase> modelsPlaceholder;
@@ -79,9 +77,7 @@ public class ModuleData {
 	private float modelMult;
 	private boolean useExtraData;
 	private byte extraDataDefaultValue;
-	private ArrayList<Object[][]> recipes;
 	private static final int MAX_MESSAGE_ROW_LENGTH = 30;
-	private String icon;
 
 	public static HashMap<Byte, ModuleData> getList() {
 		return ModuleData.moduleList;
@@ -92,209 +88,109 @@ public class ModuleData {
 	}
 
 	public static void init() {
-		final String planks = "plankWood";
-		final String wood = "logWood";
-		@Nonnull
-		ItemStack woodSingleSlab = new ItemStack(Blocks.WOODEN_SLAB, 1, -1);
-		@Nonnull
-		ItemStack bonemeal = new ItemStack(Items.DYE, 1, 15);
 		ModuleData.moduleGroups = new Class[] { ModuleHull.class, ModuleEngine.class, ModuleTool.class, ModuleStorage.class, ModuleAddon.class };
-		ModuleData.moduleGroupNames = new Localization.MODULE_INFO[] { Localization.MODULE_INFO.HULL_CATEGORY, Localization.MODULE_INFO.ENGINE_CATEGORY, Localization.MODULE_INFO.TOOL_CATEGORY,
-			Localization.MODULE_INFO.STORAGE_CATEGORY, Localization.MODULE_INFO.ADDON_CATEGORY, Localization.MODULE_INFO.ATTACHMENT_CATEGORY };
+		ModuleData.moduleGroupNames = new Localization.MODULE_INFO[] { Localization.MODULE_INFO.HULL_CATEGORY, Localization.MODULE_INFO.ENGINE_CATEGORY, Localization.MODULE_INFO.TOOL_CATEGORY, Localization.MODULE_INFO.STORAGE_CATEGORY, Localization.MODULE_INFO.ADDON_CATEGORY, Localization.MODULE_INFO.ATTACHMENT_CATEGORY };
 		ModuleData.moduleList = new HashMap<>();
 		final ModuleDataGroup engineGroup = new ModuleDataGroup(Localization.MODULE_INFO.ENGINE_GROUP);
-		final ModuleData coalStandard = new ModuleData(0, "Coal Engine", ModuleCoalStandard.class, 15).addRecipe(new Object[][] { { Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT },
-			{ Items.IRON_INGOT, Blocks.FURNACE, Items.IRON_INGOT }, { Blocks.PISTON, null, Blocks.PISTON } });
-		final ModuleData coalTiny = new ModuleData(44, "Tiny Coal Engine", ModuleCoalTiny.class, 2).addRecipe(new Object[][] { { Items.IRON_INGOT, Blocks.FURNACE, Items.IRON_INGOT },
-			{ null, Blocks.PISTON, null } });
+
+
+		final ModuleData coalStandard = new ModuleData(0, "Coal Engine", ModuleCoalStandard.class, 15);
+		final ModuleData coalTiny = new ModuleData(44, "Tiny Coal Engine", ModuleCoalTiny.class, 2);
 		addNemesis(coalTiny, coalStandard);
-		final ModuleData solar1 = new ModuleData(1, "Solar Engine", ModuleSolarStandard.class, 20).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP }).removeModel("Top").addRecipe(new Object[][] {
-			{ Items.IRON_INGOT, ComponentTypes.SOLAR_PANEL.getItemStack(), Items.IRON_INGOT },
-			{ ComponentTypes.SOLAR_PANEL.getItemStack(), ComponentTypes.ADVANCED_PCB.getItemStack(), ComponentTypes.SOLAR_PANEL.getItemStack() },
-			{ Blocks.PISTON, ComponentTypes.SOLAR_PANEL.getItemStack(), Blocks.PISTON } });
-		final ModuleData solar2 = new ModuleData(45, "Basic Solar Engine", ModuleSolarBasic.class, 12).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP }).removeModel("Top").addRecipe(new Object[][] {
-			{ ComponentTypes.SOLAR_PANEL.getItemStack(), Items.IRON_INGOT, ComponentTypes.SOLAR_PANEL.getItemStack() },
-			{ Items.IRON_INGOT, ComponentTypes.SIMPLE_PCB.getItemStack(), Items.IRON_INGOT }, { null, Blocks.PISTON, null } });
-		final ModuleData compactsolar = new ModuleData(56, "Compact Solar Engine", ModuleSolarCompact.class, 32).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT }).addRecipe(new Object[][] {
-			{ ComponentTypes.ADVANCED_SOLAR_PANEL.getItemStack(), Items.IRON_INGOT, ComponentTypes.ADVANCED_SOLAR_PANEL.getItemStack() },
-			{ ComponentTypes.ADVANCED_PCB.getItemStack(), Items.REDSTONE, ComponentTypes.ADVANCED_PCB.getItemStack() }, { Blocks.PISTON, Items.IRON_INGOT, Blocks.PISTON } });
-		new ModuleData(2, "Side Chests", ModuleSideChests.class, 3).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT }).addRecipe(new Object[][] {
-			{ ComponentTypes.HUGE_CHEST_PANE.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.HUGE_CHEST_PANE.getItemStack() },
-			{ ComponentTypes.LARGE_CHEST_PANE.getItemStack(), ComponentTypes.CHEST_LOCK.getItemStack(), ComponentTypes.LARGE_CHEST_PANE.getItemStack() },
-			{ ComponentTypes.HUGE_CHEST_PANE.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.HUGE_CHEST_PANE.getItemStack() } });
-		new ModuleData(3, "Top Chest", ModuleTopChest.class, 6).addSide(SIDE.TOP).addRecipe(new Object[][] {
-			{ ComponentTypes.HUGE_CHEST_PANE.getItemStack(), ComponentTypes.HUGE_CHEST_PANE.getItemStack(), ComponentTypes.HUGE_CHEST_PANE.getItemStack() },
-			{ ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.CHEST_LOCK.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack() },
-			{ ComponentTypes.HUGE_CHEST_PANE.getItemStack(), ComponentTypes.HUGE_CHEST_PANE.getItemStack(), ComponentTypes.HUGE_CHEST_PANE.getItemStack() } });
-		final ModuleData frontChest = new ModuleData(4, "Front Chest", ModuleFrontChest.class, 5).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.LARGE_CHEST_PANE.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack() },
-			{ ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.CHEST_LOCK.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack() },
-			{ ComponentTypes.LARGE_CHEST_PANE.getItemStack(), ComponentTypes.LARGE_CHEST_PANE.getItemStack(), ComponentTypes.LARGE_CHEST_PANE.getItemStack() } });
-		new ModuleData(5, "Internal Storage", ModuleInternalStorage.class, 25).setAllowDuplicate().addRecipe(new Object[][] {
-			{ ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack() },
-			{ ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.CHEST_LOCK.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack() },
-			{ ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack(), ComponentTypes.CHEST_PANE.getItemStack() } });
-		new ModuleData(6, "Extracting Chests", ModuleExtractingChests.class, 75).addSides(new SIDE[] { SIDE.CENTER, SIDE.RIGHT, SIDE.LEFT }).addRecipe(new Object[][] {
-			{ ComponentTypes.HUGE_IRON_PANE.getItemStack(), ComponentTypes.HUGE_IRON_PANE.getItemStack(), ComponentTypes.HUGE_IRON_PANE.getItemStack() },
-			{ ComponentTypes.LARGE_IRON_PANE.getItemStack(), ComponentTypes.CHEST_LOCK.getItemStack(), ComponentTypes.LARGE_IRON_PANE.getItemStack() },
-			{ ComponentTypes.HUGE_DYNAMIC_PANE.getItemStack(), ComponentTypes.LARGE_DYNAMIC_PANE.getItemStack(), ComponentTypes.HUGE_DYNAMIC_PANE.getItemStack() } });
-		new ModuleData(7, "Torch Placer", ModuleTorch.class, 14).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT }).addRecipe(new Object[][] {
-			{ ComponentTypes.TRI_TORCH.getItemStack(), null, ComponentTypes.TRI_TORCH.getItemStack() }, { Items.IRON_INGOT, null, Items.IRON_INGOT },
-			{ Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT } });
-		final ModuleData drill = new ModuleDataTool(8, "Basic Drill", ModuleDrillDiamond.class, 10, false).addSide(SIDE.FRONT).addRecipe(new Object[][] { { Items.IRON_INGOT, Items.DIAMOND, null },
-			{ null, Items.IRON_INGOT, Items.DIAMOND }, { Items.IRON_INGOT, Items.DIAMOND, null } });
-		final ModuleData ironDrill = new ModuleDataTool(42, "Iron Drill", ModuleDrillIron.class, 3, false).addSide(SIDE.FRONT).addRecipe(new Object[][] { { Items.IRON_INGOT, Items.IRON_INGOT, null },
-			{ null, Items.IRON_INGOT, Items.IRON_INGOT }, { Items.IRON_INGOT, Items.IRON_INGOT, null } });
-		final ModuleData hardeneddrill = new ModuleDataTool(43, "Hardened Drill", ModuleDrillHardened.class, 45, false).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ ComponentTypes.HARDENED_MESH.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack(), null },
-			{ Blocks.DIAMOND_BLOCK, drill.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack() },
-			{ ComponentTypes.HARDENED_MESH.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack(), null } });
-		final ModuleData galgdrill = new ModuleDataTool(9, "Galgadorian Drill", ModuleDrillGalgadorian.class, 150, true).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.ENHANCED_GALGADORIAN_METAL.getItemStack(), null },
-			{ Blocks.DIAMOND_BLOCK, hardeneddrill.getItemStack(), ComponentTypes.ENHANCED_GALGADORIAN_METAL.getItemStack() },
-			{ ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.ENHANCED_GALGADORIAN_METAL.getItemStack(), null } });
+		final ModuleData solar1 = new ModuleData(1, "Solar Engine", ModuleSolarStandard.class, 20);
+		final ModuleData solar2 = new ModuleData(45, "Basic Solar Engine", ModuleSolarBasic.class, 12);
+		final ModuleData compactsolar = new ModuleData(56, "Compact Solar Engine", ModuleSolarCompact.class, 32).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
+
+		new ModuleData(2, "Side Chests", ModuleSideChests.class, 3).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
+		new ModuleData(3, "Top Chest", ModuleTopChest.class, 6).addSide(SIDE.TOP);
+		final ModuleData frontChest = new ModuleData(4, "Front Chest", ModuleFrontChest.class, 5).addSide(SIDE.FRONT);
+		new ModuleData(5, "Internal Storage", ModuleInternalStorage.class, 25).setAllowDuplicate();
+		new ModuleData(6, "Extracting Chests", ModuleExtractingChests.class, 75).addSides(new SIDE[] { SIDE.CENTER, SIDE.RIGHT, SIDE.LEFT });
+
+		new ModuleData(7, "Torch Placer", ModuleTorch.class, 14).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
+
+		final ModuleData drill = new ModuleDataTool(8, "Basic Drill", ModuleDrillDiamond.class, 10, false).addSide(SIDE.FRONT);
+		final ModuleData ironDrill = new ModuleDataTool(42, "Iron Drill", ModuleDrillIron.class, 3, false).addSide(SIDE.FRONT);
+		final ModuleData hardeneddrill = new ModuleDataTool(43, "Hardened Drill", ModuleDrillHardened.class, 45, false).addSide(SIDE.FRONT);
+		final ModuleData galgdrill = new ModuleDataTool(9, "Galgadorian Drill", ModuleDrillGalgadorian.class, 150, true).addSide(SIDE.FRONT);
 		final ModuleDataGroup drillGroup = new ModuleDataGroup(Localization.MODULE_INFO.DRILL_GROUP);
 		drillGroup.add(drill);
 		drillGroup.add(ironDrill);
 		drillGroup.add(hardeneddrill);
 		drillGroup.add(galgdrill);
-		final ModuleData railer = new ModuleData(10, "Railer", ModuleRailer.class, 3).addRecipe(new Object[][] { { Blocks.STONE, Blocks.STONE, Blocks.STONE },
-			{ Items.IRON_INGOT, Blocks.RAIL, Items.IRON_INGOT }, { Blocks.STONE, Blocks.STONE, Blocks.STONE } });
-		final ModuleData largerailer = new ModuleData(11, "Large Railer", ModuleRailerLarge.class, 17).addRecipe(new Object[][] { { Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT },
-			{ railer.getItemStack(), Blocks.RAIL, railer.getItemStack() }, { Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT } });
+
+		final ModuleData railer = new ModuleData(10, "Railer", ModuleRailer.class, 3);
+		final ModuleData largerailer = new ModuleData(11, "Large Railer", ModuleRailerLarge.class, 17);
 		addNemesis(railer, largerailer);
-		new ModuleData(12, "Bridge Builder", ModuleBridge.class, 14).addRecipe(new Object[][] { { null, Items.REDSTONE, null },
-			{ Blocks.BRICK_BLOCK, ComponentTypes.SIMPLE_PCB.getItemStack(), Blocks.BRICK_BLOCK }, { null, Blocks.PISTON, null } });
-		new ModuleData(13, "Track Remover", ModuleRemover.class, 8).addSides(new SIDE[] { SIDE.TOP, SIDE.BACK }).addRecipe(new Object[][] { { Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT },
-			{ Items.IRON_INGOT, null, Items.IRON_INGOT }, { Items.IRON_INGOT, null, null } });
+
+		new ModuleData(12, "Bridge Builder", ModuleBridge.class, 14);
+		new ModuleData(13, "Track Remover", ModuleRemover.class, 8).addSides(new SIDE[] { SIDE.TOP, SIDE.BACK });
+
 		final ModuleDataGroup farmerGroup = new ModuleDataGroup(Localization.MODULE_INFO.FARMER_GROUP);
-		final ModuleData farmerbasic = new ModuleDataTool(14, "Basic Farmer", ModuleFarmerDiamond.class, 36, false).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ Items.DIAMOND, Items.DIAMOND, Items.DIAMOND }, { null, Items.IRON_INGOT, null },
-			{ ComponentTypes.SIMPLE_PCB.getItemStack(), Items.GOLD_INGOT, ComponentTypes.SIMPLE_PCB.getItemStack() } });
-		final ModuleData farmergalg = new ModuleDataTool(84, "Galgadorian Farmer", ModuleFarmerGalgadorian.class, 55, true).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack() },
-			{ null, ComponentTypes.REINFORCED_METAL.getItemStack(), null },
-			{ ComponentTypes.ADVANCED_PCB.getItemStack(), Items.GOLD_INGOT, ComponentTypes.ADVANCED_PCB.getItemStack() } }).addRecipe(new Object[][] {
-			{ ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack() },
-			{ null, farmerbasic.getItemStack(), null }, { null, ComponentTypes.SIMPLE_PCB.getItemStack(), null } });
+		final ModuleData farmerbasic = new ModuleDataTool(14, "Basic Farmer", ModuleFarmerDiamond.class, 36, false).addSide(SIDE.FRONT);
+		final ModuleData farmergalg = new ModuleDataTool(84, "Galgadorian Farmer", ModuleFarmerGalgadorian.class, 55, true).addSide(SIDE.FRONT);
 		farmerGroup.add(farmerbasic);
 		farmerGroup.add(farmergalg);
+
 		final ModuleDataGroup woodcutterGroup = new ModuleDataGroup(Localization.MODULE_INFO.CUTTER_GROUP);
-		final ModuleData woodcutter = new ModuleDataTool(15, "Basic Wood Cutter", ModuleWoodcutterDiamond.class, 34, false).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ ComponentTypes.SAW_BLADE.getItemStack(), ComponentTypes.SAW_BLADE.getItemStack(), ComponentTypes.SAW_BLADE.getItemStack() },
-			{ ComponentTypes.SAW_BLADE.getItemStack(), Items.IRON_INGOT, ComponentTypes.SAW_BLADE.getItemStack() }, { null, ComponentTypes.WOOD_CUTTING_CORE.getItemStack(), null } });
-		final ModuleData woodcutterHardened = new ModuleDataTool(79, "Hardened Wood Cutter", ModuleWoodcutterHardened.class, 65, false).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ ComponentTypes.HARDENED_SAW_BLADE.getItemStack(), ComponentTypes.HARDENED_SAW_BLADE.getItemStack(), ComponentTypes.HARDENED_SAW_BLADE.getItemStack() },
-			{ ComponentTypes.HARDENED_SAW_BLADE.getItemStack(), Items.DIAMOND, ComponentTypes.HARDENED_SAW_BLADE.getItemStack() },
-			{ null, ComponentTypes.WOOD_CUTTING_CORE.getItemStack(), null } }).addRecipe(new Object[][] {
-			{ ComponentTypes.REINFORCED_METAL.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack() },
-			{ ComponentTypes.REINFORCED_METAL.getItemStack(), Items.IRON_INGOT, ComponentTypes.REINFORCED_METAL.getItemStack() }, { null, woodcutter.getItemStack(), null } });
-		final ModuleData woodcutterGalgadorian = new ModuleDataTool(80, "Galgadorian Wood Cutter", ModuleWoodcutterGalgadorian.class, 120, true).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ ComponentTypes.GALGADORIAN_SAW_BLADE.getItemStack(), ComponentTypes.GALGADORIAN_SAW_BLADE.getItemStack(), ComponentTypes.GALGADORIAN_SAW_BLADE.getItemStack() },
-			{ ComponentTypes.GALGADORIAN_SAW_BLADE.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack(), ComponentTypes.GALGADORIAN_SAW_BLADE.getItemStack() },
-			{ null, ComponentTypes.WOOD_CUTTING_CORE.getItemStack(), null } }).addRecipe(new Object[][] {
-			{ ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack() },
-			{ ComponentTypes.GALGADORIAN_METAL.getItemStack(), Items.IRON_INGOT, ComponentTypes.GALGADORIAN_METAL.getItemStack() }, { null, woodcutterHardened.getItemStack(), null } });
+		final ModuleData woodcutter = new ModuleDataTool(15, "Basic Wood Cutter", ModuleWoodcutterDiamond.class, 34, false).addSide(SIDE.FRONT);
+		final ModuleData woodcutterHardened = new ModuleDataTool(79, "Hardened Wood Cutter", ModuleWoodcutterHardened.class, 65, false).addSide(SIDE.FRONT);
+		final ModuleData woodcutterGalgadorian = new ModuleDataTool(80, "Galgadorian Wood Cutter", ModuleWoodcutterGalgadorian.class, 120, true).addSide(SIDE.FRONT);
 		woodcutterGroup.add(woodcutter);
 		woodcutterGroup.add(woodcutterHardened);
 		woodcutterGroup.add(woodcutterGalgadorian);
+
 		final ModuleDataGroup tankGroup = new ModuleDataGroup(Localization.MODULE_INFO.TANK_GROUP);
-		new ModuleData(16, "Hydrator", ModuleHydrater.class, 6).addRequirement(tankGroup).addRecipe(new Object[][] { { Items.IRON_INGOT, Items.GLASS_BOTTLE, Items.IRON_INGOT },
-			{ null, Blocks.OAK_FENCE, null } });
-		new ModuleData(18, "Fertilizer", ModuleFertilizer.class, 10).addRecipe(new Object[][] { { bonemeal, null, bonemeal }, { Items.GLASS_BOTTLE, Items.LEATHER, Items.GLASS_BOTTLE },
-			{ Items.LEATHER, ComponentTypes.SIMPLE_PCB.getItemStack(), Items.LEATHER } });
-		new ModuleData(19, "Height Controller", ModuleHeightControl.class, 20).addRecipe(new Object[][] { { null, Items.COMPASS, null },
-			{ Items.PAPER, ComponentTypes.SIMPLE_PCB.getItemStack(), Items.PAPER }, { Items.PAPER, Items.PAPER, Items.PAPER } });
-		final ModuleData liquidsensors = new ModuleData(20, "Liquid Sensors", ModuleLiquidSensors.class, 27).addRequirement(drillGroup).addRecipe(new Object[][] {
-			{ Items.REDSTONE, null, Items.REDSTONE }, { Items.LAVA_BUCKET, Items.DIAMOND, Items.WATER_BUCKET }, { Items.IRON_INGOT, ComponentTypes.ADVANCED_PCB.getItemStack(), Items.IRON_INGOT } });
-		final ModuleData seat = new ModuleData(25, "Seat", ModuleSeat.class, 3).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP }).addRecipe(new Object[][] { { null, planks }, { null, planks },
-			{ woodSingleSlab, planks } });
-		new ModuleData(26, "Brake Handle", ModuleBrake.class, 12).addSide(SIDE.RIGHT).addParent(seat).addRecipe(new Object[][] { { null, null, new ItemStack(Items.DYE, 1, 1) },
-			{ Items.IRON_INGOT, ComponentTypes.REFINED_HANDLE.getItemStack(), null }, { Items.REDSTONE, Items.IRON_INGOT, null } });
-		new ModuleData(27, "Advanced Control System", ModuleAdvControl.class, 38).addSide(SIDE.RIGHT).addParent(seat).addRecipe(new Object[][] {
-			{ null, ComponentTypes.GRAPHICAL_INTERFACE.getItemStack(), null }, { Items.REDSTONE, ComponentTypes.WHEEL.getItemStack(), Items.REDSTONE },
-			{ Items.IRON_INGOT, Items.IRON_INGOT, ComponentTypes.SPEED_HANDLE.getItemStack() } });
+		new ModuleData(16, "Hydrator", ModuleHydrater.class, 6).addRequirement(tankGroup);
+		new ModuleData(18, "Fertilizer", ModuleFertilizer.class, 10);
+		new ModuleData(19, "Height Controller", ModuleHeightControl.class, 20);
+		final ModuleData liquidsensors = new ModuleData(20, "Liquid Sensors", ModuleLiquidSensors.class, 27).addRequirement(drillGroup);
+		final ModuleData seat = new ModuleData(25, "Seat", ModuleSeat.class, 3).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP });
+		new ModuleData(26, "Brake Handle", ModuleBrake.class, 12).addSide(SIDE.RIGHT).addParent(seat);
+		new ModuleData(27, "Advanced Control System", ModuleAdvControl.class, 38);
+
 		final ModuleDataGroup detectorGroup = new ModuleDataGroup(Localization.MODULE_INFO.ENTITY_GROUP);
-		final ModuleData shooter = new ModuleData(28, "Shooter", ModuleShooter.class, 15).addSide(SIDE.TOP).addRecipe(new Object[][] {
-			{ ComponentTypes.PIPE.getItemStack(), ComponentTypes.PIPE.getItemStack(), ComponentTypes.PIPE.getItemStack() },
-			{ ComponentTypes.PIPE.getItemStack(), ComponentTypes.SHOOTING_STATION.getItemStack(), ComponentTypes.PIPE.getItemStack() },
-			{ ComponentTypes.PIPE.getItemStack(), ComponentTypes.PIPE.getItemStack(), ComponentTypes.PIPE.getItemStack() } });
-		final ModuleData advshooter = new ModuleData(29, "Advanced Shooter", ModuleShooterAdv.class, 50).addSide(SIDE.TOP).addRequirement(detectorGroup).addRecipe(new Object[][] {
-			{ null, ComponentTypes.ENTITY_SCANNER.getItemStack(), null }, { null, ComponentTypes.SHOOTING_STATION.getItemStack(), ComponentTypes.PIPE.getItemStack() },
-			{ Items.IRON_INGOT, ComponentTypes.ENTITY_ANALYZER.getItemStack(), Items.IRON_INGOT } });
 		final ModuleDataGroup shooterGroup = new ModuleDataGroup(Localization.MODULE_INFO.SHOOTER_GROUP);
+		final ModuleData shooter = new ModuleData(28, "Shooter", ModuleShooter.class, 15).addSide(SIDE.TOP);
+		final ModuleData advshooter = new ModuleData(29, "Advanced Shooter", ModuleShooterAdv.class, 50).addSide(SIDE.TOP).addRequirement(detectorGroup);
 		shooterGroup.add(shooter);
 		shooterGroup.add(advshooter);
-		final ModuleData animal = new ModuleData(21, "Entity Detector: Animal", ModuleAnimal.class, 1).addParent(advshooter).addRecipe(new Object[][] { { Items.PORKCHOP },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		final ModuleData player = new ModuleData(22, "Entity Detector: Player", ModulePlayer.class, 7).addParent(advshooter).addRecipe(new Object[][] { { Items.DIAMOND },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		final ModuleData villager = new ModuleData(23, "Entity Detector: Villager", ModuleVillager.class, 1).addParent(advshooter).addRecipe(new Object[][] { { Items.EMERALD },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		final ModuleData monster = new ModuleData(24, "Entity Detector: Monster", ModuleMonster.class, 1).addParent(advshooter).addRecipe(new Object[][] { { Items.SLIME_BALL },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		final ModuleData bats = new ModuleData(48, "Entity Detector: Bat", ModuleBat.class, 1).addParent(advshooter).addRecipe(new Object[][] { { Blocks.PUMPKIN },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		if (!Constants.isHalloween) {
-			bats.lock();
-		}
+
+		final ModuleData animal = new ModuleData(21, "Entity Detector: Animal", ModuleAnimal.class, 1).addParent(advshooter);
+		final ModuleData player = new ModuleData(22, "Entity Detector: Player", ModulePlayer.class, 7).addParent(advshooter);
+		final ModuleData villager = new ModuleData(23, "Entity Detector: Villager", ModuleVillager.class, 1).addParent(advshooter);
+		final ModuleData monster = new ModuleData(24, "Entity Detector: Monster", ModuleMonster.class, 1).addParent(advshooter);
+		final ModuleData bats = new ModuleData(48, "Entity Detector: Bat", ModuleBat.class, 1).addParent(advshooter);
 		detectorGroup.add(animal);
 		detectorGroup.add(player);
 		detectorGroup.add(villager);
 		detectorGroup.add(monster);
 		detectorGroup.add(bats);
-		final ModuleData cleaner = new ModuleData(30, "Cleaning Machine", ModuleCleaner.class, 23).addSide(SIDE.CENTER).addRecipe(new Object[][] {
-			{ ComponentTypes.CLEANING_TUBE.getItemStack(), ComponentTypes.CLEANING_CORE.getItemStack(), ComponentTypes.CLEANING_TUBE.getItemStack() },
-			{ ComponentTypes.CLEANING_TUBE.getItemStack(), null, ComponentTypes.CLEANING_TUBE.getItemStack() },
-			{ ComponentTypes.CLEANING_TUBE.getItemStack(), null, ComponentTypes.CLEANING_TUBE.getItemStack() } });
+
+		final ModuleData cleaner = new ModuleData(30, "Cleaning Machine", ModuleCleaner.class, 23).addSide(SIDE.CENTER);
 		addNemesis(frontChest, cleaner);
-		new ModuleData(31, "Dynamite Carrier", ModuleDynamite.class, 3).addSide(SIDE.TOP).addRecipe(new Object[][] { { null, ComponentTypes.DYNAMITE.getItemStack(), null },
-			{ ComponentTypes.DYNAMITE.getItemStack(), Items.FLINT_AND_STEEL, ComponentTypes.DYNAMITE.getItemStack() }, { null, ComponentTypes.DYNAMITE.getItemStack(), null } });
-		new ModuleData(32, "Divine Shield", ModuleShield.class, 60).addRecipe(new Object[][] { { Blocks.OBSIDIAN, ComponentTypes.REFINED_HARDENER.getItemStack(), Blocks.OBSIDIAN },
-			{ ComponentTypes.REFINED_HARDENER.getItemStack(), Blocks.DIAMOND_BLOCK, ComponentTypes.REFINED_HARDENER.getItemStack() },
-			{ Blocks.OBSIDIAN, ComponentTypes.REFINED_HARDENER.getItemStack(), Blocks.OBSIDIAN } });
-		final ModuleData melter = new ModuleData(33, "Melter", ModuleMelter.class, 10).addRecipe(new Object[][] { { Blocks.NETHER_BRICK, Blocks.GLOWSTONE, Blocks.NETHER_BRICK },
-			{ Items.GLOWSTONE_DUST, Blocks.FURNACE, Items.GLOWSTONE_DUST }, { Blocks.NETHER_BRICK, Blocks.GLOWSTONE, Blocks.NETHER_BRICK } });
-		final ModuleData extrememelter = new ModuleData(34, "Extreme Melter", ModuleMelterExtreme.class, 19).addRecipe(new Object[][] { { Blocks.NETHER_BRICK, Blocks.OBSIDIAN, Blocks.NETHER_BRICK },
-			{ melter.getItemStack(), Items.LAVA_BUCKET, melter.getItemStack() }, { Blocks.NETHER_BRICK, Blocks.OBSIDIAN, Blocks.NETHER_BRICK } });
+		new ModuleData(31, "Dynamite Carrier", ModuleDynamite.class, 3).addSide(SIDE.TOP);
+		new ModuleData(32, "Divine Shield", ModuleShield.class, 60);
+		final ModuleData melter = new ModuleData(33, "Melter", ModuleMelter.class, 10);
+		final ModuleData extrememelter = new ModuleData(34, "Extreme Melter", ModuleMelterExtreme.class, 19);
 		addNemesis(melter, extrememelter);
-		new ModuleData(36, "Invisibility Core", ModuleInvisible.class, 21).addRecipe(new Object[][] { { null, ComponentTypes.GLASS_O_MAGIC.getItemStack(), null },
-			{ ComponentTypes.GLASS_O_MAGIC.getItemStack(), Items.ENDER_EYE, ComponentTypes.GLASS_O_MAGIC.getItemStack() }, { null, Items.GOLDEN_CARROT, null } });
-		new ModuleDataHull(37, "Wooden Hull", ModuleWood.class).setCapacity(50).setEngineMax(1).setAddonMax(0).setComplexityMax(15).addRecipe(new Object[][] { { planks, null, planks },
-			{ planks, planks, planks }, { ComponentTypes.WOODEN_WHEELS.getItemStack(), null, ComponentTypes.WOODEN_WHEELS.getItemStack() } });
-		new ModuleDataHull(38, "Standard Hull", ModuleStandard.class).setCapacity(200).setEngineMax(3).setAddonMax(6).setComplexityMax(50).addRecipe(new Object[][] {
-			{ Items.IRON_INGOT, null, Items.IRON_INGOT }, { Items.IRON_INGOT, Items.IRON_INGOT, Items.IRON_INGOT },
-			{ ComponentTypes.IRON_WHEELS.getItemStack(), null, ComponentTypes.IRON_WHEELS.getItemStack() } });
-		final ModuleData reinfhull = new ModuleDataHull(39, "Reinforced Hull", ModuleReinforced.class).setCapacity(500).setEngineMax(5).setAddonMax(12).setComplexityMax(150).addRecipe(new Object[][] {
-			{ ComponentTypes.REINFORCED_METAL.getItemStack(), null, ComponentTypes.REINFORCED_METAL.getItemStack() },
-			{ ComponentTypes.REINFORCED_METAL.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack() },
-			{ ComponentTypes.REINFORCED_WHEELS.getItemStack(), null, ComponentTypes.REINFORCED_WHEELS.getItemStack() } });
-		final ModuleData pumpkinhull = new ModuleDataHull(47, "Pumpkin chariot", ModulePumpkin.class).setCapacity(40).setEngineMax(1).setAddonMax(0).setComplexityMax(15).addRecipe(new Object[][] {
-			{ planks, null, planks }, { planks, Blocks.PUMPKIN, planks }, { ComponentTypes.WOODEN_WHEELS.getItemStack(), null, ComponentTypes.WOODEN_WHEELS.getItemStack() } });
-		if (!Constants.isHalloween) {
-			pumpkinhull.lock();
-		}
-		new ModuleDataHull(62, "Mechanical Pig", ModulePig.class).setCapacity(150).setEngineMax(2).setAddonMax(4).setComplexityMax(50).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ Items.PORKCHOP, null, Items.PORKCHOP }, { Items.PORKCHOP, Items.PORKCHOP, Items.PORKCHOP },
-			{ ComponentTypes.IRON_WHEELS.getItemStack(), null, ComponentTypes.IRON_WHEELS.getItemStack() } }).addMessage(Localization.MODULE_INFO.PIG_MESSAGE);
+		new ModuleData(36, "Invisibility Core", ModuleInvisible.class, 21);
+		new ModuleDataHull(37, "Wooden Hull", ModuleWood.class).setCapacity(50).setEngineMax(1).setAddonMax(0).setComplexityMax(15);
+		new ModuleDataHull(38, "Standard Hull", ModuleStandard.class).setCapacity(200).setEngineMax(3).setAddonMax(6).setComplexityMax(50);
+		new ModuleDataHull(39, "Reinforced Hull", ModuleReinforced.class).setCapacity(500).setEngineMax(5).setAddonMax(12).setComplexityMax(150);
+		final ModuleData pumpkinhull = new ModuleDataHull(47, "Pumpkin chariot", ModulePumpkin.class).setCapacity(40).setEngineMax(1).setAddonMax(0).setComplexityMax(15);
+		new ModuleDataHull(62, "Mechanical Pig", ModulePig.class).setCapacity(150).setEngineMax(2).setAddonMax(4).setComplexityMax(50).addSide(SIDE.FRONT);
 		new ModuleDataHull(76, "Creative Hull", ModuleCheatHull.class).setCapacity(10000).setEngineMax(5).setAddonMax(12).setComplexityMax(150);
-		new ModuleDataHull(81, "Galgadorian Hull", ModuleGalgadorian.class).setCapacity(1000).setEngineMax(5).setAddonMax(12).setComplexityMax(150).addRecipe(new Object[][] {
-			{ ComponentTypes.GALGADORIAN_METAL.getItemStack(), null, ComponentTypes.GALGADORIAN_METAL.getItemStack() },
-			{ ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack() },
-			{ ComponentTypes.GALGADORIAN_WHEELS.getItemStack(), null, ComponentTypes.GALGADORIAN_WHEELS.getItemStack() } });
-		StevesCarts.tabsSC2.setIcon(reinfhull.getItemStack());
-		StevesCarts.tabsSC2Components.setIcon(ComponentTypes.REINFORCED_WHEELS.getItemStack());
-		new ModuleData(40, "Note Sequencer", ModuleNote.class, 30).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT }).addRecipe(new Object[][] { { Blocks.NOTEBLOCK, null, Blocks.NOTEBLOCK },
-			{ Blocks.NOTEBLOCK, Blocks.JUKEBOX, Blocks.NOTEBLOCK }, { planks, Items.REDSTONE, planks } });
-		final ModuleData colorizer = new ModuleData(41, "Colorizer", ModuleColorizer.class, 15).addRecipe(new Object[][] {
-			{ ComponentTypes.RED_PIGMENT.getItemStack(), ComponentTypes.GREEN_PIGMENT.getItemStack(), ComponentTypes.BLUE_PIGMENT.getItemStack() },
-			{ Items.IRON_INGOT, Items.REDSTONE, Items.IRON_INGOT }, { null, Items.IRON_INGOT, null } });
-		final ModuleData colorRandomizer = new ModuleData(101, "Color Randomizer", ModuleColorRandomizer.class, 20).addRecipe(new Object[][] { { colorizer.getItemStack() },
-			{ ComponentTypes.SIMPLE_PCB.getItemStack() } });
+		new ModuleDataHull(81, "Galgadorian Hull", ModuleGalgadorian.class).setCapacity(1000).setEngineMax(5).setAddonMax(12).setComplexityMax(150);
+
+		new ModuleData(40, "Note Sequencer", ModuleNote.class, 30).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
+		final ModuleData colorizer = new ModuleData(41, "Colorizer", ModuleColorizer.class, 15);
+
+		final ModuleData colorRandomizer = new ModuleData(101, "Color Randomizer", ModuleColorRandomizer.class, 20);
 		addNemesis(colorizer, colorRandomizer);
-		new ModuleData(49, "Chunk Loader", ModuleChunkLoader.class, 84).addRecipe(new Object[][] { { null, Items.ENDER_PEARL, null },
-			{ ComponentTypes.SIMPLE_PCB.getItemStack(), Items.IRON_INGOT, ComponentTypes.SIMPLE_PCB.getItemStack() },
-			{ ComponentTypes.REINFORCED_METAL.getItemStack(), ComponentTypes.ADVANCED_PCB.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack() } });
+
+		new ModuleData(49, "Chunk Loader", ModuleChunkLoader.class, 84);
+
 		final ModuleData gift = new ModuleData(50, "Gift Storage", ModuleGiftStorage.class, 12) {
 			@Override
 			public String getModuleInfoText(final byte b) {
@@ -311,85 +207,42 @@ public class ModuleData {
 				}
 				return Localization.MODULE_INFO.STORAGE_FULL.translate() + " " + name;
 			}
-		}.addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT }).useExtraData((byte) 1).addRecipe(new Object[][] {
-			{ ComponentTypes.YELLOW_GIFT_RIBBON.getItemStack(), null, ComponentTypes.RED_GIFT_RIBBON.getItemStack() },
-			{ ComponentTypes.RED_WRAPPING_PAPER.getItemStack(), ComponentTypes.CHEST_LOCK.getItemStack(), ComponentTypes.GREEN_WRAPPING_PAPER.getItemStack() },
-			{ ComponentTypes.RED_WRAPPING_PAPER.getItemStack(), ComponentTypes.STUFFED_SOCK.getItemStack(), ComponentTypes.GREEN_WRAPPING_PAPER.getItemStack() } });
-		if (!Constants.isChristmas) {
-			gift.lock();
-		}
-		new ModuleData(51, "Projectile: Potion", ModulePotion.class, 10).addRequirement(shooterGroup).addRecipe(new Object[][] { { Items.GLASS_BOTTLE },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		new ModuleData(52, "Projectile: Fire Charge", ModuleFireball.class, 10).lockByDefault().addRequirement(shooterGroup).addRecipe(new Object[][] { { Items.FIRE_CHARGE },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		new ModuleData(53, "Projectile: Egg", ModuleEgg.class, 10).addRequirement(shooterGroup).addRecipe(new Object[][] { { Items.EGG }, { ComponentTypes.EMPTY_DISK.getItemStack() } });
-		final ModuleData snowballshooter = new ModuleData(54, "Projectile: Snowball", ModuleSnowball.class, 10).addRequirement(shooterGroup).addRecipe(new Object[][] { { Items.SNOWBALL },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		if (!Constants.isChristmas) {
-			snowballshooter.lock();
-		}
-		final ModuleData cake = new ModuleData(90, "Projectile: Cake", ModuleCake.class, 10).addRequirement(shooterGroup).lock().addRecipe(new Object[][] { { Items.CAKE },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		final ModuleData snowgenerator = new ModuleData(55, "Freezer", ModuleSnowCannon.class, 24).addRecipe(new Object[][] { { Blocks.SNOW, Items.WATER_BUCKET, Blocks.SNOW },
-			{ Items.WATER_BUCKET, ComponentTypes.SIMPLE_PCB.getItemStack(), Items.WATER_BUCKET }, { Blocks.SNOW, Items.WATER_BUCKET, Blocks.SNOW } });
-		if (!Constants.isChristmas) {
-			snowgenerator.lock();
-		}
+		}.addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT }).useExtraData((byte) 1);
+
+		new ModuleData(51, "Projectile: Potion", ModulePotion.class, 10).addRequirement(shooterGroup);
+		new ModuleData(52, "Projectile: Fire Charge", ModuleFireball.class, 10).lockByDefault().addRequirement(shooterGroup);
+		new ModuleData(53, "Projectile: Egg", ModuleEgg.class, 10).addRequirement(shooterGroup);
+		final ModuleData snowballshooter = new ModuleData(54, "Projectile: Snowball", ModuleSnowball.class, 10).addRequirement(shooterGroup);
+		final ModuleData cake = new ModuleData(90, "Projectile: Cake", ModuleCake.class, 10).addRequirement(shooterGroup).lock();
+
+		final ModuleData snowgenerator = new ModuleData(55, "Freezer", ModuleSnowCannon.class, 24);
 		addNemesis(snowgenerator, melter);
 		addNemesis(snowgenerator, extrememelter);
-		final ModuleData cage = new ModuleData(57, "Cage", ModuleCage.class, 7).addSides(new SIDE[] { SIDE.TOP, SIDE.CENTER }).addRecipe(new Object[][] {
-			{ Blocks.OAK_FENCE, Blocks.OAK_FENCE, Blocks.OAK_FENCE },
-			{ Blocks.OAK_FENCE, ComponentTypes.SIMPLE_PCB.getItemStack(), Blocks.OAK_FENCE }, { Blocks.OAK_FENCE, Blocks.OAK_FENCE, Blocks.OAK_FENCE } });
-		new ModuleData(58, "Crop: Nether Wart", ModuleNetherwart.class, 20).addRequirement(farmerGroup).addRecipe(new Object[][] { { Items.NETHER_WART },
-			{ ComponentTypes.EMPTY_DISK.getItemStack() } });
-		new ModuleData(59, "Firework display", ModuleFirework.class, 45).addRecipe(new Object[][] { { Blocks.OAK_FENCE, Blocks.DISPENSER, Blocks.OAK_FENCE },
-			{ Blocks.CRAFTING_TABLE, ComponentTypes.FUSE.getItemStack(), Blocks.CRAFTING_TABLE },
-			{ ComponentTypes.SIMPLE_PCB.getItemStack(), Items.FLINT_AND_STEEL, ComponentTypes.SIMPLE_PCB.getItemStack() } });
+
+		final ModuleData cage = new ModuleData(57, "Cage", ModuleCage.class, 7).addSides(new SIDE[] { SIDE.TOP, SIDE.CENTER });
+		new ModuleData(58, "Crop: Nether Wart", ModuleNetherwart.class, 20).addRequirement(farmerGroup);
+		new ModuleData(59, "Firework display", ModuleFirework.class, 45);
 		final ModuleData cheatengine = new ModuleData(61, "Creative Engine", ModuleCheatEngine.class, 1);
-		final ModuleData internalTank = new ModuleData(63, "Internal SCTank", ModuleInternalTank.class, 37).setAllowDuplicate().addRecipe(new Object[][] {
-			{ ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack() },
-			{ ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.TANK_VALVE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack() },
-			{ ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack() } });
-		final ModuleData sideTank = new ModuleData(64, "Side Tanks", ModuleSideTanks.class, 10).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT }).addRecipe(new Object[][] {
-			{ ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack() },
-			{ ComponentTypes.LARGE_TANK_PANE.getItemStack(), ComponentTypes.TANK_VALVE.getItemStack(), ComponentTypes.LARGE_TANK_PANE.getItemStack() },
-			{ ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack() } });
-		final ModuleData topTank = new ModuleData(65, "Top SCTank", ModuleTopTank.class, 22).addSide(SIDE.TOP).addRecipe(new Object[][] {
-			{ ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack() },
-			{ ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.TANK_VALVE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack() },
-			{ ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack() } });
-		final ModuleData advancedTank = new ModuleData(66, "Advanced SCTank", ModuleAdvancedTank.class, 54).addSides(new SIDE[] { SIDE.TOP, SIDE.CENTER }).addRecipe(new Object[][] {
-			{ ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack() },
-			{ ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.TANK_VALVE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack() },
-			{ ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack() } });
-		final ModuleData frontTank = new ModuleData(67, "Front SCTank", ModuleFrontTank.class, 15).addSide(SIDE.FRONT).addRecipe(new Object[][] {
-			{ ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.LARGE_TANK_PANE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack() },
-			{ ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.TANK_VALVE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack() },
-			{ ComponentTypes.LARGE_TANK_PANE.getItemStack(), ComponentTypes.LARGE_TANK_PANE.getItemStack(), ComponentTypes.LARGE_TANK_PANE.getItemStack() } });
+		final ModuleData internalTank = new ModuleData(63, "Internal SCTank", ModuleInternalTank.class, 37).setAllowDuplicate();
+		final ModuleData sideTank = new ModuleData(64, "Side Tanks", ModuleSideTanks.class, 10).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
+		final ModuleData topTank = new ModuleData(65, "Top SCTank", ModuleTopTank.class, 22).addSide(SIDE.TOP);
+		final ModuleData advancedTank = new ModuleData(66, "Advanced SCTank", ModuleAdvancedTank.class, 54);
+		final ModuleData frontTank = new ModuleData(67, "Front SCTank", ModuleFrontTank.class, 15).addSide(SIDE.FRONT);
 		final ModuleData creativeTank = new ModuleData(72, "Creative SCTank", ModuleCheatTank.class, 1).setAllowDuplicate().addMessage(Localization.MODULE_INFO.OCEAN_MESSAGE);
-		final ModuleData topTankOpen = new ModuleData(73, "Open SCTank", ModuleOpenTank.class, 31).addSide(SIDE.TOP).addRecipe(new Object[][] {
-			{ ComponentTypes.TANK_PANE.getItemStack(), null, ComponentTypes.TANK_PANE.getItemStack() },
-			{ ComponentTypes.TANK_PANE.getItemStack(), ComponentTypes.TANK_VALVE.getItemStack(), ComponentTypes.TANK_PANE.getItemStack() },
-			{ ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack(), ComponentTypes.HUGE_TANK_PANE.getItemStack() } });
+		final ModuleData topTankOpen = new ModuleData(73, "Open SCTank", ModuleOpenTank.class, 31);
 		addNemesis(frontTank, cleaner);
 		tankGroup.add(internalTank).add(sideTank).add(topTank).add(advancedTank).add(frontTank).add(creativeTank).add(topTankOpen);
-		new ModuleData(68, "Incinerator", ModuleIncinerator.class, 23).addRequirement(tankGroup).addRequirement(drillGroup).addRecipe(new Object[][] {
-			{ Blocks.NETHER_BRICK, Blocks.NETHER_BRICK, Blocks.NETHER_BRICK }, { Blocks.OBSIDIAN, Blocks.FURNACE, Blocks.OBSIDIAN },
-			{ Blocks.NETHER_BRICK, Blocks.NETHER_BRICK, Blocks.NETHER_BRICK } });
-		final ModuleData thermal0 = new ModuleData(69, "Thermal Engine", ModuleThermalStandard.class, 28).addRequirement(tankGroup).addRecipe(new Object[][] {
-			{ Blocks.NETHER_BRICK, Blocks.NETHER_BRICK, Blocks.NETHER_BRICK }, { Blocks.OBSIDIAN, Blocks.FURNACE, Blocks.OBSIDIAN }, { Blocks.PISTON, null, Blocks.PISTON } });
-		final ModuleData thermal2 = new ModuleData(70, "Advanced Thermal Engine", ModuleThermalAdvanced.class, 58).addRequirement(tankGroup.copy(2)).addRecipe(new Object[][] {
-			{ Blocks.NETHER_BRICK, Blocks.NETHER_BRICK, Blocks.NETHER_BRICK },
-			{ ComponentTypes.REINFORCED_METAL.getItemStack(), thermal0.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack() }, { Blocks.PISTON, null, Blocks.PISTON } });
+
+		new ModuleData(68, "Incinerator", ModuleIncinerator.class, 23).addRequirement(tankGroup).addRequirement(drillGroup);
+
+		final ModuleData thermal0 = new ModuleData(69, "Thermal Engine", ModuleThermalStandard.class, 28).addRequirement(tankGroup);
+		final ModuleData thermal2 = new ModuleData(70, "Advanced Thermal Engine", ModuleThermalAdvanced.class, 58).addRequirement(tankGroup.copy(2));
 		addNemesis(thermal0, thermal2);
-		final ModuleData cleanerliquid = new ModuleData(71, "Liquid Cleaner", ModuleLiquidDrainer.class, 30).addSide(SIDE.CENTER).addParent(liquidsensors).addRequirement(tankGroup).addRecipe(new Object[][] {
-			{ ComponentTypes.LIQUID_CLEANING_TUBE.getItemStack(), ComponentTypes.LIQUID_CLEANING_CORE.getItemStack(), ComponentTypes.LIQUID_CLEANING_TUBE.getItemStack() },
-			{ ComponentTypes.LIQUID_CLEANING_TUBE.getItemStack(), null, ComponentTypes.LIQUID_CLEANING_TUBE.getItemStack() },
-			{ ComponentTypes.LIQUID_CLEANING_TUBE.getItemStack(), null, ComponentTypes.LIQUID_CLEANING_TUBE.getItemStack() } });
+
+		final ModuleData cleanerliquid = new ModuleData(71, "Liquid Cleaner", ModuleLiquidDrainer.class, 30).addSide(SIDE.CENTER).addParent(liquidsensors).addRequirement(tankGroup);
 		addNemesis(frontTank, cleanerliquid);
 		addNemesis(frontChest, cleanerliquid);
-		@Nonnull
-		ItemStack yellowWool = new ItemStack(Blocks.WOOL, 1, 4);
+
 		final ModuleData eggBasket = new ModuleData(74, "Egg Basket", ModuleEggBasket.class, 14) {
 			@Override
 			public String getModuleInfoText(final byte b) {
@@ -406,17 +259,10 @@ public class ModuleData {
 				}
 				return Localization.MODULE_INFO.STORAGE_FULL.translate() + " " + name;
 			}
-		}.addSide(SIDE.TOP).useExtraData((byte) 1).addRecipe(new Object[][] { { yellowWool, yellowWool, yellowWool },
-			{ ComponentTypes.EXPLOSIVE_EASTER_EGG.getItemStack(), ComponentTypes.CHEST_LOCK.getItemStack(), ComponentTypes.BURNING_EASTER_EGG.getItemStack() },
-			{ ComponentTypes.GLISTERING_EASTER_EGG.getItemStack(), ComponentTypes.BASKET.getItemStack(), ComponentTypes.CHOCOLATE_EASTER_EGG.getItemStack() } });
-		if (!Constants.isEaster) {
-			eggBasket.lock();
-		}
-		final ModuleData intelligence = new ModuleData(75, "Drill Intelligence", ModuleDrillIntelligence.class, 21).addRequirement(drillGroup).addRecipe(new Object[][] {
-			{ Items.GOLD_INGOT, Items.GOLD_INGOT, Items.GOLD_INGOT }, { Items.IRON_INGOT, ComponentTypes.ADVANCED_PCB.getItemStack(), Items.IRON_INGOT },
-			{ ComponentTypes.ADVANCED_PCB.getItemStack(), Items.REDSTONE, ComponentTypes.ADVANCED_PCB.getItemStack() } });
-		new ModuleData(77, "Power Observer", ModulePowerObserver.class, 12).addRequirement(engineGroup).addRecipe(new Object[][] { { null, Blocks.PISTON, null },
-			{ Items.IRON_INGOT, Items.REDSTONE, Items.IRON_INGOT }, { Items.REDSTONE, ComponentTypes.ADVANCED_PCB.getItemStack(), Items.REDSTONE } });
+		}.addSide(SIDE.TOP).useExtraData((byte) 1);
+
+		new ModuleData(75, "Drill Intelligence", ModuleDrillIntelligence.class, 21).addRequirement(drillGroup);
+		new ModuleData(77, "Power Observer", ModulePowerObserver.class, 12).addRequirement(engineGroup);
 		engineGroup.add(coalTiny);
 		engineGroup.add(coalStandard);
 		engineGroup.add(solar2);
@@ -425,48 +271,44 @@ public class ModuleData {
 		engineGroup.add(thermal2);
 		engineGroup.add(compactsolar);
 		engineGroup.add(cheatengine);
+
+		new ModuleData(78, "Steve's Arcade", ModuleArcade.class, 10).addParent(seat);
+
 		final ModuleDataGroup toolGroup = ModuleDataGroup.getCombinedGroup(Localization.MODULE_INFO.TOOL_GROUP, drillGroup, woodcutterGroup);
 		toolGroup.add(farmerGroup);
 		final ModuleDataGroup enchantableGroup = ModuleDataGroup.getCombinedGroup(Localization.MODULE_INFO.TOOL_OR_SHOOTER_GROUP, toolGroup, shooterGroup);
-		new ModuleData(82, "Enchanter", ModuleEnchants.class, 72).addRequirement(enchantableGroup).addRecipe(new Object[][] { { null, ComponentTypes.GALGADORIAN_METAL.getItemStack(), null },
-			{ Items.BOOK, Blocks.ENCHANTING_TABLE, Items.BOOK }, { Items.REDSTONE, ComponentTypes.ADVANCED_PCB.getItemStack(), Items.REDSTONE } });
-		new ModuleData(83, "Ore Extractor", ModuleOreTracker.class, 80).addRequirement(drillGroup).addRecipe(new Object[][] { { Blocks.REDSTONE_TORCH, null, Blocks.REDSTONE_TORCH },
-			{ ComponentTypes.EYE_OF_GALGADOR.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack(), ComponentTypes.EYE_OF_GALGADOR.getItemStack() },
-			{ Items.QUARTZ, ComponentTypes.ADVANCED_PCB.getItemStack(), Items.QUARTZ } });
-		final ModuleData flowerremover = new ModuleData(85, "Lawn Mower", ModuleFlowerRemover.class, 38).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT }).addRecipe(new Object[][] {
-			{ ComponentTypes.BLADE_ARM.getItemStack(), null, ComponentTypes.BLADE_ARM.getItemStack() }, { null, ComponentTypes.SIMPLE_PCB.getItemStack(), null },
-			{ ComponentTypes.BLADE_ARM.getItemStack(), null, ComponentTypes.BLADE_ARM.getItemStack() } });
-		new ModuleData(86, "Milker", ModuleMilker.class, 26).addParent(cage).addRecipe(new Object[][] { { Items.WHEAT, Items.WHEAT, Items.WHEAT },
-			{ ComponentTypes.SIMPLE_PCB.getItemStack(), Items.BUCKET, ComponentTypes.SIMPLE_PCB.getItemStack() }, { null, ComponentTypes.SIMPLE_PCB.getItemStack(), null } });
-		final ModuleData crafter = new ModuleData(87, "Crafter", ModuleCrafter.class, 22).setAllowDuplicate().addRecipe(new Object[][] { { ComponentTypes.SIMPLE_PCB.getItemStack() },
-			{ Blocks.CRAFTING_TABLE } });
-		//		new ModuleData(88, "Tree: Exotic", DefaultTreeModule.class, 30).addRequirement(woodcutterGroup).addRecipe(new Object[][] { { Items.GLOWSTONE_DUST, null, Items.GLOWSTONE_DUST },
+		new ModuleData(82, "Enchanter", ModuleEnchants.class, 72).addRequirement(enchantableGroup);
+		new ModuleData(83, "Ore Extractor", ModuleOreTracker.class, 80).addRequirement(drillGroup);
+		new ModuleData(85, "Lawn Mower", ModuleFlowerRemover.class, 38).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
+		new ModuleData(86, "Milker", ModuleMilker.class, 26).addParent(cage);
+		new ModuleData(87, "Crafter", ModuleCrafter.class, 22).setAllowDuplicate();
+		//new ModuleData(88, "Tree: Exotic", DefaultTreeModule.class, 30).addRequirement(woodcutterGroup).addRecipe(new Object[][] { { Items.GLOWSTONE_DUST, null, Items.GLOWSTONE_DUST },
 		//			{ Items.REDSTONE, Blocks.SAPLING, Items.REDSTONE }, { ComponentTypes.SIMPLE_PCB.getItemStack(), ComponentTypes.EMPTY_DISK.getItemStack(), ComponentTypes.SIMPLE_PCB.getItemStack() } });
-		new ModuleData(89, "Planter Range Extender", ModulePlantSize.class, 20).addRequirement(woodcutterGroup).addRecipe(new Object[][] {
-			{ Items.REDSTONE, ComponentTypes.ADVANCED_PCB.getItemStack(), Items.REDSTONE }, { null, Blocks.SAPLING, null },
-			{ ComponentTypes.SIMPLE_PCB.getItemStack(), Blocks.SAPLING, ComponentTypes.SIMPLE_PCB.getItemStack() } });
-		new ModuleData(78, "Steve's Arcade", ModuleArcade.class, 10).addParent(seat).addRecipe(new Object[][] { { null, Blocks.GLASS_PANE, null },
-			{ planks, ComponentTypes.SIMPLE_PCB.getItemStack(), planks }, { Items.REDSTONE, planks, Items.REDSTONE } });
-		final ModuleData smelter = new ModuleData(91, "Smelter", ModuleSmelter.class, 22).setAllowDuplicate().addRecipe(new Object[][] { { ComponentTypes.SIMPLE_PCB.getItemStack() },
-			{ Blocks.FURNACE } });
-		new ModuleData(92, "Advanced Crafter", ModuleCrafterAdv.class, 42).setAllowDuplicate().addRecipe(new Object[][] { { null, Items.DIAMOND, null },
-			{ null, ComponentTypes.ADVANCED_PCB.getItemStack(), null }, { ComponentTypes.SIMPLE_PCB.getItemStack(), crafter.getItemStack(), ComponentTypes.SIMPLE_PCB.getItemStack() } });
-		new ModuleData(93, "Advanced Smelter", ModuleSmelterAdv.class, 42).setAllowDuplicate().addRecipe(new Object[][] { { null, Items.DIAMOND, null },
-			{ null, ComponentTypes.ADVANCED_PCB.getItemStack(), null }, { ComponentTypes.SIMPLE_PCB.getItemStack(), smelter.getItemStack(), ComponentTypes.SIMPLE_PCB.getItemStack() } });
-		new ModuleData(94, "Information Provider", ModuleLabel.class, 12).addRecipe(new Object[][] { { Blocks.GLASS_PANE, Blocks.GLASS_PANE, Blocks.GLASS_PANE },
-			{ Items.IRON_INGOT, Items.GLOWSTONE_DUST, Items.IRON_INGOT }, { ComponentTypes.SIMPLE_PCB.getItemStack(), Items.SIGN, ComponentTypes.SIMPLE_PCB.getItemStack() } });
-		new ModuleData(95, "Experience Bank", ModuleExperience.class, 36).addRecipe(new Object[][] { { null, Items.REDSTONE, null }, { Items.GLOWSTONE_DUST, Items.EMERALD, Items.GLOWSTONE_DUST },
-			{ ComponentTypes.SIMPLE_PCB.getItemStack(), Items.CAULDRON, ComponentTypes.SIMPLE_PCB.getItemStack() } });
+		new ModuleData(89, "Planter Range Extender", ModulePlantSize.class, 20).addRequirement(woodcutterGroup);
+		new ModuleData(91, "Smelter", ModuleSmelter.class, 22).setAllowDuplicate();
+		new ModuleData(92, "Advanced Crafter", ModuleCrafterAdv.class, 42).setAllowDuplicate();
+		new ModuleData(93, "Advanced Smelter", ModuleSmelterAdv.class, 42).setAllowDuplicate();
+		new ModuleData(94, "Information Provider", ModuleLabel.class, 12);
+		new ModuleData(95, "Experience Bank", ModuleExperience.class, 36);
 		new ModuleData(96, "Creative Incinerator", ModuleCreativeIncinerator.class, 1).addRequirement(drillGroup);
 		new ModuleData(97, "Creative Supplies", ModuleCreativeSupplies.class, 1);
-		new ModuleData(99, "Cake Server", ModuleCakeServer.class, 10).addSide(SIDE.TOP).addMessage(Localization.MODULE_INFO.ALPHA_MESSAGE).addRecipe(new Object[][] { { null, Items.CAKE, null },
-			{ "slabWood", "slabWood", "slabWood" }, { null, ComponentTypes.SIMPLE_PCB.getItemStack(), null } });
-		final ModuleData trickOrTreat = new ModuleData(100, "Trick-or-Treat Cake Server", ModuleCakeServerDynamite.class, 15).addSide(SIDE.TOP).addRecipe(new Object[][] { { null, Items.CAKE, null },
-			{ "slabWood", "slabWood", "slabWood" }, { ComponentTypes.DYNAMITE.getItemStack(), ComponentTypes.SIMPLE_PCB.getItemStack(), ComponentTypes.DYNAMITE.getItemStack() } });
+		new ModuleData(99, "Cake Server", ModuleCakeServer.class, 10).addSide(SIDE.TOP).addMessage(Localization.MODULE_INFO.ALPHA_MESSAGE);
+		final ModuleData trickOrTreat = new ModuleData(100, "Trick-or-Treat Cake Server", ModuleCakeServerDynamite.class, 15).addSide(SIDE.TOP);
+		//new ModuleData(102, "TreeTap", ModuleTreeTap.class, 15);
+
 		if (!Constants.isHalloween) {
+			bats.lock();
+			pumpkinhull.lock();
 			trickOrTreat.lock();
 		}
-		new ModuleData(102, "TreeTap", ModuleTreeTap.class, 15);
+		if (!Constants.isChristmas) {
+			gift.lock();
+			snowgenerator.lock();
+			snowballshooter.lock();
+		}
+		if (!Constants.isEaster) {
+			eggBasket.lock();
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -559,7 +401,7 @@ public class ModuleData {
 	}
 
 	public boolean getIsValid() {
-		return isValid;
+		return SCConfig.validModules.get(getID()) != null && SCConfig.validModules.get(getID());
 	}
 
 	public boolean getIsLocked() {
@@ -748,10 +590,6 @@ public class ModuleData {
 		return requirement;
 	}
 
-	public boolean getHasRecipe() {
-		return hasRecipe;
-	}
-
 	public String getModuleInfoText(final byte b) {
 		return null;
 	}
@@ -764,15 +602,15 @@ public class ModuleData {
 		@Nonnull
 			ItemStack cart) {
 		final NonNullList<ItemStack> modules = NonNullList.create();
-		if (!cart.isEmpty() && cart.getItem() == ModItems.carts && cart.getTagCompound() != null) {
+		if (!cart.isEmpty() && cart.getItem() == ModItems.CARTS && cart.getTagCompound() != null) {
 			final NBTTagCompound info = cart.getTagCompound();
 			if (info.hasKey("Modules")) {
 				final byte[] IDs = info.getByteArray("Modules");
 				for (int i = 0; i < IDs.length; ++i) {
 					final byte id = IDs[i];
 					@Nonnull
-					ItemStack module = new ItemStack(ModItems.modules, 1, id);
-					ModItems.modules.addExtraDataToModule(module, info, i);
+					ItemStack module = new ItemStack(ModItems.MODULES, 1, id);
+					ModItems.MODULES.addExtraDataToModule(module, info, i);
 					modules.add(module);
 				}
 			}
@@ -782,7 +620,7 @@ public class ModuleData {
 
 	public static ItemStack createModularCart(final EntityMinecartModular parentcart) {
 		@Nonnull
-		ItemStack cart = new ItemStack(ModItems.carts, 1);
+		ItemStack cart = new ItemStack(ModItems.CARTS, 1);
 		final NBTTagCompound save = new NBTTagCompound();
 		final byte[] moduleIDs = new byte[parentcart.getModules().size()];
 		for (int i = 0; i < parentcart.getModules().size(); ++i) {
@@ -793,7 +631,7 @@ public class ModuleData {
 					break;
 				}
 			}
-			ModItems.modules.addExtraDataToModule(save, module, i);
+			ModItems.MODULES.addExtraDataToModule(save, module, i);
 		}
 		save.setByteArray("Modules", moduleIDs);
 		cart.setTagCompound(save);
@@ -802,13 +640,12 @@ public class ModuleData {
 	}
 
 	public static ItemStack createModularCartFromItems(final NonNullList<ItemStack> modules) {
-		@Nonnull
-		ItemStack cart = new ItemStack(ModItems.carts, 1);
+		ItemStack cart = new ItemStack(ModItems.CARTS, 1);
 		final NBTTagCompound save = new NBTTagCompound();
 		final byte[] moduleIDs = new byte[modules.size()];
 		for (int i = 0; i < moduleIDs.length; ++i) {
 			moduleIDs[i] = (byte) modules.get(i).getItemDamage();
-			ModItems.modules.addExtraDataToCart(save, modules.get(i), i);
+			ModItems.MODULES.addExtraDataToCart(save, modules.get(i), i);
 		}
 		save.setByteArray("Modules", moduleIDs);
 		cart.setTagCompound(save);
@@ -816,11 +653,9 @@ public class ModuleData {
 		return cart;
 	}
 
-	public static boolean isItemOfModularType(
-		@Nonnull
-			ItemStack itemstack, final Class<? extends ModuleBase> validClass) {
-		if (itemstack.getItem() == ModItems.modules) {
-			final ModuleData module = ModItems.modules.getModuleData(itemstack);
+	public static boolean isItemOfModularType(@Nonnull ItemStack itemstack, final Class<? extends ModuleBase> validClass) {
+		if (itemstack.getItem() == ModItems.MODULES) {
+			final ModuleData module = ModItems.MODULES.getModuleData(itemstack);
 			if (module != null && validClass.isAssignableFrom(module.moduleClass)) {
 				return true;
 			}
@@ -828,30 +663,9 @@ public class ModuleData {
 		return false;
 	}
 
-	protected ModuleData addRecipe(final Object[][] recipe) {
-		if (recipes == null) {
-			recipes = new ArrayList<>();
-		}
-		recipes.add(recipe);
-		return this;
-	}
-
-	public void loadRecipe() {
-		if (!isLocked) {
-			isValid = true;
-			if (recipes != null) {
-				hasRecipe = true;
-				for (final Object[][] recipe : recipes) {
-					RecipeHelper.addRecipe(getItemStack(), recipe);
-				}
-			}
-		}
-	}
-
 	@Nonnull
 	public ItemStack getItemStack() {
-		@Nonnull
-		ItemStack module = new ItemStack(ModItems.modules, 1, id);
+		ItemStack module = new ItemStack(ModItems.MODULES, 1, id);
 		if (isUsingExtraData()) {
 			final NBTTagCompound save = new NBTTagCompound();
 			save.setByte("Data", getDefaultExtraData());
@@ -860,11 +674,9 @@ public class ModuleData {
 		return module;
 	}
 
-	public static boolean isValidModuleItem(final int validGroup,
-	                                        @Nonnull
-		                                        ItemStack itemstack) {
-		if (itemstack.getItem() == ModItems.modules) {
-			final ModuleData module = ModItems.modules.getModuleData(itemstack);
+	public static boolean isValidModuleItem(final int validGroup, @Nonnull ItemStack itemstack) {
+		if (itemstack.getItem() == ModItems.MODULES) {
+			final ModuleData module = ModItems.MODULES.getModuleData(itemstack);
 			return isValidModuleItem(validGroup, module);
 		}
 		return false;
@@ -908,7 +720,7 @@ public class ModuleData {
 		return true;
 	}
 
-	public void addExtraMessage(final List list) {
+	public void addExtraMessage(final List<String> list) {
 		if (message != null) {
 			list.add("");
 			for (final Localization.MODULE_INFO m : message) {
@@ -933,15 +745,15 @@ public class ModuleData {
 		}
 	}
 
-	private void addExtraMessage(final List list, final String str) {
+	private void addExtraMessage(final List<String> list, final String str) {
 		list.add(TextFormatting.DARK_GRAY + (TextFormatting.ITALIC + str + TextFormatting.RESET));
 	}
 
-	public void addSpecificInformation(final List list) {
+	public void addSpecificInformation(final List<String> list) {
 		list.add(TextFormatting.GRAY + Localization.MODULE_INFO.MODULAR_COST.translate() + ": " + modularCost);
 	}
 
-	public final void addInformation(final List list, final NBTTagCompound compound) {
+	public final void addInformation(final List<String> list, final NBTTagCompound compound) {
 		addSpecificInformation(list);
 		if (compound != null && compound.hasKey("Data")) {
 			final String extradatainfo = getModuleInfoText(compound.getByte("Data"));
@@ -1105,22 +917,6 @@ public class ModuleData {
 
 	public String getRawName() {
 		return name.replace(":", "").replace("'", "").replace(" ", "_").replace("-", "_").toLowerCase();
-	}
-
-	//	@SideOnly(Side.CLIENT)
-	//	public void createIcon(final IIconRegister register) {
-	//		final StringBuilder sb = new StringBuilder();
-	//		StevesCarts.instance.getClass();
-	//		this.icon = register.registerIcon(sb.append("stevescarts").append(":").append(this.getRawName()).append("_icon").toString());
-	//	}
-
-	@SideOnly(Side.CLIENT)
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
 	}
 
 	public enum SIDE {

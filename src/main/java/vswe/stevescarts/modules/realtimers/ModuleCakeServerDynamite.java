@@ -2,7 +2,7 @@ package vswe.stevescarts.modules.realtimers;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import vswe.stevescarts.StevesCarts;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.containers.slots.SlotBase;
 import vswe.stevescarts.containers.slots.SlotCakeDynamite;
 import vswe.stevescarts.entitys.EntityMinecartModular;
@@ -14,7 +14,7 @@ public class ModuleCakeServerDynamite extends ModuleCakeServer {
 	private int dynamiteCount;
 
 	private int getMaxDynamiteCount() {
-		return Math.min(StevesCarts.instance.maxDynamites, 25);
+		return Math.min(SCConfig.maxDynamites, 25);
 	}
 
 	public ModuleCakeServerDynamite(final EntityMinecartModular cart) {
@@ -48,7 +48,7 @@ public class ModuleCakeServerDynamite extends ModuleCakeServer {
 		if (!getCart().world.isRemote) {
 			@Nonnull
 			ItemStack item = getStack(0);
-			if (!item.isEmpty() && item.getItem().equals(ModItems.component) && item.getItemDamage() == 6 && dynamiteCount < getMaxDynamiteCount()) {
+			if (!item.isEmpty() && item.getItem().equals(ModItems.COMPONENTS) && item.getItemDamage() == 6 && dynamiteCount < getMaxDynamiteCount()) {
 				final int count = Math.min(getMaxDynamiteCount() - dynamiteCount, item.getCount());
 				dynamiteCount += count;
 				@Nonnull

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 10
+    }
+  ],
+  "pattern": [
+    "###",
+    "XRX",
+    "###"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:rail"
+    },
+    "X": {
+      "item": "minecraft:iron_ingot"
+    },
+    "#": {
+      "type": "forge:ore_dict",
+      "ore": "stone"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 10
+  }
+}

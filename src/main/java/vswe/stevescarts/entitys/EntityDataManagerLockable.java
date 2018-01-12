@@ -9,7 +9,7 @@ import java.util.List;
 
 public class EntityDataManagerLockable extends EntityDataManager {
 	private boolean isLocked;
-	private List lockedList;
+	private List<DataEntry<?>> lockedList;
 
 	public EntityDataManagerLockable(Entity entity) {
 		super(entity);

@@ -501,12 +501,12 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 		if (modules != null) {
 			@Nonnull
 			ItemStack cart = ModuleData.createModularCart(this);
-			if (name != null && !name.equals("") && !name.equals(ModItems.carts.getName())) {
+			if (name != null && !name.equals("") && !name.equals(ModItems.CARTS.getName())) {
 				cart.setStackDisplayName(name);
 			}
 			return cart;
 		}
-		return new ItemStack(ModItems.carts);
+		return new ItemStack(ModItems.CARTS);
 	}
 
 	@Override
@@ -1268,9 +1268,7 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 	}
 
 	@Override
-	public void setInventorySlotContents(int i,
-	                                     @Nonnull
-		                                     ItemStack item) {
+	public void setInventorySlotContents(int i, @Nonnull ItemStack item) {
 		if (modules != null) {
 			for (final ModuleBase module : modules) {
 				if (i < module.getInventorySize()) {

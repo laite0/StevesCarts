@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 55
+    }
+  ],
+  "pattern": [
+    "#X#",
+    "XPX",
+    "#X#"
+  ],
+  "key": {
+    "P": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "#": {
+      "item": "minecraft:snow"
+    },
+    "X": {
+      "item": "minecraft:water_bucket"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 55
+  }
+}

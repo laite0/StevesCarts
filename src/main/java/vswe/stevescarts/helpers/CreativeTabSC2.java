@@ -22,9 +22,7 @@ public class CreativeTabSC2 extends CreativeTabs {
 		return item;
 	}
 
-	public void setIcon(
-		@Nonnull
-			ItemStack item) {
+	public void setIcon(@Nonnull ItemStack item) {
 		this.item = item;
 	}
 
@@ -33,11 +31,6 @@ public class CreativeTabSC2 extends CreativeTabs {
 	@Nonnull
 	public ItemStack getTabIconItem() {
 		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public boolean hasSearchBar() {
-		return true;
 	}
 	
 }

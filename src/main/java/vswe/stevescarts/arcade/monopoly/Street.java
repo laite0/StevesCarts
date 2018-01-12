@@ -1,6 +1,6 @@
 package vswe.stevescarts.arcade.monopoly;
 
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 import vswe.stevescarts.guis.GuiMinecart;
 
 import java.util.EnumSet;
@@ -19,9 +19,9 @@ public class Street extends Property {
 	@Override
 	public void draw(final GuiMinecart gui, final EnumSet<PLACE_STATE> states) {
 		super.draw(gui, states);
-		GL11.glColor4f(color[0], color[1], color[2], 1.0f);
+		GlStateManager.color(color[0], color[1], color[2], 1.0f);
 		game.getModule().drawImage(gui, 0, 0, 76, 0, 76, 22);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		if (structures > 0 && structures < 5) {
 			for (int i = 0; i < structures; ++i) {
 				game.getModule().drawImage(gui, 3 + i * 18, 3, 76, 22, 16, 16);

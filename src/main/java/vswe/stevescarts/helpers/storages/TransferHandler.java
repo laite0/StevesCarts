@@ -18,9 +18,7 @@ public class TransferHandler {
 		return slotType.isInstance(slot);
 	}
 
-	public static boolean isItemValidForTransfer(final Slot slot,
-	                                             @Nonnull
-		                                             ItemStack item, final TRANSFER_TYPE type) {
+	public static boolean isItemValidForTransfer(final Slot slot, @Nonnull ItemStack item, final TRANSFER_TYPE type) {
 		if (slot instanceof ISpecialItemTransferValidator) {
 			final ISpecialItemTransferValidator specSlot = (ISpecialItemTransferValidator) slot;
 			return specSlot.isItemValidForTransfer(item, type);
@@ -28,49 +26,23 @@ public class TransferHandler {
 		return slot.isItemValid(item);
 	}
 
-	public static void TransferItem(
-		@Nonnull
-			ItemStack iStack, final IInventory inv, final Container cont, final int maxItems) {
+	public static void TransferItem(@Nonnull ItemStack iStack, final IInventory inv, final Container cont, final int maxItems) {
 		TransferItem(iStack, inv, cont, Slot.class, null, maxItems);
 	}
 
-	public static void TransferItem(
-		@Nonnull
-			ItemStack iStack, final IInventory inv, final Container cont, final Class validSlot, final int maxItems, final TRANSFER_TYPE type) {
+	public static void TransferItem(@Nonnull ItemStack iStack, final IInventory inv, final Container cont, final Class validSlot, final int maxItems, final TRANSFER_TYPE type) {
 		TransferItem(iStack, inv, 0, inv.getSizeInventory() - 1, cont, validSlot, null, maxItems, type, false);
 	}
 
-	public static void TransferItem(
-		@Nonnull
-			ItemStack iStack, final IInventory inv, final Container cont, final Class validSlot, final Class invalidSlot, final int maxItems) {
+	public static void TransferItem(@Nonnull ItemStack iStack, final IInventory inv, final Container cont, final Class validSlot, final Class invalidSlot, final int maxItems) {
 		TransferItem(iStack, inv, 0, inv.getSizeInventory() - 1, cont, validSlot, invalidSlot, maxItems);
 	}
 
-	public static void TransferItem(
-		@Nonnull
-			ItemStack iStack,
-		final IInventory inv,
-		final int start,
-		final int end,
-		final Container cont,
-		final Class validSlot,
-		final Class invalidSlot,
-		final int maxItems) {
+	public static void TransferItem(@Nonnull ItemStack iStack, final IInventory inv, final int start, final int end, final Container cont, final Class validSlot, final Class invalidSlot, final int maxItems) {
 		TransferItem(iStack, inv, start, end, cont, validSlot, invalidSlot, maxItems, TRANSFER_TYPE.OTHER, false);
 	}
 
-	public static void TransferItem(
-		@Nonnull
-			ItemStack iStack,
-		final IInventory inv,
-		int start,
-		int end,
-		final Container cont,
-		final Class validSlot,
-		final Class invalidSlot,
-		int maxItems,
-		final TRANSFER_TYPE type,
-		final boolean fake) {
+	public static void TransferItem(@Nonnull ItemStack iStack, final IInventory inv, int start, int end, final Container cont, final Class validSlot, final Class invalidSlot, int maxItems, final TRANSFER_TYPE type, final boolean fake) {
 		start = Math.max(0, start);
 		end = Math.min(inv.getSizeInventory() - 1, end);
 		int startEmpty = start;

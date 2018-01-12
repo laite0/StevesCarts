@@ -20,9 +20,7 @@ public class SlotLiquidUpgradeInput extends SlotLiquidInput {
 	}
 
 	@Override
-	public boolean isItemValid(
-		@Nonnull
-			ItemStack itemstack) {
+	public boolean isItemValid(@Nonnull ItemStack itemstack) {
 		return super.isItemValid(itemstack);
 	}
 }

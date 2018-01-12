@@ -1,7 +1,7 @@
 package vswe.stevescarts.modules.workers.tools;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.helpers.Localization;
 
@@ -34,14 +34,12 @@ public class ModuleDrillIron extends ModuleDrill {
 
 	@Override
 	public String getRepairItemName() {
-		return Localization.MODULES.TOOLS.IRON.translate();
+		return SCConfig.ironRepairName.isEmpty() ? Localization.MODULES.TOOLS.IRON.translate(): SCConfig.ironRepairName;
 	}
 
 	@Override
-	public int getRepairItemUnits(
-		@Nonnull
-			ItemStack item) {
-		if (!item.isEmpty() && item.getItem() == Items.IRON_INGOT) {
+	public int getRepairItemUnits(@Nonnull ItemStack item) {
+		if (!item.isEmpty() && SCConfig.isValidRepairItem(item, "iron")) {
 			return 20000;
 		}
 		return 0;

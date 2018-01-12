@@ -24,7 +24,7 @@ public class CartDataSerializers {
 
 		@Override
 		public DataParameter<int[]> createKey(int id) {
-			return new DataParameter(id, this);
+			return new DataParameter<>(id, this);
 		}
 
 		@Override

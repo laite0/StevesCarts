@@ -21,9 +21,7 @@ public class ModuleFarmerGalgadorian extends ModuleFarmer {
 	}
 
 	@Override
-	public int getRepairItemUnits(
-		@Nonnull
-			ItemStack item) {
+	public int getRepairItemUnits(@Nonnull ItemStack item) {
 		return 0;
 	}
 

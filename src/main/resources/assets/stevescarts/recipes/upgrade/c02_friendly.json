@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " P ",
+    "XFX",
+    "C#C"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "F": {
+      "type": "forge:ore_dict",
+      "ore": "fenceWood"
+    },
+    "C": {
+      "item": "stevescarts:modulecomponents",
+      "data": 40
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 59
+    }
+  },
+  "result": {
+    "item": "stevescarts:upgrade",
+    "data": 6
+  }
+}

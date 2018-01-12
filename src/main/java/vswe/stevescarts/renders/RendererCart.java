@@ -2,6 +2,7 @@ package vswe.stevescarts.renders;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -36,7 +37,7 @@ public class RendererCart<T extends EntityMinecartModular> extends Render<T> {
 				}
 			}
 		}
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 		final double partialPosX = cart.lastTickPosX + (cart.posX - cart.lastTickPosX) * partialTickTime;
 		final double partialPosY = cart.lastTickPosY + (cart.posY - cart.lastTickPosY) * partialTickTime;
 		final double partialPosZ = cart.lastTickPosZ + (cart.posZ - cart.lastTickPosZ) * partialTickTime;
@@ -77,18 +78,18 @@ public class RendererCart<T extends EntityMinecartModular> extends Render<T> {
 		if (cart.getRenderFlippedYaw(yaw + (flip ? 0.0f : 180.0f))) {
 			flip = !flip;
 		}
-		GL11.glTranslatef((float) x, (float) y + 0.375F, (float) z);
-		GL11.glRotatef(yaw, 0.0f, 1.0f, 0.0f);
-		GL11.glRotatef(partialRotPitch, 0.0f, 0.0f, 1.0f);
+		GlStateManager.translate((float) x, (float) y + 0.375F, (float) z);
+		GlStateManager.rotate(yaw, 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotate(partialRotPitch, 0.0f, 0.0f, 1.0f);
 		if (damageRot > 0.0f) {
 			damageRot = MathHelper.sin(damageRot) * damageRot * damageTime / 10.0f * damageDir;
-			GL11.glRotatef(damageRot, 1.0f, 0.0f, 0.0f);
+			GlStateManager.rotate(damageRot, 1.0f, 0.0f, 0.0f);
 		}
 		yaw += (flip ? 0.0f : 180.0f);
-		GL11.glRotatef(flip ? 0.0f : 180.0f, 0.0f, 1.0f, 0.0f);
-		GL11.glScalef(-1.0f, -1.0f, 1.0f);
+		GlStateManager.rotate(flip ? 0.0f : 180.0f, 0.0f, 1.0f, 0.0f);
+		GlStateManager.scale(-1.0f, -1.0f, 1.0f);
 		renderModels(cart, (float) (3.141592653589793 * yaw / 180.0), partialRotPitch, damageRot, 0.0625f, partialTickTime);
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		renderLabel(cart, x, y, z);
 	}
 
@@ -173,17 +174,17 @@ public class RendererCart<T extends EntityMinecartModular> extends Render<T> {
 				final FontRenderer frend = getFontRendererFromRenderManager();
 				final float var12 = 1.6f;
 				final float var13 = 0.016666668f * var12;
-				GL11.glPushMatrix();
-				GL11.glTranslatef((float) x + 0.0f, (float) y + 1.0f + (labels.size() - 1) * 0.12f, (float) z);
-				GL11.glNormal3f(0.0f, 1.0f, 0.0f);
-				GL11.glRotatef(-renderManager.playerViewY, 0.0f, 1.0f, 0.0f);
-				GL11.glRotatef(renderManager.playerViewX, 1.0f, 0.0f, 0.0f);
-				GL11.glScalef(-var13, -var13, var13);
-				GL11.glDisable(2896);
-				GL11.glDepthMask(false);
-				GL11.glDisable(2929);
-				GL11.glEnable(3042);
-				GL11.glBlendFunc(770, 771);
+				GlStateManager.pushMatrix();
+				GlStateManager.translate((float) x + 0.0f, (float) y + 1.0f + (labels.size() - 1) * 0.12f, (float) z);
+				GlStateManager.glNormal3f(0.0f, 1.0f, 0.0f);
+				GlStateManager.rotate(-renderManager.playerViewY, 0.0f, 1.0f, 0.0f);
+				GlStateManager.rotate(renderManager.playerViewX, 1.0f, 0.0f, 0.0f);
+				GlStateManager.scale(-var13, -var13, var13);
+				GlStateManager.disableLighting();
+				GlStateManager.depthMask(false);
+				GlStateManager.disableDepth();
+				GlStateManager.enableBlend();
+				GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				int boxwidth = 0;
 				int boxheight = 0;
 				for (final String label : labels) {
@@ -194,30 +195,30 @@ public class RendererCart<T extends EntityMinecartModular> extends Render<T> {
 				final int halfH = boxheight / 2;
 				final Tessellator tes = Tessellator.getInstance();
 				BufferBuilder buffer = tes.getBuffer();
-				GL11.glDisable(3553);
+				GlStateManager.disableTexture2D();
 				buffer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 				buffer.pos(-halfW - 1, -halfH - 1, 0.0).color(0.0f, 0.0f, 0.0f, 0.25f).endVertex();
 				buffer.pos(-halfW - 1, halfH + 1, 0.0).color(0.0f, 0.0f, 0.0f, 0.25f).endVertex();
 				buffer.pos(halfW + 1, halfH + 1, 0.0).color(0.0f, 0.0f, 0.0f, 0.25f).endVertex();
 				buffer.pos(halfW + 1, -halfH - 1, 0.0).color(0.0f, 0.0f, 0.0f, 0.25f).endVertex();
 				tes.draw();
-				GL11.glEnable(3553);
+				GlStateManager.enableTexture2D();
 				int yPos = -halfH;
 				for (final String label2 : labels) {
 					frend.drawString(label2, -frend.getStringWidth(label2) / 2, yPos, 553648127);
 					yPos += frend.FONT_HEIGHT;
 				}
-				GL11.glEnable(2929);
-				GL11.glDepthMask(true);
+				GlStateManager.enableDepth();
+				GlStateManager.depthMask(true);
 				yPos = -halfH;
 				for (final String label2 : labels) {
 					frend.drawString(label2, -frend.getStringWidth(label2) / 2, yPos, -1);
 					yPos += frend.FONT_HEIGHT;
 				}
-				GL11.glEnable(2896);
-				GL11.glDisable(3042);
-				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-				GL11.glPopMatrix();
+				GlStateManager.enableLighting();
+				GlStateManager.disableBlend();
+				GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+				GlStateManager.popMatrix();
 			}
 		}
 	}

@@ -1,10 +1,10 @@
 package vswe.stevescarts.guis;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.blocks.tileentities.TileEntityDetector;
 import vswe.stevescarts.containers.ContainerDetector;
 import vswe.stevescarts.helpers.*;
@@ -46,7 +46,7 @@ public class GuiDetector extends GuiBase {
 
 	@Override
 	public void drawGuiForeground(final int x, final int y) {
-		GL11.glDisable(2896);
+		GlStateManager.disableLighting();
 		getFontRenderer().drawString(DetectorType.getTypeFromSate(detector.getWorld().getBlockState(detector.getPos())).getTranslatedName(), 8, 6, 4210752);
 		if (modulesMenu.getScroll() != 0) {
 			int modulePosId = 0;
@@ -82,7 +82,7 @@ public class GuiDetector extends GuiBase {
 		} else {
 			drawMouseOverFromObject(detector.mainObj, x, y);
 		}
-		GL11.glEnable(2896);
+		GlStateManager.enableLighting();
 	}
 
 	private boolean drawMouseOverFromObject(final LogicObject obj, final int x, final int y) {
@@ -107,7 +107,7 @@ public class GuiDetector extends GuiBase {
 
 	@Override
 	public void drawGuiBackground(final float f, int x, int y) {
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		final int j = getGuiLeft();
 		final int k = getGuiTop();
 		ResourceHelper.bindResource(GuiDetector.texture);

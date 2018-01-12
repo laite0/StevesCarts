@@ -1,10 +1,10 @@
 package vswe.stevescarts.guis;
 
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 import vswe.stevescarts.containers.slots.SlotBase;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.helpers.ModuleCountPair;
@@ -36,7 +36,7 @@ public class GuiMinecart extends GuiBase {
 
 	@Override
 	public void drawGuiForeground(final int x, final int y) {
-		GL11.glDisable(2896);
+		GlStateManager.disableLighting();
 		if (cart.getModules() != null) {
 			final ModuleBase thief = cart.getInterfaceThief();
 			if (thief != null) {
@@ -53,13 +53,13 @@ public class GuiMinecart extends GuiBase {
 				renderModuleListMouseOver(x, y);
 			}
 		}
-		GL11.glEnable(2896);
+		GlStateManager.enableLighting();
 	}
 
 	@Override
 	public void drawGuiBackground(final float f, final int x, final int y) {
-		GL11.glDisable(2896);
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.disableLighting();
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		final int j = getGuiLeft();
 		final int k = getGuiTop();
 		ResourceHelper.bindResource(GuiMinecart.textureLeft);
@@ -93,30 +93,30 @@ public class GuiMinecart extends GuiBase {
 				drawModuleBackgroundItems(module, x, y);
 			}
 		}
-		GL11.glEnable(2896);
+		GlStateManager.enableLighting();
 	}
 
 	private void renderModuleList(int x, int y) {
 		x -= getGuiLeft();
 		y -= getGuiTop();
 		final ArrayList<ModuleCountPair> moduleCounts = cart.getModuleCounts();
-		GL11.glEnable(3042);
+		GlStateManager.enableBlend();
 		for (int i = 0; i < moduleCounts.size(); ++i) {
 			final ModuleCountPair count = moduleCounts.get(i);
 			final float alpha = inRect(x, y, getModuleDisplayX(i), getModuleDisplayY(i), 16, 16) ? 1.0f : 0.5f;
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, alpha);
+			GlStateManager.color(1.0f, 1.0f, 1.0f, alpha);
 			drawModuleIcon(count.getData(), getGuiLeft() + getModuleDisplayX(i), getGuiTop() + getModuleDisplayY(i), 1.0f, 1.0f, 0.0f, 0.0f);
 		}
-		GL11.glDisable(3042);
+		GlStateManager.disableBlend();
 	}
 
 	private void renderModuleListText(int x, int y) {
 		x -= getGuiLeft();
 		y -= getGuiTop();
 		final ArrayList<ModuleCountPair> moduleCounts = cart.getModuleCounts();
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		getFontRenderer().drawString(cart.getCartName(), 5, 172, 4210752);
-		GL11.glEnable(3042);
+		GlStateManager.enableBlend();
 		for (int i = 0; i < moduleCounts.size(); ++i) {
 			final ModuleCountPair count = moduleCounts.get(i);
 			if (count.getCount() != 1) {
@@ -125,14 +125,14 @@ public class GuiMinecart extends GuiBase {
 				getFontRenderer().drawStringWithShadow(str, getModuleDisplayX(i) + 16 - getFontRenderer().getStringWidth(str), getModuleDisplayY(i) + 8, 0xFFFFFF | alpha << 24);
 			}
 		}
-		GL11.glDisable(3042);
+		GlStateManager.disableBlend();
 	}
 
 	private void renderModuleListMouseOver(int x, int y) {
 		x -= getGuiLeft();
 		y -= getGuiTop();
 		final ArrayList<ModuleCountPair> moduleCounts = cart.getModuleCounts();
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		for (int i = 0; i < moduleCounts.size(); ++i) {
 			final ModuleCountPair count = moduleCounts.get(i);
 			if (inRect(x, y, getModuleDisplayX(i), getModuleDisplayY(i), 16, 16)) {
