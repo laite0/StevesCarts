@@ -5,7 +5,8 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
-import net.minecraft.init.Items;
+import net.minecraft.entity.projectile.EntityTippedArrow;
+import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -61,11 +62,9 @@ public class ModuleShooter extends ModuleBase implements ISuppliesModule {
 		for (final ModuleBase module : getCart().getModules()) {
 			if (module instanceof ModuleProjectile) {
 				projectiles.add((ModuleProjectile) module);
-			} else {
-				if (!(module instanceof ModuleEnchants)) {
-					continue;
-				}
-				(enchanter = (ModuleEnchants) module).addType(EnchantmentInfo.ENCHANTMENT_TYPE.SHOOTER);
+			}else if(module instanceof ModuleEnchants) {
+				enchanter = (ModuleEnchants)module;
+				enchanter.addType(EnchantmentInfo.ENCHANTMENT_TYPE.SHOOTER);
 			}
 		}
 	}
@@ -87,15 +86,15 @@ public class ModuleShooter extends ModuleBase implements ISuppliesModule {
 
 	@Override
 	public void drawForeground(final GuiMinecart gui) {
-		drawString(gui, Localization.MODULES.ATTACHMENTS.SHOOTER.translate(), 8, 6, 4210752);
+		drawString(gui, Localization.MODULES.ATTACHMENTS.SHOOTER.translate(), 8, 6, 0x404040);
 		final int delay = AInterval[arrowInterval];
 		final double freq = 20.0 / (delay + 1);
 		String s = String.valueOf((int) (freq * 1000.0) / 1000.0);
-		drawString(gui, Localization.MODULES.ATTACHMENTS.FREQUENCY.translate() + ":", intervalDragArea[0] + intervalDragArea[2] + 5, 15, 4210752);
-		drawString(gui, s, intervalDragArea[0] + intervalDragArea[2] + 5, 23, 4210752);
+		drawString(gui, Localization.MODULES.ATTACHMENTS.FREQUENCY.translate() + ":", intervalDragArea[0] + intervalDragArea[2] + 5, 15, 0x404040);
+		drawString(gui, s, intervalDragArea[0] + intervalDragArea[2] + 5, 23, 0x404040);
 		s = String.valueOf(delay / 20.0 + Localization.MODULES.ATTACHMENTS.SECONDS.translate(new String[0]));
-		drawString(gui, Localization.MODULES.ATTACHMENTS.DELAY.translate() + ":", intervalDragArea[0] + intervalDragArea[2] + 5, 35, 4210752);
-		drawString(gui, s, intervalDragArea[0] + intervalDragArea[2] + 5, 43, 4210752);
+		drawString(gui, Localization.MODULES.ATTACHMENTS.DELAY.translate() + ":", intervalDragArea[0] + intervalDragArea[2] + 5, 35, 0x404040);
+		drawString(gui, s, intervalDragArea[0] + intervalDragArea[2] + 5, 43, 0x404040);
 	}
 
 	@Override
@@ -244,7 +243,6 @@ public class ModuleShooter extends ModuleBase implements ISuppliesModule {
 
 	@Override
 	public void update() {
-		super.update();
 		if (!getCart().world.isRemote) {
 			if (arrowTick > 0) {
 				--arrowTick;
@@ -256,6 +254,10 @@ public class ModuleShooter extends ModuleBase implements ISuppliesModule {
 		}
 	}
 
+	//pipes that this module have
+	//0 (Forward Left)		, 1 (Forward)		, 2 (Forward Right)
+	//3 (Left),				, 4 (Invalid)		, 5 (Right)
+	//6 (Back Left)			, 7 (Back)			, 8 (Back Right)
 	protected void generatePipes(final ArrayList<Integer> list) {
 		for (int i = 0; i < 9; ++i) {
 			if (i != 4) {
@@ -309,20 +311,19 @@ public class ModuleShooter extends ModuleBase implements ISuppliesModule {
 				if (getCart().pushZ > 0.0) {
 					y *= -1;
 					x *= -1;
-				} else if (getCart().pushZ >= 0.0) {
-					if (getCart().pushX < 0.0) {
-						final int temp = -x;
-						x = y;
-						y = temp;
-					} else if (getCart().pushX > 0.0) {
-						final int temp = x;
-						x = -y;
-						y = temp;
-					}
+				} else if (getCart().pushZ < 0) {
+				} else if (getCart().pushX < 0) {
+					final int temp = -x;
+					x = y;
+					y = temp;
+				} else if (getCart().pushX > 0.0) {
+					final int temp = x;
+					x = -y;
+					y = temp;
 				}
 				final Entity projectile = getProjectile(null, getProjectileItem(true));
-				projectile.setPosition(getCart().posX + x * 1.5, getCart().posY + 0.75, getCart().posZ + y * 1.5);
-				setHeading(projectile, x, 0.10000000149011612, y, 1.6f, 12.0f);
+				projectile.setPosition(getCart().posX + x * 1.5, getCart().posY + 0.75F, getCart().posZ + y * 1.5);
+				setHeading(projectile, x, 0.10000000149011612D, y, 1.6f, 12.0f);
 				setProjectileDamage(projectile);
 				setProjectileOnFire(projectile);
 				setProjectileKnockback(projectile);
@@ -380,59 +381,48 @@ public class ModuleShooter extends ModuleBase implements ISuppliesModule {
 		}
 	}
 
-	protected Entity getProjectile(final Entity target,
-	                               @Nonnull
-		                               ItemStack item) {
+	protected Entity getProjectile(final Entity target, @Nonnull ItemStack item) {
 		for (final ModuleProjectile module : projectiles) {
 			if (module.isValidProjectile(item)) {
 				return module.createProjectile(target, item);
 			}
 		}
-		return new EntityArrow(getCart().world) {
-			@Override
-			@Nonnull
-			protected ItemStack getArrowStack() {
-				return item;
-			}
-		};
+		EntityTippedArrow entitytippedarrow = new EntityTippedArrow(getCart().world);
+		entitytippedarrow.setPotionEffect(item);
+		return entitytippedarrow;
 	}
 
-	public boolean isValidProjectileItem(
-		@Nonnull
-			ItemStack item) {
+	public boolean isValidProjectileItem(@Nonnull ItemStack item) {
 		for (final ModuleProjectile module : projectiles) {
 			if (module.isValidProjectile(item)) {
 				return true;
 			}
 		}
-		return item.getItem() == Items.ARROW;
+		return item.getItem() instanceof ItemArrow;
 	}
 
 	protected void setTimeToNext(final int val) {
 		arrowTick = val;
 	}
 
-	private void rotatePipes(final boolean isNew) {
+	private void rotatePipes(boolean isNew) {
 		final float minRotation = 0.0f;
-		final float maxRotation = 0.7853982f;
+		final float maxRotation = (float)Math.PI / 4;
 		final float speed = 0.15f;
+
 		for (int i = 0; i < pipes.size(); ++i) {
-			final boolean isActive = isPipeActive(i);
+			boolean isActive = isPipeActive(i);
 			if (isNew && isActive) {
 				pipeRotations[i] = minRotation;
 			} else if (isNew && !isActive) {
 				pipeRotations[i] = maxRotation;
 			} else if (isActive && pipeRotations[i] > minRotation) {
-				final float[] pipeRotations = this.pipeRotations;
-				final int n = i;
-				pipeRotations[n] -= speed;
+				pipeRotations[i] -= speed;
 				if (this.pipeRotations[i] < minRotation) {
 					this.pipeRotations[i] = minRotation;
 				}
 			} else if (!isActive && pipeRotations[i] < maxRotation) {
-				final float[] pipeRotations2 = pipeRotations;
-				final int n2 = i;
-				pipeRotations2[n2] += speed;
+				pipeRotations[i] += speed;
 				if (pipeRotations[i] > maxRotation) {
 					pipeRotations[i] = maxRotation;
 				}

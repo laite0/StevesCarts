@@ -46,9 +46,7 @@ public class EnchantmentInfo {
 		return (int) Math.pow(2.0, level - 1) * rank1Value;
 	}
 
-	public static boolean isItemValid(final ArrayList<ENCHANTMENT_TYPE> enabledTypes,
-	                                  @Nonnull
-		                                  ItemStack itemstack) {
+	public static boolean isItemValid(final ArrayList<ENCHANTMENT_TYPE> enabledTypes, @Nonnull ItemStack itemstack) {
 		if (!itemstack.isEmpty() && itemstack.getItem() == Items.ENCHANTED_BOOK) {
 			for (final EnchantmentInfo info : EnchantmentInfo.enchants) {
 				boolean isValid = false;
@@ -69,10 +67,7 @@ public class EnchantmentInfo {
 		return false;
 	}
 
-	public static EnchantmentData addBook(final ArrayList<ENCHANTMENT_TYPE> enabledTypes,
-	                                      EnchantmentData data,
-	                                      @Nonnull
-		                                      ItemStack itemstack) {
+	public static EnchantmentData addBook(final ArrayList<ENCHANTMENT_TYPE> enabledTypes, EnchantmentData data, @Nonnull ItemStack itemstack) {
 		if (!itemstack.isEmpty() && itemstack.getItem() == Items.ENCHANTED_BOOK) {
 			if (data == null) {
 				for (final EnchantmentInfo info : EnchantmentInfo.enchants) {
@@ -85,11 +80,7 @@ public class EnchantmentInfo {
 		return data;
 	}
 
-	private static EnchantmentData addEnchantment(final ArrayList<ENCHANTMENT_TYPE> enabledTypes,
-	                                              EnchantmentData data,
-	                                              @Nonnull
-		                                              ItemStack itemstack,
-	                                              final EnchantmentInfo info) {
+	private static EnchantmentData addEnchantment(final ArrayList<ENCHANTMENT_TYPE> enabledTypes, EnchantmentData data, @Nonnull ItemStack itemstack, final EnchantmentInfo info) {
 		boolean isValid = false;
 		for (final ENCHANTMENT_TYPE type : enabledTypes) {
 			if (info.type == type) {
@@ -112,9 +103,7 @@ public class EnchantmentInfo {
 		return data;
 	}
 
-	private static int getEnchantmentLevel(final int par0,
-	                                       @Nonnull
-		                                       ItemStack par1ItemStack) {
+	private static int getEnchantmentLevel(final int par0, @Nonnull ItemStack par1ItemStack) {
 		if (par1ItemStack.isEmpty()) {
 			return 0;
 		}

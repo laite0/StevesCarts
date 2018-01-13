@@ -93,7 +93,7 @@ public class ArcadeInvaders extends ArcadeGame {
 						if (((InvaderGhast) invader).isPahighast) {
 							hasPahighast = false;
 						}
-						ArcadeGame.playSound(SoundEvents.ENTITY_GHAST_HURT, 0.03f, 1.0f);
+						ArcadeGame.playSound(SoundEvents.ENTITY_GHAST_HURT, 0.15f, 1.0f);
 						invaders.remove(i);
 						++score;
 					} else if (result == Unit.UPDATE_RESULT.TURN_BACK) {

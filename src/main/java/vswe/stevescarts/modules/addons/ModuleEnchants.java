@@ -158,15 +158,13 @@ public class ModuleEnchants extends ModuleAddon {
 					if (j != maxlevel - 1) {
 						drawImage(gui, bar[0] + bar[2], bar[1], 61 + j, 1, 1, bar[3]);
 					}
-					final int levelmaxvalue = data.getEnchantment().getValue(j + 1);
+					int levelmaxvalue = data.getEnchantment().getValue(j + 1);
 					if (value > 0) {
-						float mult = value / levelmaxvalue;
+						float mult = (float)value / (float)levelmaxvalue;
 						if (mult > 1.0f) {
 							mult = 1.0f;
 						}
-						final int[] array = bar;
-						final int n = 2;
-						array[n] *= (int) mult;
+						bar[2] *= mult;
 						drawImage(gui, bar, 1, 13 + 11 * j);
 					}
 					value -= levelmaxvalue;

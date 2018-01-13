@@ -2,6 +2,7 @@ package vswe.stevescarts.modules.addons;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOre;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -49,15 +50,17 @@ public class ModuleOreTracker extends ModuleAddon {
 	}
 
 	private boolean isOre(BlockPos pos) {
-		final Block b = getCart().world.getBlockState(pos).getBlock();
+		IBlockState state = getCart().world.getBlockState(pos);
+		Block b = state.getBlock();
 		if (b == null || b == Blocks.AIR) {
 			return false;
 		}
 		if (b instanceof BlockOre) {
 			return true;
 		}
-		ItemStack stack = new ItemStack(b);
-		if (stack.isEmpty() || stack.getItem() == null) {
+
+		ItemStack stack = b.getPickBlock(state, null, getCart().world, pos, getFakePlayer());
+		if (stack.isEmpty()) {
 			return false;
 		}
 		final int[] oreIds = OreDictionary.getOreIDs(stack);

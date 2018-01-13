@@ -31,14 +31,13 @@ public class ModelGun extends ModelCartbase {
 		return 8;
 	}
 
-	public ModelGun() {
-	}
+	public ModelGun() { }
 
 	public ModelGun(final ArrayList<Integer> pipes) {
 		guns = new ModelRenderer[pipes.size()];
 		for (int i = 0; i < pipes.size(); ++i) {
 			float angle = (new int[] { 3, 4, 5, 2, -1, 6, 1, 0, 7 })[pipes.get(i)];
-			angle *= 0.7853982f;
+			angle *= (float)Math.PI / 4F;
 			final ModelRenderer gunAnchorAnchor = new ModelRenderer(this);
 			AddRenderer(gunAnchorAnchor);
 			gunAnchorAnchor.rotateAngleY = angle;

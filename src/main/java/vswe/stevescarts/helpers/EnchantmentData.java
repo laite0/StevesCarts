@@ -1,5 +1,7 @@
 package vswe.stevescarts.helpers;
 
+import net.minecraft.util.text.TextFormatting;
+
 public class EnchantmentData {
 	private EnchantmentInfo type;
 	private int value;
@@ -69,6 +71,6 @@ public class EnchantmentData {
 				}
 			}
 		}
-		return "�E" + getEnchantment().getEnchantment().getTranslatedName(getLevel()) + "\n" + percentage + "% left of this tier";
+		return TextFormatting.YELLOW + getEnchantment().getEnchantment().getTranslatedName(getLevel()) + "\n" + percentage + "% left of this tier";
 	}
 }

@@ -19,16 +19,12 @@ import javax.annotation.Nonnull;
 public class DefaultCropModule implements ICropModule {
 
 	@Override
-	public boolean isSeedValid(
-		@Nonnull
-			ItemStack seed) {
+	public boolean isSeedValid(@Nonnull ItemStack seed) {
 		return seed.getItem() == Items.WHEAT_SEEDS || seed.getItem() == Items.POTATO || seed.getItem() == Items.CARROT || seed.getItem() instanceof IPlantable;
 	}
 
 	@Override
-	public IBlockState getCropFromSeed(
-		@Nonnull
-			ItemStack seed, World world, BlockPos pos) {
+	public IBlockState getCropFromSeed(@Nonnull ItemStack seed, World world, BlockPos pos) {
 		if (seed.getItem() == Items.CARROT) {
 			return Blocks.CARROTS.getDefaultState();
 		}

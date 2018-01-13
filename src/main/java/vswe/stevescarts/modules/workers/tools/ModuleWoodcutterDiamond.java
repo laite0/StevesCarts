@@ -28,9 +28,7 @@ public class ModuleWoodcutterDiamond extends ModuleWoodcutter {
 	}
 
 	@Override
-	public int getRepairItemUnits(
-		@Nonnull
-			ItemStack item) {
+	public int getRepairItemUnits(@Nonnull ItemStack item) {
 		if (!item.isEmpty() && SCConfig.isValidRepairItem(item, "diamond")) {
 			return 160000;
 		}

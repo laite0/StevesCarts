@@ -64,8 +64,7 @@ public class ModuleShooterAdv extends ModuleShooter {
 	}
 
 	@Override
-	protected void generateInterfaceRegions() {
-	}
+	protected void generateInterfaceRegions() {}
 
 	@Override
 	public void drawForeground(final GuiMinecart gui) {
@@ -99,8 +98,7 @@ public class ModuleShooterAdv extends ModuleShooter {
 	}
 
 	@Override
-	public void mouseMovedOrUp(final GuiMinecart gui, final int x, final int y, final int button) {
-	}
+	public void mouseMovedOrUp(final GuiMinecart gui, final int x, final int y, final int button) {}
 
 	@Override
 	public int numberOfGuiData() {
@@ -108,8 +106,7 @@ public class ModuleShooterAdv extends ModuleShooter {
 	}
 
 	@Override
-	protected void checkGuiData(final Object[] info) {
-	}
+	protected void checkGuiData(final Object[] info) {}
 
 	@Override
 	protected void Shoot() {
@@ -128,32 +125,39 @@ public class ModuleShooterAdv extends ModuleShooter {
 	}
 
 	private void shootAtTarget(final Entity target) {
-		if (target == null) {
-			return;
-		}
 		final Entity projectile = getProjectile(target, getProjectileItem(true));
-		projectile.posY = getCart().posY + getCart().getEyeHeight() - 0.10000000149011612;
-		final double disX = target.posX - getCart().posX;
-		final double disY = target.posY + target.getEyeHeight() - 0.699999988079071 - projectile.posY;
-		final double disZ = target.posZ - getCart().posZ;
+		projectile.posY = getCart().posY + (double) getCart().getEyeHeight() - 0.10000000149011612D;
+
+		double disX = target.posX - getCart().posX;
+		double disY = target.posY + (double) target.getEyeHeight() - 0.699999988079071D - projectile.posY;
+		double disZ = target.posZ - getCart().posZ;
+
 		final double dis = MathHelper.sqrt(disX * disX + disZ * disZ);
+
 		if (dis >= 1.0E-7) {
-			final float theta = (float) (Math.atan2(disZ, disX) * 180.0 / 3.141592653589793) - 90.0f;
-			final float phi = (float) (-(Math.atan2(disY, dis) * 180.0 / 3.141592653589793));
+			final float theta = (float) (Math.atan2(disZ, disX) * 180.0D / Math.PI) - 90.0f;
+			final float phi = (float) (-(Math.atan2(disY, dis) * 180.0D / Math.PI));
+
 			setRifleDirection((float) Math.atan2(disZ, disX));
+
 			final double disPX = disX / dis;
 			final double disPZ = disZ / dis;
+
 			projectile.setLocationAndAngles(getCart().posX + disPX * 1.5, projectile.posY, getCart().posZ + disPZ * 1.5, theta, phi);
-			projectile.setRenderYawOffset(0.0f);
-			final float disD5 = (float) dis * 0.2f;
-			setHeading(projectile, disX, disY + disD5, disZ, 1.6f, 0.0f);
+
+			//projectile.setRenderYawOffset(0.0f);
+			float disD5 = (float) dis * 0.2f;
+			setHeading(projectile, disX, disY + (double) disD5, disZ, 1.6f, 0.0f);
 		}
 		BlockPos pos = getCart().getPosition();
-		getCart().world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0f, 1.0f / (getCart().rand.nextFloat() * 0.4f + 0.8f), false);
+		getCart().world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0f, 1.0f / (getCart().rand.nextFloat() * 0.4f + 0.8f));
+
 		setProjectileDamage(projectile);
 		setProjectileOnFire(projectile);
 		setProjectileKnockback(projectile);
+
 		getCart().world.spawnEntity(projectile);
+
 		damageEnchant();
 	}
 
@@ -162,8 +166,9 @@ public class ModuleShooterAdv extends ModuleShooter {
 	}
 
 	private Entity getTarget() {
-		final List<Entity> entities = getCart().world.getEntitiesWithinAABB(Entity.class, getCart().getEntityBoundingBox().expand(getTargetDistance(), 4.0, getTargetDistance()));
+		final List<Entity> entities = getCart().world.getEntitiesWithinAABB(Entity.class, getCart().getEntityBoundingBox().grow(getTargetDistance(), 4.0, getTargetDistance()));
 		entities.sort(sorter);
+
 		for (final Entity target : entities) {
 			if (target != getCart() && canSee(target)) {
 				for (int i = 0; i < detectors.size(); ++i) {
@@ -242,15 +247,15 @@ public class ModuleShooterAdv extends ModuleShooter {
 	public void update() {
 		super.update();
 		if (isPipeActive(0)) {
-			detectorAngle = (float) ((detectorAngle + 0.1f) % 6.283185307179586);
+			detectorAngle = (float) ((detectorAngle + 0.1f) % (Math.PI * 2));
 		}
 	}
 
 	private void setRifleDirection(float val) {
-		val /= 6.2831855f;
+		val /= 2 * (float)Math.PI;
 		val *= 256.0f;
 		val %= 256.0f;
-		if (val < 0.0f) {
+		if (val < 0) {
 			val += 256.0f;
 		}
 		updateDw(RIFLE_DIRECTION, (byte) val);
@@ -264,7 +269,7 @@ public class ModuleShooterAdv extends ModuleShooter {
 			val = getDw(RIFLE_DIRECTION);
 		}
 		val /= 256.0f;
-		val *= 6.2831855f;
+		val *= (float)Math.PI * 2;
 		return val;
 	}
 
@@ -280,7 +285,7 @@ public class ModuleShooterAdv extends ModuleShooter {
 		loadTick(tagCompound, id);
 	}
 
-	private static class EntityNearestTarget implements Comparator {
+	private static class EntityNearestTarget implements Comparator<Entity> {
 		private Entity entity;
 
 		public EntityNearestTarget(final Entity entity) {
@@ -294,8 +299,8 @@ public class ModuleShooterAdv extends ModuleShooter {
 		}
 
 		@Override
-		public int compare(final Object obj1, final Object obj2) {
-			return compareDistanceSq((Entity) obj1, (Entity) obj2);
+		public int compare(Entity o1, Entity o2) {
+			return compareDistanceSq(o1, o2);
 		}
 	}
 }

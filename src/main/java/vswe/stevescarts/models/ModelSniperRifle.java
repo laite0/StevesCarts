@@ -20,6 +20,6 @@ public class ModelSniperRifle extends ModelGun {
 	@Override
 	public void applyEffects(final ModuleBase module, final float yaw, final float pitch, final float roll) {
 		gun.rotateAngleZ = ((module == null) ? 0.0f : ((ModuleShooterAdv) module).getPipeRotation(0));
-		anchor.rotateAngleY = ((module == null) ? 0.0f : (3.1415927f + ((ModuleShooterAdv) module).getRifleDirection() + yaw));
+		anchor.rotateAngleY = ((module == null) ? 0.0f : ((float)Math.PI + ((ModuleShooterAdv) module).getRifleDirection() + yaw));
 	}
 }

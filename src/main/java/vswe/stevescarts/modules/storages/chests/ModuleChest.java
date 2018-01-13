@@ -1,7 +1,9 @@
 package vswe.stevescarts.modules.storages.chests;
 
+import net.minecraft.init.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.util.SoundCategory;
 import vswe.stevescarts.containers.slots.SlotBase;
 import vswe.stevescarts.containers.slots.SlotChest;
 import vswe.stevescarts.entitys.EntityMinecartModular;
@@ -114,7 +116,7 @@ public abstract class ModuleChest extends ModuleStorage {
 			return;
 		}
 		if (isChestActive() && lidClosed() && playChestSound()) {
-			//			this.getCart().world.playSoundEffect(this.getCart().posX, this.getCart().posY, this.getCart().posZ, "random.chestopen", 0.5f, this.getCart().world.rand.nextFloat() * 0.1f + 0.9f);
+			getCart().world.playSound(null, getCart().getPosition(), SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.PLAYERS, 0.5F, getCart().world.rand.nextFloat() * 0.1f + 0.9f);
 		}
 		if (isChestActive() && chestAngle < chestFullyOpenAngle()) {
 			chestAngle += getLidSpeed();
@@ -125,7 +127,7 @@ public abstract class ModuleChest extends ModuleStorage {
 			final float lastAngle = chestAngle;
 			chestAngle -= getLidSpeed();
 			if (chestAngle < 1.1780972450961724 && lastAngle >= 1.1780972450961724 && playChestSound()) {
-				//				this.getCart().world.playSoundEffect(this.getCart().posX, this.getCart().posY, this.getCart().posZ, "random.chestclosed", 0.5f, this.getCart().world.rand.nextFloat() * 0.1f + 0.9f);
+				getCart().world.playSound(null, getCart().getPosition(), SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.PLAYERS, 0.5F, getCart().world.rand.nextFloat() * 0.1f + 0.9f);
 			}
 			if (chestAngle < 0.0f) {
 				chestAngle = 0.0f;
