@@ -98,6 +98,7 @@ public class StevesCarts {
 		StevesCarts.tabsSC2Components.setIcon(ComponentTypes.REINFORCED_WHEELS.getItemStack());
 		StevesCarts.tabsSC2Blocks.setIcon(new ItemStack(ModBlocks.CART_ASSEMBLER.getBlock(), 1));
 		TileEntityCargo.loadSelectionSettings();
+		ModItems.addRecipes();
 
 		CartDataSerializers.init();
 

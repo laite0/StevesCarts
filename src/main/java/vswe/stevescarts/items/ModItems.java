@@ -1,6 +1,7 @@
 package vswe.stevescarts.items;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -12,6 +13,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import vswe.stevescarts.Constants;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.ModBlocks;
+import vswe.stevescarts.helpers.ComponentTypes;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -51,6 +53,14 @@ public final class ModItems {
 		for (Item item : ITEMS) {
 			StevesCarts.proxy.registerDefaultItemRenderer(item);
 		}
+	}
+
+	public static void addRecipes() {
+		FurnaceRecipes.instance().addSmeltingRecipe(ComponentTypes.RAW_HANDLE.getItemStack(), ComponentTypes.REFINED_HANDLE.getItemStack(), 0.0f);
+		FurnaceRecipes.instance().addSmeltingRecipe(ComponentTypes.RAW_HARDENER.getItemStack(), ComponentTypes.REFINED_HARDENER.getItemStack(), 0.0f);
+		FurnaceRecipes.instance().addSmeltingRecipe(ComponentTypes.STABILIZED_METAL.getItemStack(), ComponentTypes.REINFORCED_METAL.getItemStack(), 0.0f);
+		FurnaceRecipes.instance().addSmeltingRecipe(ComponentTypes.LUMP_OF_GALGADOR.getItemStack(), ComponentTypes.GALGADORIAN_METAL.getItemStack(), 0.0f);
+		FurnaceRecipes.instance().addSmeltingRecipe(ComponentTypes.LARGE_LUMP_OF_GALGADOR.getItemStack(), ComponentTypes.ENHANCED_GALGADORIAN_METAL.getItemStack(), 0.0f);
 	}
 
 	public interface IMultipleItemModelDefinition {
