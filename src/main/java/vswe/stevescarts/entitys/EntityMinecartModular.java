@@ -67,6 +67,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Set;
 
 public class EntityMinecartModular extends EntityMinecart implements IInventory, IEntityAdditionalSpawnData, IFluidHandler {
 
@@ -316,7 +317,7 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 				if (module3.hasGui()) {
 					boolean foundLine = false;
 					for (final GuiAllocationHelper line : lines) {
-						if (line.width + module3.guiWidth() <= 443) {
+						if (line.width + module3.guiWidth() <= MODULAR_SPACE_WIDTH) {
 							module3.setX(line.width);
 							final GuiAllocationHelper guiAllocationHelper = line;
 							guiAllocationHelper.width += module3.guiWidth();
@@ -353,7 +354,7 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 				}
 				currentY += line3.maxHeight;
 			}
-			if (currentY > 168) {
+			if (currentY > MODULAR_SPACE_HEIGHT) {
 				canScrollModules = true;
 			}
 			modularSpaceHeight = currentY;
@@ -1093,17 +1094,23 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 	}
 
 	public void loadChunks(final ForgeChunkManager.Ticket ticket, final int chunkX, final int chunkZ) {
-		if (world.isRemote || ticket == null) {
+		if (world.isRemote || ticket == null)
 			return;
-		}
-		if (cartTicket == null) {
+		if (cartTicket == null)
 			cartTicket = ticket;
-		}
-		for (int i = -1; i <= 1; ++i) {
-			for (int j = -1; j <= 1; ++j) {
-				ForgeChunkManager.forceChunk(ticket, new ChunkPos(chunkX + i, chunkZ + j));
-			}
-		}
+		Set<ChunkPos> loadedChunks = ticket.getChunkList();
+
+		ArrayList<ChunkPos> newChunks = new ArrayList<>();
+		for (int i = -1; i <= 1; ++i)
+			for (int j = -1; j <= 1; ++j)
+				newChunks.add(new ChunkPos(chunkX + i, chunkZ + j));
+
+		for (ChunkPos pos: loadedChunks)
+			if (!newChunks.contains(pos))
+				ForgeChunkManager.unforceChunk(cartTicket, pos);
+		for (ChunkPos pos: newChunks)
+			if (!loadedChunks.contains(pos))
+				ForgeChunkManager.forceChunk(cartTicket, pos);
 	}
 
 	public void initChunkLoading() {
@@ -1439,7 +1446,7 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 	}
 
 	public int getRealScrollY() {
-		return (int) ((modularSpaceHeight - 168) / 198.0f * getScrollY());
+		return (int) ((modularSpaceHeight - MODULAR_SPACE_HEIGHT) / 198.0f * getScrollY());
 	}
 
 	@Override
