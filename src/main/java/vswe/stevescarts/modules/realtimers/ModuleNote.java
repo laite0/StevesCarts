@@ -18,18 +18,24 @@ import vswe.stevescarts.modules.ModuleBase;
 import java.util.ArrayList;
 
 public class ModuleNote extends ModuleBase {
-	private final int maximumTracksPerModuleBitCount = 4;
-	private final int maximumNotesPerTrackBitCount = 12;
-	private int veryLongTrackLimit;
-	private int notesInView;
-	private int tracksInView;
-	private int[] instrumentColors;
-	private String[] pitchNames;
-	private Localization.MODULES.ATTACHMENTS[] instrumentNames;
+	private final static int maximumTracksPerModuleBitCount = 4;
+	private final static int maximumNotesPerTrackBitCount = 12;
+	private final static int veryLongTrackLimit = 1024;
+	private final static int notesInView = 13;
+	private final static int tracksInView = 5;
+	private final static int[] instrumentColors = new int[] { 4210752, 16711680, 65280, 255, 16776960, 65535 };
+	private final static String[] pitchNames = new String[] { "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#" };
+	private final static Localization.MODULES.ATTACHMENTS[] instrumentNames = new Localization.MODULES.ATTACHMENTS[] { Localization.MODULES.ATTACHMENTS.PIANO, Localization.MODULES.ATTACHMENTS.BASS_DRUM, Localization.MODULES.ATTACHMENTS.SNARE_DRUM,
+			Localization.MODULES.ATTACHMENTS.STICKS, Localization.MODULES.ATTACHMENTS.BASS_GUITAR };
+	private final static int notemapX = 70;
+	private final static int notemapY = 40;
+	private final static int trackHeight = 20;
+	private final static int[] scrollXrect = new int[] { notemapX + 120, notemapY - 20, 100, 16 };
+	private final static int[] scrollYrect = new int[] { notemapX + 220, notemapY, 16, 100 };
+	private final static int maximumNotesPerTrack = (int) Math.pow(2.0, maximumNotesPerTrackBitCount) - 1;
+	private final static int maximumTracksPerModule = (int) Math.pow(2.0, maximumTracksPerModuleBitCount) - 1;
+
 	private ArrayList<Track> tracks;
-	private int notemapX;
-	private int notemapY;
-	private int trackHeight;
 	private ArrayList<Button> buttons;
 	private ArrayList<Button> instrumentbuttons;
 	private int currentInstrument;
@@ -44,10 +50,6 @@ public class ModuleNote extends ModuleBase {
 	private int generatedScrollX;
 	private int pixelScrollY;
 	private int generatedScrollY;
-	private int[] scrollXrect;
-	private int[] scrollYrect;
-	private final int maximumNotesPerTrack;
-	private final int maximumTracksPerModule;
 	private int currentTick;
 	private int playProgress;
 	private boolean tooLongTrack;
@@ -59,27 +61,13 @@ public class ModuleNote extends ModuleBase {
 
 	public ModuleNote(final EntityMinecartModular cart) {
 		super(cart);
-		veryLongTrackLimit = 1024;
-		notesInView = 13;
-		tracksInView = 5;
-		instrumentColors = new int[] { 4210752, 16711680, 65280, 255, 16776960, 65535 };
-		pitchNames = new String[] { "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#" };
-		instrumentNames = new Localization.MODULES.ATTACHMENTS[] { Localization.MODULES.ATTACHMENTS.PIANO, Localization.MODULES.ATTACHMENTS.BASS_DRUM, Localization.MODULES.ATTACHMENTS.SNARE_DRUM,
-			Localization.MODULES.ATTACHMENTS.STICKS, Localization.MODULES.ATTACHMENTS.BASS_GUITAR };
-		notemapX = 70;
-		notemapY = 40;
-		trackHeight = 20;
 		currentInstrument = -1;
-		scrollXrect = new int[] { notemapX + 120, notemapY - 20, 100, 16 };
-		scrollYrect = new int[] { notemapX + 220, notemapY, 16, 100 };
 		currentTick = 0;
 		playProgress = 0;
 		tooLongTrack = false;
 		tooTallModule = false;
 		veryLongTrack = false;
 		speedSetting = 5;
-		maximumNotesPerTrack = (int) Math.pow(2.0, maximumNotesPerTrackBitCount) - 1;
-		maximumTracksPerModule = (int) Math.pow(2.0, maximumTracksPerModuleBitCount) - 1;
 		tracks = new ArrayList<>();
 		if (getCart().world.isRemote) {
 			buttons = new ArrayList<>();
@@ -96,7 +84,7 @@ public class ModuleNote extends ModuleBase {
 				final Button tempButton = new Button(notemapX - 20 + (i + 1) * 20, notemapY - 20);
 				instrumentbuttons.add(tempButton);
 				if (i > 0) {
-					tempButton.text = Localization.MODULES.ATTACHMENTS.ACTIVATE_INSTRUMENT.translate(instrumentNames[i - 1].translate(new String[0]));
+					tempButton.text = Localization.MODULES.ATTACHMENTS.ACTIVATE_INSTRUMENT.translate(instrumentNames[i - 1].translate());
 				} else {
 					tempButton.text = Localization.MODULES.ATTACHMENTS.DEACTIVATE_INSTRUMENT.translate();
 				}
@@ -369,10 +357,10 @@ public class ModuleNote extends ModuleBase {
 				maxNotes = Math.max(maxNotes, tracks.get(i).notes.size());
 			}
 			maxNotes -= notesInView;
-			final float widthOfBlockInScrollArea = (scrollXrect[2] - 5) / maxNotes;
+			float widthOfBlockInScrollArea = (scrollXrect[2] - 5) / (float)maxNotes;
 			generatedScrollX = Math.round(pixelScrollX / widthOfBlockInScrollArea);
 			if (veryLongTrack) {
-				generatedScrollX += (int) (pixelScrollXTune / (scrollXrect[2] - 5) * 50.0f);
+				generatedScrollX += (pixelScrollXTune / (float)(scrollXrect[2] - 5)) * 50;
 			}
 		} else {
 			generatedScrollX = 0;
@@ -398,8 +386,8 @@ public class ModuleNote extends ModuleBase {
 
 	private void generateScrollY() {
 		if (tooTallModule) {
-			final int maxTracks = tracks.size() - tracksInView;
-			final float heightOfBlockInScrollArea = (scrollYrect[3] - 5) / maxTracks;
+			int maxTracks = tracks.size() - tracksInView;
+			float heightOfBlockInScrollArea = (scrollYrect[3] - 5) / maxTracks;
 			generatedScrollY = Math.round(pixelScrollY / heightOfBlockInScrollArea);
 		} else {
 			generatedScrollY = 0;
@@ -476,8 +464,8 @@ public class ModuleNote extends ModuleBase {
 						}
 						if (currentInstrument != -1 || note.instrumentId != 0) {
 							byte info = (byte) i;
-							info |= (byte) (instrumentInfo << maximumTracksPerModuleBitCount);
-							sendPacket(2, new byte[] { info, (byte) j });
+							info |= instrumentInfo << maximumTracksPerModuleBitCount;
+							sendPacket(2, new byte[] { info, (byte) (j & 0xff), (byte) ((j >> 8) & 0xff)});
 						}
 					}
 				}
@@ -521,12 +509,12 @@ public class ModuleNote extends ModuleBase {
 		} else {
 			final int trackId = --id / (maximumNotesPerTrack + 1);
 			int noteId = id % (maximumNotesPerTrack + 1);
-			final Track track = tracks.get(trackId);
+			Track track = tracks.get(trackId);
 			if (noteId == 0) {
 				track.setInfo(data);
 			} else {
 				--noteId;
-				final Note note = track.notes.get(noteId);
+				Note note = track.notes.get(noteId);
 				note.setInfo(data);
 			}
 		}
@@ -574,8 +562,8 @@ public class ModuleNote extends ModuleBase {
 				}
 			}
 		} else if (id == 1) {
-			final int trackID = data[0] & maximumTracksPerModule;
-			final int trackPacketID = (data[0] & ~maximumTracksPerModule) >> maximumTracksPerModuleBitCount;
+			int trackID = data[0] & maximumTracksPerModule;
+			int trackPacketID = (data[0] & ~maximumTracksPerModule) >> maximumTracksPerModuleBitCount;
 			if (trackID < tracks.size()) {
 				final Track track = tracks.get(trackID);
 				if (trackPacketID == 0) {
@@ -591,25 +579,23 @@ public class ModuleNote extends ModuleBase {
 				}
 			}
 		} else if (id == 2) {
-			final byte info = data[0];
-			final byte noteID = data[1];
-			final byte trackID2 = (byte) (info & maximumTracksPerModule);
-			final byte instrumentInfo = (byte) ((byte) (info & ~(byte) maximumTracksPerModule) >> (byte)maximumTracksPerModuleBitCount);
-			if (trackID2 < tracks.size()) {
-				final Track track2 = tracks.get(trackID2);
-				if (noteID < track2.notes.size()) {
-					final Note note = track2.notes.get(noteID);
+			byte info = data[0];
+			short noteID = (short) ((0xFF & data[1]) | ((data[2] & 0xFF) << 8));
+			byte trackID = (byte) (info & maximumTracksPerModule);
+			byte instrumentInfo = (byte) (((byte) (info & ~(byte) maximumTracksPerModule)) >> (byte)maximumTracksPerModuleBitCount);
+			if (trackID < tracks.size()) {
+				final Track track = tracks.get(trackID);
+				if (noteID < track.notes.size()) {
+					final Note note = track.notes.get(noteID);
 					if (instrumentInfo < 6) {
 						note.instrumentId = instrumentInfo;
 					} else if (instrumentInfo == 6) {
-						final Note note2 = note;
-						++note2.pitch;
+						++note.pitch;
 						if (note.pitch > 24) {
 							note.pitch = 0;
 						}
 					} else {
-						final Note note3 = note;
-						--note3.pitch;
+						--note.pitch;
 						if (note.pitch < 0) {
 							note.pitch = 24;
 						}
