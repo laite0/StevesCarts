@@ -4,12 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.entitys.EntityMinecartModular;
@@ -142,19 +144,19 @@ public class ModuleAdvControl extends ModuleBase implements ILeverModule {
 		return s;
 	}
 
-	//	@Override
-	//	public RAILDIRECTION getSpecialRailDirection(final int x, final int y, final int z) {
-	//		if (this.isForwardKeyDown()) {
-	//			return RAILDIRECTION.FORWARD;
-	//		}
-	//		if (this.isLeftKeyDown()) {
-	//			return RAILDIRECTION.LEFT;
-	//		}
-	//		if (this.isRightKeyDown()) {
-	//			return RAILDIRECTION.RIGHT;
-	//		}
-	//		return RAILDIRECTION.DEFAULT;
-	//	}
+	@Override
+	public RAILDIRECTION getSpecialRailDirection(BlockPos pos) {
+		if (this.isForwardKeyDown()) {
+			return RAILDIRECTION.FORWARD;
+		}
+		if (this.isLeftKeyDown()) {
+			return RAILDIRECTION.LEFT;
+		}
+		if (this.isRightKeyDown()) {
+			return RAILDIRECTION.RIGHT;
+		}
+		return RAILDIRECTION.DEFAULT;
+	}
 
 	@Override
 	protected void receivePacket(final int id, final byte[] data, final EntityPlayer player) {
@@ -196,18 +198,19 @@ public class ModuleAdvControl extends ModuleBase implements ILeverModule {
 				sendEnginePacket((EntityPlayer) getCart().getCartRider());
 				enginePacketTimer = 15;
 			} else {
-				--enginePacketTimer;
+				enginePacketTimer--;
 			}
 			if (tripPacketTimer == 0) {
 				sendTripPacket((EntityPlayer) getCart().getCartRider());
 				tripPacketTimer = 500;
 			} else {
-				--tripPacketTimer;
+				tripPacketTimer--;
 			}
 		} else {
 			enginePacketTimer = 0;
 			tripPacketTimer = 0;
 		}
+
 		if (getCart().world.isRemote) {
 			encodeKeys();
 		}
@@ -215,13 +218,14 @@ public class ModuleAdvControl extends ModuleBase implements ILeverModule {
 			turnback();
 		}
 		lastBackKey = isBackKeyDown();
+
 		if (!getCart().world.isRemote) {
 			if (speedChangeCooldown == 0) {
-				if (!isJumpKeyDown() || !isBackKeyDown()) {
+				if (!isJumpKeyDown() || !isControlKeyDown()) {
 					if (isJumpKeyDown()) {
 						setSpeedSetting(getSpeedSetting() + 1);
 						speedChangeCooldown = 8;
-					} else if (isBackKeyDown()) {
+					} else if (isControlKeyDown()) {
 						setSpeedSetting(getSpeedSetting() - 1);
 						speedChangeCooldown = 8;
 					} else {
@@ -288,7 +292,7 @@ public class ModuleAdvControl extends ModuleBase implements ILeverModule {
 			keyinformation |= (byte) ((minecraft.gameSettings.keyBindRight.isKeyDown() ? 1 : 0) << 2);
 			keyinformation |= (byte) ((minecraft.gameSettings.keyBindBack.isKeyDown() ? 1 : 0) << 3);
 			keyinformation |= (byte) ((minecraft.gameSettings.keyBindJump.isKeyDown() ? 1 : 0) << 4);
-			keyinformation |= (byte) ((minecraft.gameSettings.keyBindBack.isKeyDown() ? 1 : 0) << 5);
+			keyinformation |= (byte) ((minecraft.gameSettings.keyBindSprint.isKeyDown() ? 1 : 0) << 5);
 			if (oldVal != keyinformation) {
 				PacketStevesCarts.sendPacket(getCart(), 1 + getPacketStart(), new byte[] { keyinformation });
 			}
@@ -315,7 +319,7 @@ public class ModuleAdvControl extends ModuleBase implements ILeverModule {
 		return (keyinformation & 0x10) != 0x0;
 	}
 
-	private boolean isSneakKeyDown() {
+	private boolean isControlKeyDown() {
 		return (keyinformation & 0x20) != 0x0;
 	}
 
@@ -470,17 +474,9 @@ public class ModuleAdvControl extends ModuleBase implements ILeverModule {
 
 	@Override
 	public void postUpdate() {
-		//		if (this.getCart().world.isRemote && this.getCart().getCartRider() != null && this.getCart().getCartRider() instanceof EntityPlayer && this.getCart().getCartRider() == this.getClientPlayer()) {
-		//			KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode(), false);
-		//		}
-	}
-
-	@Override
-	public boolean onInteractFirst(EntityPlayer entityplayer) {
-		if (entityplayer == getCart().getCartRider()) {
-			entityplayer.dismountRidingEntity();
-			return true;
+		if (this.getCart().world.isRemote && this.getCart().getCartRider() != null && this.getCart().getCartRider() instanceof EntityPlayer && this.getCart().getCartRider() == this.getClientPlayer()) {
+			KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindSprint.getKeyCode(), false);
+			KeyBinding.setKeyBindState(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode(), false);
 		}
-		return super.onInteractFirst(entityplayer);
 	}
 }

@@ -1,11 +1,14 @@
 package vswe.stevescarts.modules.data;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.Constants;
@@ -147,7 +150,7 @@ public class ModuleData {
 		final ModuleData liquidsensors = new ModuleData(20, "Liquid Sensors", ModuleLiquidSensors.class, 27).addRequirement(drillGroup);
 		final ModuleData seat = new ModuleData(25, "Seat", ModuleSeat.class, 3).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP });
 		new ModuleData(26, "Brake Handle", ModuleBrake.class, 12).addSide(SIDE.RIGHT).addParent(seat);
-		new ModuleData(27, "Advanced Control System", ModuleAdvControl.class, 38);
+		new ModuleData(27, "Advanced Control System", ModuleAdvControl.class, 38).addSide(SIDE.RIGHT).addParent(seat);
 
 		final ModuleDataGroup detectorGroup = new ModuleDataGroup(Localization.MODULE_INFO.ENTITY_GROUP);
 		final ModuleDataGroup shooterGroup = new ModuleDataGroup(Localization.MODULE_INFO.SHOOTER_GROUP);
@@ -294,7 +297,8 @@ public class ModuleData {
 		new ModuleData(97, "Creative Supplies", ModuleCreativeSupplies.class, 1);
 		new ModuleData(99, "Cake Server", ModuleCakeServer.class, 10).addSide(SIDE.TOP).addMessage(Localization.MODULE_INFO.ALPHA_MESSAGE);
 		final ModuleData trickOrTreat = new ModuleData(100, "Trick-or-Treat Cake Server", ModuleCakeServerDynamite.class, 15).addSide(SIDE.TOP);
-		//new ModuleData(102, "TreeTap", ModuleTreeTap.class, 15);
+		if (Loader.isModLoaded("ic2"))
+			new ModuleData(102, "TreeTap", ModuleTreeTap.class, 15).addRequirement(woodcutterGroup);
 
 		if (!Constants.isHalloween) {
 			bats.lock();
@@ -799,6 +803,8 @@ public class ModuleData {
 			if (getAllowDuplicate()) {
 				list.add(TextFormatting.GREEN + Localization.MODULE_INFO.DUPLICATES.translate());
 			}
+		} else {
+			list.add(TextFormatting.DARK_AQUA + Localization.MODULE_INFO.SHIFT_FOR_MORE.translate("SHIFT"));
 		}
 		list.add(TextFormatting.BLUE + Localization.MODULE_INFO.TYPE.translate() + ": " + ModuleData.moduleGroupNames[groupID].translate());
 		addExtraMessage(list);

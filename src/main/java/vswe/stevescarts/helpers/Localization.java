@@ -346,6 +346,7 @@ public final class Localization {
 		SIDE_FRONT("cartSideFront"),
 		OCCUPIED_SIDES("occupiedSides"),
 		AND("sidesAnd"),
+		SHIFT_FOR_MORE("shiftForMore"),
 		NO_SIDES("noSides"),
 		CONFLICT_HOWEVER("moduleConflictHowever"),
 		CONFLICT_ALSO("moduleConflictAlso"),
