@@ -60,14 +60,13 @@ public class ModuleRemover extends ModuleWorker {
 	private boolean removeRail(World world, BlockPos pos, final boolean flag) {
 		if (flag) {
 			IBlockState blockState = world.getBlockState(pos);
-			if (BlockRailBase.isRailBlock(blockState) && blockState.getBlock() == Blocks.RAIL) {
+			if (BlockRailBase.isRailBlock(blockState)) {
 				if (doPreWork()) {
 					startWorking(12);
 					return true;
 				}
-				final int rInt = getCart().rand.nextInt(100);
 				@Nonnull
-				ItemStack iStack = new ItemStack(Blocks.RAIL, 1, 0);
+				ItemStack iStack = new ItemStack(blockState.getBlock(), 1, 0);
 				getCart().addItemToChest(iStack);
 				if (iStack.getCount() == 0) {
 					world.setBlockToAir(pos);

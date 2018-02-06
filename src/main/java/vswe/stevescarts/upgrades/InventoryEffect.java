@@ -20,8 +20,7 @@ public abstract class InventoryEffect extends InterfaceEffect {
 		return Slot.class;
 	}
 
-	public void onInventoryChanged(final TileEntityUpgrade upgrade) {
-	}
+	public void onInventoryChanged(final TileEntityUpgrade upgrade) {}
 
 	public abstract int getInventorySize();
 

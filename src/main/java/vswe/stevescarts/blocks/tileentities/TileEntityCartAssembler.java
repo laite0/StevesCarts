@@ -4,10 +4,7 @@ import net.minecraft.block.BlockRailBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -79,6 +76,8 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 	public boolean isDead;
 	private boolean loaded;
 	NonNullList<ItemStack> inventoryStacks;
+
+	public static final String MODIFY_STATUS = "ModifyStatus";
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -266,7 +265,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 						if (effect instanceof Disassemble) {
 							@Nonnull
 							ItemStack oldcart = tile.getStackInSlot(0);
-							if (!oldcart.isEmpty() && oldcart.getItem() instanceof ItemCarts && oldcart.hasDisplayName()) {
+							if (!oldcart.isEmpty() && !outputItem.isEmpty() && oldcart.getItem() instanceof ItemCarts && outputItem.getItem() instanceof ItemCarts && oldcart.hasDisplayName()) {
 								outputItem.setStackDisplayName(oldcart.getDisplayName());
 							}
 							tile.setInventorySlotContents(0, ItemStack.EMPTY);
@@ -286,14 +285,36 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 			if (slotId >= 1 && slotId < getSlots().size()) {
 				final SlotAssembler slot = getSlots().get(slotId);
 				if (!slot.getStack().isEmpty()) {
-					if (slot.getStack().getCount() == getKeepSize()) {
-						slot.getStack().setCount(getRemovedSize());
+					NBTTagCompound comp = getOrCreateCompound(slot.getStack());
+					if (comp.getInteger(MODIFY_STATUS) == getKeepSize()) {
+						comp.setInteger(MODIFY_STATUS, getRemovedSize());
 					} else {
-						slot.getStack().setCount(getKeepSize());
+						comp.setInteger(MODIFY_STATUS, getKeepSize());
 					}
 				}
 			}
 		}
+	}
+
+	public static NBTTagCompound getOrCreateCompound(ItemStack stack) {
+		if (!stack.hasTagCompound() && stack.getTagCompound() == null)
+			stack.setTagCompound(new NBTTagCompound());
+		return stack.getTagCompound();
+	}
+
+	public static int getSlotStatus(ItemStack stack) {
+		if (stack.hasTagCompound() && stack.getTagCompound().hasKey(TileEntityCartAssembler.MODIFY_STATUS, NBTHelper.INT.getId()))
+			return stack.getTagCompound().getInteger(TileEntityCartAssembler.MODIFY_STATUS);
+		return 1;
+	}
+
+	public static ItemStack removeModify(ItemStack stack) {
+		if (stack.hasTagCompound() && stack.getTagCompound().hasKey(MODIFY_STATUS, NBTHelper.INT.getId())) {
+			stack.getTagCompound().removeTag(MODIFY_STATUS);
+			if (stack.getTagCompound().getSize() <= 0)
+				stack.setTagCompound(null);
+		}
+		return stack;
 	}
 
 	public void onUpgradeUpdate() {
@@ -335,7 +356,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 			@Nonnull
 			ItemStack item = getStackInSlot(i);
 			if (!item.isEmpty()) {
-				if (item.getCount() != getRemovedSize()) {
+				if (getSlotStatus(item) != getRemovedSize()) {
 					items.add(item);
 				} else if (!isSimulated) {
 					@Nonnull
@@ -344,6 +365,9 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 					spareModules.add(spare);
 				}
 			}
+		}
+		if (items.size() == 1) {
+			return removeModify(items.get(0));
 		}
 		return ModuleData.createModularCartFromItems(items);
 	}
@@ -376,7 +400,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 			if (!item.isEmpty()) {
 				boolean validSize = true;
 				for (int j = 0; j < invalid.length; ++j) {
-					if (invalid[j] == item.getCount() || (invalid[j] > 0 && item.getCount() > 0)) {
+					if (invalid[j] == getSlotStatus(item) || (invalid[j] > 0 && getSlotStatus(item) > 0)) {
 						validSize = false;
 						break;
 					}
@@ -530,9 +554,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		}
 	}
 
-	public ArrayList<SlotAssembler> getValidSlotFromHullItem(
-		@Nonnull
-			ItemStack hullitem) {
+	public ArrayList<SlotAssembler> getValidSlotFromHullItem(@Nonnull ItemStack hullitem) {
 		if (!hullitem.isEmpty()) {
 			final ModuleData data = ModItems.MODULES.getModuleData(hullitem);
 			if (data != null && data instanceof ModuleDataHull) {
@@ -632,32 +654,34 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 	}
 
 	private void deployCart() {
-		for (final TileEntityUpgrade tile : getUpgradeTiles()) {
-			for (final BaseEffect effect : tile.getUpgrade().getEffects()) {
-				if (effect instanceof Deployer) {
-					BlockPos tilePos = tile.getPos();
-					final int xPos = 2 * tilePos.getX() - pos.getX();
-					int yPos = 2 * tilePos.getY() - pos.getY();
-					final int zPos = 2 * tilePos.getZ() - pos.getZ();
-					if (tilePos.getY() > pos.getY()) {
-						++yPos;
-					}
-					if (!BlockRailBase.isRailBlock(world, new BlockPos(xPos, yPos, zPos))) {
-						continue;
-					}
-					try {
-						final NBTTagCompound info = outputItem.getTagCompound();
-						if (info != null) {
-							final EntityMinecartModular cart = new EntityMinecartModular(world, xPos + 0.5f, yPos + 0.5f, zPos + 0.5f, info, outputItem.getDisplayName());
-							world.spawnEntity(cart);
-							cart.temppushX = tilePos.getX() - pos.getX();
-							cart.temppushZ = tilePos.getZ() - pos.getZ();
-							managerInteract(cart, true);
-							return;
+		if (!outputItem.isEmpty() && outputItem.getItem() instanceof ItemCarts) {
+			for (final TileEntityUpgrade tile : getUpgradeTiles()) {
+				for (final BaseEffect effect : tile.getUpgrade().getEffects()) {
+					if (effect instanceof Deployer) {
+						BlockPos tilePos = tile.getPos();
+						final int xPos = 2 * tilePos.getX() - pos.getX();
+						int yPos = 2 * tilePos.getY() - pos.getY();
+						final int zPos = 2 * tilePos.getZ() - pos.getZ();
+						if (tilePos.getY() > pos.getY()) {
+							++yPos;
 						}
-						continue;
-					} catch (Exception e) {
-						e.printStackTrace();
+						if (!BlockRailBase.isRailBlock(world, new BlockPos(xPos, yPos, zPos))) {
+							continue;
+						}
+						try {
+							final NBTTagCompound info = outputItem.getTagCompound();
+							if (info != null) {
+								final EntityMinecartModular cart = new EntityMinecartModular(world, xPos + 0.5f, yPos + 0.5f, zPos + 0.5f, info, outputItem.getDisplayName());
+								world.spawnEntity(cart);
+								cart.temppushX = tilePos.getX() - pos.getX();
+								cart.temppushZ = tilePos.getZ() - pos.getZ();
+								managerInteract(cart, true);
+								return;
+							}
+							continue;
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -710,9 +734,8 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 			if (tile.getUpgrade() != null) {
 				for (final BaseEffect effect : tile.getUpgrade().getEffects()) {
 					if (effect instanceof Disassemble) {
-						for (
-							@Nonnull
-								ItemStack item : spareModules) {
+						for (@Nonnull ItemStack item : spareModules) {
+							item = removeModify(item);
 							TransferHandler.TransferItem(item, tile, new ContainerUpgrade(null, tile), 1);
 							if (item.getCount() > 0) {
 								puke(item);
@@ -724,9 +747,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 		}
 	}
 
-	public void puke(
-		@Nonnull
-			ItemStack item) {
+	public void puke(@Nonnull ItemStack item) {
 		final EntityItem entityitem = new EntityItem(world, pos.getX(), pos.getY() + 0.25, pos.getZ(), item);
 		entityitem.motionX = (0.5f - world.rand.nextFloat()) / 10.0f;
 		entityitem.motionY = 0.15000000596046448;
@@ -955,7 +976,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 
 	public boolean getIsDisassembling() {
 		for (int i = 0; i < getSizeInventory() - nonModularSlots(); ++i) {
-			if (!getStackInSlot(i).isEmpty() && getStackInSlot(i).getCount() <= 0) {
+			if (!getStackInSlot(i).isEmpty() && getSlotStatus(getStackInSlot(i)) <= 0) {
 				return true;
 			}
 		}
@@ -1026,9 +1047,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 	}
 
 	@Override
-	public void setInventorySlotContents(final int i,
-	                                     @Nonnull
-		                                     ItemStack itemstack) {
+	public void setInventorySlotContents(final int i, @Nonnull ItemStack itemstack) {
 		inventoryStacks.set(i, itemstack);
 		if (!itemstack.isEmpty() && itemstack.getCount() > getInventoryStackLimit()) {
 			itemstack.setCount(getInventoryStackLimit());

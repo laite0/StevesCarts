@@ -35,9 +35,7 @@ public class SlotAssembler extends Slot {
 	}
 
 	@Override
-	public boolean isItemValid(
-		@Nonnull
-			ItemStack itemstack) {
+	public boolean isItemValid(@Nonnull ItemStack itemstack) {
 		return !itemstack.isEmpty() && isValid && ModuleData.isValidModuleItem(groupID, itemstack) && (!getHasStack() || (getStack().getCount() > 0 && itemstack.getCount() > 0));
 	}
 
@@ -120,6 +118,6 @@ public class SlotAssembler extends Slot {
 
 	@Override
 	public boolean canTakeStack(final EntityPlayer player) {
-		return !getStack().isEmpty() && getStack().getCount() > 0;
+		return !getStack().isEmpty() && (!getStack().hasTagCompound() || !getStack().getTagCompound().hasKey(TileEntityCartAssembler.MODIFY_STATUS) || getStack().getTagCompound().getInteger(TileEntityCartAssembler.MODIFY_STATUS) > 0);
 	}
 }

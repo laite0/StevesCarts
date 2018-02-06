@@ -5,7 +5,10 @@ import net.minecraft.block.BlockOre;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.oredict.OreDictionary;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.modules.workers.tools.ModuleDrill;
@@ -59,7 +62,13 @@ public class ModuleOreTracker extends ModuleAddon {
 			return true;
 		}
 
-		ItemStack stack = b.getPickBlock(state, null, getCart().world, pos, getFakePlayer());
+		BlockPos fromPos = getCart().getPosition();
+		int x = pos.getX() - fromPos.getX();
+		int y = pos.getY() - fromPos.getY();
+		int z = pos.getZ() - fromPos.getZ();
+		EnumFacing facing = EnumFacing.getFacingFromVector(x, y, z);
+		RayTraceResult hit = new RayTraceResult(new Vec3d(0,0,0), facing, pos);
+		ItemStack stack = b.getPickBlock(state, hit, getCart().world, pos, getFakePlayer());
 		if (stack.isEmpty()) {
 			return false;
 		}

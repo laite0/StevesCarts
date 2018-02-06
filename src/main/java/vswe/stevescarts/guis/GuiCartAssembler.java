@@ -14,10 +14,7 @@ import vswe.stevescarts.Constants;
 import vswe.stevescarts.blocks.tileentities.TileEntityCartAssembler;
 import vswe.stevescarts.containers.ContainerCartAssembler;
 import vswe.stevescarts.containers.slots.SlotAssembler;
-import vswe.stevescarts.helpers.DropDownMenuItem;
-import vswe.stevescarts.helpers.Localization;
-import vswe.stevescarts.helpers.ResourceHelper;
-import vswe.stevescarts.helpers.TitleBox;
+import vswe.stevescarts.helpers.*;
 import vswe.stevescarts.items.ModItems;
 import vswe.stevescarts.modules.data.ModuleData;
 import vswe.stevescarts.modules.data.ModuleDataHull;
@@ -185,8 +182,8 @@ public class GuiCartAssembler extends GuiBase {
 				srcY = 0;
 			} else {
 				size = 18;
-				if (!slot.getStack().isEmpty() && slot.getStack().getCount() <= 0) {
-					if (slot.getStack().getCount() == TileEntityCartAssembler.getRemovedSize()) {
+				if (!slot.getStack().isEmpty() && TileEntityCartAssembler.getSlotStatus(slot.getStack()) <= 0) {
+					if (TileEntityCartAssembler.getSlotStatus(slot.getStack()) == TileEntityCartAssembler.getRemovedSize()) {
 						srcX = 140;
 					} else {
 						srcX = 122;
@@ -491,7 +488,7 @@ public class GuiCartAssembler extends GuiBase {
 				final int targetX = slot.getX() - 1;
 				final int targetY = slot.getY() - 1;
 				final int size = 18;
-				if (inRect(x, y, new int[] { targetX, targetY, size, size }) && !slot.getStack().isEmpty() && slot.getStack().getCount() <= 0) {
+				if (inRect(x, y, new int[] { targetX, targetY, size, size }) && !slot.getStack().isEmpty() && TileEntityCartAssembler.getSlotStatus(slot.getStack()) <= 0) {
 					PacketStevesCarts.sendPacket(1, new byte[] { (byte) i });
 				}
 			}

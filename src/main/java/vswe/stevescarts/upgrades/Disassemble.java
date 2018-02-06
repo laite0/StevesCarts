@@ -88,9 +88,9 @@ public class Disassemble extends InventoryEffect {
 	}
 
 	private void resetMaster(final TileEntityCartAssembler master, final boolean full) {
-		for (int i = 0; i < master.getSizeInventory() - master.nonModularSlots(); ++i) {
+		for (int i = 0; i < master.getSizeInventory() - master.nonModularSlots(); i++) {
 			if (!master.getStackInSlot(i).isEmpty()) {
-				if (master.getStackInSlot(i).getCount() <= 0) {
+				if (TileEntityCartAssembler.getSlotStatus(master.getStackInSlot(i)) <= 0) {
 					master.setInventorySlotContents(i, ItemStack.EMPTY);
 				} else if (full) {
 					if (!master.getWorld().isRemote) {
@@ -103,9 +103,7 @@ public class Disassemble extends InventoryEffect {
 	}
 
 	private void setLastCart(final TileEntityUpgrade upgrade, final ItemStack cart) {
-		if (cart.isEmpty()) {
-			upgrade.getCompound().setShort("id", (short) 0);
-		} else {
+		if (!cart.isEmpty()) {
 			cart.writeToNBT(upgrade.getCompound());
 		}
 	}
@@ -127,25 +125,26 @@ public class Disassemble extends InventoryEffect {
 				@Nonnull
 				final ItemStack last = this.getLastCart(upgrade);
 				this.setLastCart(upgrade, cart);
+
 				int result = this.canDisassemble(upgrade);
 				boolean reset = false;
 				if (result > 0 && !last.isEmpty() && !ItemStack.areItemStacksEqual(cart, last)) {
 					result = 2;
 					reset = true;
 				}
+
 				if (result != 2) {
 					return result == 1 && !upgrade.getMaster().getStackInSlot(0).isEmpty();
 				}
+
 				if (reset) {
 					this.resetMaster(upgrade.getMaster(), true);
 				}
+
 				boolean addedHull = false;
 				final NonNullList<ItemStack> modules = ModuleData.getModularItems(cart);
 				for (ItemStack item : modules) {
-					//TODO ?
-					//item.setCount(0);
-					//item = ItemStack.EMPTY;
-
+					TileEntityCartAssembler.getOrCreateCompound(item).setInteger(TileEntityCartAssembler.MODIFY_STATUS, 0);
 					TransferHandler.TransferItem(item, upgrade.getMaster(), new ContainerCartAssembler(null, upgrade.getMaster()), 1);
 					if (!addedHull) {
 						addedHull = true;
@@ -161,18 +160,18 @@ public class Disassemble extends InventoryEffect {
 		int disassembleCount = 0;
 		for (final BaseEffect effect : upgrade.getMaster().getEffects()) {
 			if (effect instanceof Disassemble) {
-				++disassembleCount;
+				disassembleCount++;
 			}
 		}
 		if (disassembleCount != 1) {
 			return 0;
 		}
-		for (int i = 0; i < upgrade.getMaster().getSizeInventory() - upgrade.getMaster().nonModularSlots(); ++i) {
-			if (!upgrade.getMaster().getStackInSlot(i).isEmpty()&& upgrade.getMaster().getStackInSlot(i).getCount() <= 0) {
+		for (int i = 0; i < upgrade.getMaster().getSizeInventory() - upgrade.getMaster().nonModularSlots(); i++) {
+			if (!upgrade.getMaster().getStackInSlot(i).isEmpty() && TileEntityCartAssembler.getSlotStatus(upgrade.getMaster().getStackInSlot(i)) <= 0) {
 				return 1;
 			}
 		}
-		for (int i = 0; i < upgrade.getMaster().getSizeInventory() - upgrade.getMaster().nonModularSlots(); ++i) {
+		for (int i = 0; i < upgrade.getMaster().getSizeInventory() - upgrade.getMaster().nonModularSlots(); i++) {
 			if (!upgrade.getMaster().getStackInSlot(i).isEmpty()) {
 				return 0;
 			}

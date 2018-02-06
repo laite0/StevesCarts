@@ -82,7 +82,7 @@ public class ItemCartModule extends Item implements ModItems.IMultipleItemModelD
 	}
 
 	public ModuleData getModuleData(@Nonnull ItemStack itemstack, final boolean ignoreSize) {
-		if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemCartModule && (ignoreSize || itemstack.getCount() != TileEntityCartAssembler.getRemovedSize())) {
+		if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemCartModule && (ignoreSize || TileEntityCartAssembler.getSlotStatus(itemstack) != TileEntityCartAssembler.getRemovedSize())) {
 			return ModuleData.getList().get((byte) itemstack.getItemDamage());
 		}
 		return null;
