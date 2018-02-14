@@ -192,7 +192,7 @@ public abstract class TileEntityManager extends TileEntityBase implements IInven
 			return;
 		}
 		++moveTime;
-		if (moveTime >= 24) {
+		if (moveTime >= 24 || (getSetting() == -1) && color[0] - 1 != getSide()) {
 			moveTime = 0;
 			if (!exchangeItems(standardTransferHandler)) {
 				getCart().releaseCart();
@@ -205,39 +205,28 @@ public abstract class TileEntityManager extends TileEntityBase implements IInven
 	}
 
 	public boolean exchangeItems(final TransferManager transfer) {
-		transfer.setSetting(transfer.getLowestSetting());
-		while (transfer.getSetting() < 4) {
-			Label_0130:
-			{
-				if (color[transfer.getSetting()] - 1 == transfer.getSide()) {
-					transfer.setLowestSetting(transfer.getSetting());
-					if (transfer.getLastSetting() != transfer.getSetting()) {
-						transfer.setWorkload(0);
-						transfer.setLastSetting(transfer.getSetting());
-						return true;
-					}
-					Label_0108:
-					{
-						if (toCart[transfer.getSetting()]) {
-							if (!transfer.getToCartEnabled()) {
-								break Label_0108;
-							}
-						} else if (!transfer.getFromCartEnabled()) {
-							break Label_0108;
-						}
-						if (isTargetValid(transfer)) {
-							if (doTransfer(transfer)) {
-								return true;
-							}
-							break Label_0130;
-						}
-					}
-					transfer.setLowestSetting(transfer.getSetting() + 1);
-					return true;
-				}
+		for (transfer.setSetting(transfer.getLowestSetting()); transfer.getSetting() < 4; transfer.setSetting(transfer.getSetting() + 1)) {
+			if (color[transfer.getSetting()] - 1 != transfer.getSide()) {
+				continue;
 			}
-			transfer.setSetting(transfer.getSetting() + 1);
+
+			transfer.setLowestSetting(transfer.getSetting());
+			if (transfer.getLastSetting() != transfer.getSetting()) {
+				transfer.setWorkload(0);
+				transfer.setLastSetting(transfer.getSetting());
+				return true;
+			}
+
+			if (!(toCart[transfer.getSetting()] ? transfer.getToCartEnabled() : transfer.getFromCartEnabled()) || !isTargetValid(transfer)) {
+				transfer.setLowestSetting(transfer.getSetting() + 1);
+				return true;
+			}
+
+			if (doTransfer(transfer)) {
+				return true;
+			}
 		}
+
 		return false;
 	}
 

@@ -279,9 +279,7 @@ public class TileEntityCargo extends TileEntityManager {
 	}
 
 	@Override
-	public boolean isItemValidForSlot(final int slotId,
-	                                  @Nonnull
-		                                  ItemStack item) {
+	public boolean isItemValidForSlot(final int slotId, @Nonnull ItemStack item) {
 		return true;
 	}
 

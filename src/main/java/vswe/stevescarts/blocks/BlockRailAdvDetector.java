@@ -1,10 +1,9 @@
 package vswe.stevescarts.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRail;
 import net.minecraft.block.BlockRailBase;
-import net.minecraft.block.BlockRailDetector;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -28,21 +27,11 @@ import vswe.stevescarts.upgrades.Transposer;
 
 import javax.annotation.Nonnull;
 
-public class BlockRailAdvDetector extends BlockRailDetector implements ModBlocks.IStateMappedBlock {
+public class BlockRailAdvDetector extends BlockRail {
 
 	public BlockRailAdvDetector() {
 		super();
 		setCreativeTab(StevesCarts.tabsSC2Blocks);
-	}
-
-	@Override
-	public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return 0;
-	}
-
-	@Override
-	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return 0;
 	}
 
 	@Override
@@ -71,11 +60,12 @@ public class BlockRailAdvDetector extends BlockRailDetector implements ModBlocks
 		for (int i = -1; i <= 1; ++i) {
 			for (int j = -1; j <= 1; ++j) {
 				if (Math.abs(i) != Math.abs(j)) {
-					Block block = world.getBlockState(pos.add(i, 0, j)).getBlock();
+					BlockPos offset = pos.add(i, 0, j);
+					Block block = world.getBlockState(offset).getBlock();
 					if (block == ModBlocks.CARGO_MANAGER.getBlock() || block == ModBlocks.LIQUID_MANAGER.getBlock()) {
-						final TileEntity tileentity2 = world.getTileEntity(pos.add(i, 0, j));
-						if (tileentity2 != null && tileentity2 instanceof TileEntityManager) {
-							final TileEntityManager manager = (TileEntityManager) tileentity2;
+						final TileEntity tileentity = world.getTileEntity(offset);
+						if (tileentity != null && tileentity instanceof TileEntityManager) {
+							final TileEntityManager manager = (TileEntityManager) tileentity;
 							if (manager.getCart() == null) {
 								manager.setCart(cart);
 								manager.setSide(side);
@@ -84,9 +74,9 @@ public class BlockRailAdvDetector extends BlockRailDetector implements ModBlocks
 						return;
 					}
 					if (block == ModBlocks.MODULE_TOGGLER.getBlock()) {
-						final TileEntity tileentity2 = world.getTileEntity(pos.add(i, 0, j));
-						if (tileentity2 != null && tileentity2 instanceof TileEntityActivator) {
-							final TileEntityActivator activator = (TileEntityActivator) tileentity2;
+						final TileEntity tileentity = world.getTileEntity(offset);
+						if (tileentity != null && tileentity instanceof TileEntityActivator) {
+							final TileEntityActivator activator = (TileEntityActivator) tileentity;
 							boolean isOrange = false;
 							if (cart.temppushX == 0.0 == (cart.temppushZ == 0.0)) {
 								continue;
@@ -111,8 +101,8 @@ public class BlockRailAdvDetector extends BlockRailDetector implements ModBlocks
 						return;
 					}
 					if (block == ModBlocks.UPGRADE.getBlock()) {
-						final TileEntity tileentity2 = world.getTileEntity(pos.add(i, 0, j));
-						final TileEntityUpgrade upgrade = (TileEntityUpgrade) tileentity2;
+						final TileEntity tileentity = world.getTileEntity(offset);
+						final TileEntityUpgrade upgrade = (TileEntityUpgrade) tileentity;
 						if (upgrade != null && upgrade.getUpgrade() != null) {
 							for (final BaseEffect effect : upgrade.getUpgrade().getEffects()) {
 								if (effect instanceof Transposer) {
@@ -129,8 +119,7 @@ public class BlockRailAdvDetector extends BlockRailDetector implements ModBlocks
 														tile.setInventorySlotContents(0, ModuleData.createModularCart(cart));
 														upgrade.getMaster().managerInteract(cart, false);
 														for (int p = 0; p < cart.getSizeInventory(); ++p) {
-															@Nonnull
-															ItemStack item = cart.removeStackFromSlot(p);
+															@Nonnull ItemStack item = cart.removeStackFromSlot(p);
 															if (!item.isEmpty()) {
 																upgrade.getMaster().puke(item);
 															}
@@ -163,27 +152,23 @@ public class BlockRailAdvDetector extends BlockRailDetector implements ModBlocks
 		if (world.getBlockState(pos.down()) == ModBlocks.DETECTOR_UNIT.getBlock() && DetectorType.getTypeFromSate(blockState).canInteractWithCart()) {
 			return false;
 		}
-		for (int i = -1; i <= 1; ++i) {
-			for (int j = -1; j <= 1; ++j) {
-				if (Math.abs(i) != Math.abs(j)) {
-					BlockPos posOther = pos.add(i, 0, j);
-					final Block block = world.getBlockState(posOther).getBlock();
-					if (block == ModBlocks.CARGO_MANAGER.getBlock() || block == ModBlocks.LIQUID_MANAGER.getBlock() || block == ModBlocks.MODULE_TOGGLER.getBlock()) {
-						return false;
-					}
-					if (block == ModBlocks.UPGRADE.getBlock()) {
-						final TileEntity tileentity = world.getTileEntity(posOther);
-						final TileEntityUpgrade upgrade = (TileEntityUpgrade) tileentity;
-						if (upgrade != null && upgrade.getUpgrade() != null) {
-							for (final BaseEffect effect : upgrade.getUpgrade().getEffects()) {
-								if (effect instanceof Transposer && upgrade.getMaster() != null) {
-									for (final TileEntityUpgrade tile : upgrade.getMaster().getUpgradeTiles()) {
-										if (tile.getUpgrade() != null) {
-											for (final BaseEffect effect2 : tile.getUpgrade().getEffects()) {
-												if (effect2 instanceof Disassemble) {
-													return false;
-												}
-											}
+		for (EnumFacing facing: EnumFacing.HORIZONTALS) {
+			BlockPos posOther = pos.offset(facing);
+			final Block block = world.getBlockState(posOther).getBlock();
+			if (block == ModBlocks.CARGO_MANAGER.getBlock() || block == ModBlocks.LIQUID_MANAGER.getBlock() || block == ModBlocks.MODULE_TOGGLER.getBlock()) {
+				return false;
+			}
+			if (block == ModBlocks.UPGRADE.getBlock()) {
+				final TileEntity tileentity = world.getTileEntity(posOther);
+				final TileEntityUpgrade upgrade = (TileEntityUpgrade) tileentity;
+				if (upgrade != null && upgrade.getUpgrade() != null) {
+					for (final BaseEffect effect : upgrade.getUpgrade().getEffects()) {
+						if (effect instanceof Transposer && upgrade.getMaster() != null) {
+							for (final TileEntityUpgrade tile : upgrade.getMaster().getUpgradeTiles()) {
+								if (tile.getUpgrade() != null) {
+									for (final BaseEffect effect2 : tile.getUpgrade().getEffects()) {
+										if (effect2 instanceof Disassemble) {
+											return false;
 										}
 									}
 								}
@@ -202,17 +187,11 @@ public class BlockRailAdvDetector extends BlockRailDetector implements ModBlocks
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-		pos = pos.down();
-		IBlockState blockState = world.getBlockState(pos);
+		IBlockState blockState = world.getBlockState(pos = pos.down());
 		return blockState.getBlock() == ModBlocks.DETECTOR_UNIT.getBlock() && ModBlocks.DETECTOR_UNIT.getBlock().onBlockActivated(world, pos, blockState, player, hand, side, hitX, hitY, hitZ);
 	}
 
 	public void refreshState(World world, BlockPos pos, IBlockState state, final boolean flag) {
 		new BlockRailBase.Rail(world, pos, state).place(flag, false);
-	}
-
-	@Override
-	public void setStateMapper(StateMap.Builder builder) {
-		builder.ignore(POWERED);
 	}
 }

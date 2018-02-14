@@ -3,7 +3,7 @@ package vswe.stevescarts;
 public class Constants {
 	public static final String MOD_ID = "stevescarts";
 	public static final String NAME = "Steve's Carts 2";
-	public static final String VERSION = "${version}";
+	public static final String VERSION = "@MODVERSION@";
 	public static boolean hasGreenScreen = false;
 	public static boolean isChristmas = false;
 	public static boolean isHalloween = false;

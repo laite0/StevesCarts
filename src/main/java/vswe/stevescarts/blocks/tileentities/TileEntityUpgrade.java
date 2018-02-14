@@ -141,17 +141,19 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 		super.readFromNBT(tagCompound);
 		setType(tagCompound.getByte("Type"), false);
 		ItemStackHelper.loadAllItems(tagCompound, inventoryStacks);
+		markDirty();
 		final AssemblerUpgrade upgrade = getUpgrade();
 		if (upgrade != null) {
 			upgrade.load(this, tagCompound);
 		}
+
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		if (inventoryStacks != null) {
-			ItemStackHelper.saveAllItems(tagCompound, inventoryStacks, true);
+			ItemStackHelper.saveAllItems(tagCompound, inventoryStacks);
 		}
 		tagCompound.setByte("Type", (byte) type);
 		final AssemblerUpgrade upgrade = getUpgrade();
@@ -347,8 +349,8 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	@Override
 	public void markDirty() {
 		super.markDirty();
-		final IBlockState state = getWorld().getBlockState(getPos());
-		getWorld().notifyBlockUpdate(getPos(), state, state, 2);
+		//final IBlockState state = getWorld().getBlockState(getPos());
+		//getWorld().notifyBlockUpdate(getPos(), state, state, 2);
 		if (getUpgrade() != null) {
 			final InventoryEffect inv = getUpgrade().getInventoryEffect();
 			if (inv != null) {
