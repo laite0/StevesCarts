@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.blocks.tileentities.TileEntityCartAssembler;
 import vswe.stevescarts.blocks.tileentities.TileEntityUpgrade;
+import vswe.stevescarts.helpers.Pair;
 import vswe.stevescarts.packet.PacketStevesCarts;
 
 import java.util.ArrayList;
@@ -58,42 +59,42 @@ public class BlockCartAssembler extends BlockContainerBase {
 	}
 
 	private void checkForUpgrades(final World world, final BlockPos pos) {
-		for (EnumFacing facing : EnumFacing.HORIZONTALS) {
-			checkForUpgrade(world, pos.offset(facing), facing);
+		BlockPos.PooledMutableBlockPos blockPos = BlockPos.PooledMutableBlockPos.retain(pos.getX(), pos.getY(), pos.getZ());
+		for (EnumFacing facing : EnumFacing.VALUES) {
+			blockPos.setPos(pos.getX(), pos.getY(), pos.getZ());
+			checkForUpgrade(world, blockPos.move(facing));
 		}
+		blockPos.release();
 	}
 
-	private TileEntityCartAssembler checkForUpgrade(final World world, final BlockPos pos, EnumFacing facing) {
+	private TileEntityCartAssembler checkForUpgrade(final World world, final BlockPos pos) {
 		final TileEntity tile = world.getTileEntity(pos);
 		if (tile != null && tile instanceof TileEntityUpgrade) {
 			final TileEntityUpgrade upgrade = (TileEntityUpgrade) tile;
-			final ArrayList<TileEntityCartAssembler> masters = getMasters(world, pos);
+			final ArrayList<Pair<TileEntityCartAssembler, EnumFacing>> masters = getMasters(world, pos);
 			if (masters.size() == 1) {
-				final TileEntityCartAssembler master = masters.get(0);
+				Pair<TileEntityCartAssembler, EnumFacing> pair = masters.get(0);
+				TileEntityCartAssembler master = pair.first();
 				master.addUpgrade(upgrade);
-				upgrade.setMaster(master, facing);
+				upgrade.setMaster(master, pair.second().getOpposite());
 				return master;
+			} else {
+				world.markChunkDirty(pos, tile);
 			}
-			for (final TileEntityCartAssembler master2 : masters) {
-				master2.removeUpgrade(upgrade);
+			for (final Pair<TileEntityCartAssembler, EnumFacing> master2 : masters) {
+				master2.first().removeUpgrade(upgrade);
 			}
 			upgrade.setMaster(null, null);
 		}
 		return null;
 	}
 
-	private ArrayList<TileEntityCartAssembler> getMasters(final World world, final BlockPos pos) {
-		final ArrayList<TileEntityCartAssembler> masters = new ArrayList<>();
-		for (int i = -1; i <= 1; ++i) {
-			for (int j = -1; j <= 1; ++j) {
-				for (int k = -1; k <= 1; ++k) {
-					if (Math.abs(i) + Math.abs(j) + Math.abs(k) == 1) {
-						final TileEntityCartAssembler temp = getMaster(world, pos.add(i, j, k));
-						if (temp != null) {
-							masters.add(temp);
-						}
-					}
-				}
+	private ArrayList<Pair<TileEntityCartAssembler, EnumFacing>> getMasters(final World world, final BlockPos pos) {
+		final ArrayList<Pair<TileEntityCartAssembler, EnumFacing>> masters = new ArrayList<>();
+		for (EnumFacing facing: EnumFacing.VALUES) {
+			final TileEntityCartAssembler temp = getMaster(world, pos.offset(facing));
+			if (temp != null) {
+				masters.add(Pair.of(temp, facing));
 			}
 		}
 		return masters;
@@ -101,19 +102,13 @@ public class BlockCartAssembler extends BlockContainerBase {
 
 	private TileEntityCartAssembler getValidMaster(final World world, final BlockPos pos) {
 		TileEntityCartAssembler master = null;
-		for (int i = -1; i <= 1; ++i) {
-			for (int j = -1; j <= 1; ++j) {
-				for (int k = -1; k <= 1; ++k) {
-					if (Math.abs(i) + Math.abs(j) + Math.abs(k) == 1) {
-						final TileEntityCartAssembler temp = getMaster(world, pos.add(i, j, k));
-						if (temp != null) {
-							if (master != null) {
-								return null;
-							}
-							master = temp;
-						}
-					}
+		for (EnumFacing facing: EnumFacing.VALUES) {
+			final TileEntityCartAssembler temp = getMaster(world, pos.offset(facing));
+			if (temp != null) {
+				if (master != null) {
+					return null;
 				}
+				master = temp;
 			}
 		}
 		return master;

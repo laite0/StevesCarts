@@ -7,7 +7,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
@@ -25,7 +24,6 @@ import vswe.stevescarts.containers.ContainerBase;
 import vswe.stevescarts.containers.ContainerUpgrade;
 import vswe.stevescarts.guis.GuiBase;
 import vswe.stevescarts.guis.GuiUpgrade;
-import vswe.stevescarts.helpers.NBTHelper;
 import vswe.stevescarts.helpers.storages.ITankHolder;
 import vswe.stevescarts.helpers.storages.SCTank;
 import vswe.stevescarts.helpers.storages.TransferHandler;
@@ -42,10 +40,10 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	private int type;
 	private boolean initialized;
 	private NBTTagCompound comp;
-	NonNullList<ItemStack> inventoryStacks;
+	private NonNullList<ItemStack> inventoryStacks;
 	private int[] slotsForSide;
-	BlockUpgrade blockUpgrade = (BlockUpgrade) ModBlocks.UPGRADE.getBlock();
-	boolean shouldSetType;
+	private BlockUpgrade blockUpgrade = (BlockUpgrade) ModBlocks.UPGRADE.getBlock();
+	private boolean isCreativeBroken;
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -62,10 +60,11 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 		this.master = master;
 		if (world.getBlockState(pos).getBlock() instanceof BlockUpgrade) {
 			if (side != null) {
-				world.setBlockState(pos, blockUpgrade.getDefaultState().withProperty(BlockUpgrade.FACING, side).withProperty(BlockUpgrade.TYPE, getType()));
+				world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockUpgrade.FACING, side).withProperty(BlockUpgrade.TYPE, getType()).withProperty(BlockUpgrade.CONNECTED, master != null));
 			} else {
-				world.setBlockState(pos, blockUpgrade.getDefaultState().withProperty(BlockUpgrade.TYPE, getType()));
+				world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockUpgrade.TYPE, getType()).withProperty(BlockUpgrade.CONNECTED, master != null));
 			}
+			markDirty();
 		}
 	}
 
@@ -84,7 +83,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	public void setType(final int type, boolean setBlockState) {
 		this.type = type;
 		if (setBlockState) {
-			world.setBlockState(pos, blockUpgrade.getDefaultState().withProperty(BlockUpgrade.TYPE, type).withProperty(BlockUpgrade.FACING, getSide()));
+			world.setBlockState(pos, blockUpgrade.getDefaultState().withProperty(BlockUpgrade.FACING, getSide()).withProperty(BlockUpgrade.TYPE, type));//.withProperty(BlockUpgrade.CONNECTED, getMaster() != null));
 		}
 		if (!initialized) {
 			initialized = true;
@@ -116,9 +115,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	@Nullable
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		final NBTTagCompound var1 = new NBTTagCompound();
-		writeToNBT(var1);
-		return new SPacketUpdateTileEntity(pos, 1, var1);
+		return new SPacketUpdateTileEntity(pos, 1, writeToNBT(new NBTTagCompound()));
 	}
 
 	@Override
@@ -128,7 +125,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		return writeToNBT(super.getUpdateTag());
+		return writeToNBT(new NBTTagCompound());
 	}
 
 	public AssemblerUpgrade getUpgrade() {
@@ -143,17 +140,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	public void readFromNBT(final NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		setType(tagCompound.getByte("Type"), false);
-		shouldSetType = true;
-		final NBTTagList items = tagCompound.getTagList("Items", NBTHelper.COMPOUND.getId());
-		for (int i = 0; i < items.tagCount(); ++i) {
-			final NBTTagCompound item = items.getCompoundTagAt(i);
-			final int slot = item.getByte("Slot") & 0xFF;
-			@Nonnull
-			ItemStack iStack = new ItemStack(item);
-			if (slot >= 0 && slot < getSizeInventory()) {
-				setInventorySlotContents(slot, iStack);
-			}
-		}
+		ItemStackHelper.loadAllItems(tagCompound, inventoryStacks);
 		final AssemblerUpgrade upgrade = getUpgrade();
 		if (upgrade != null) {
 			upgrade.load(this, tagCompound);
@@ -163,20 +150,9 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	@Override
 	public NBTTagCompound writeToNBT(final NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
-		final NBTTagList items = new NBTTagList();
 		if (inventoryStacks != null) {
-			for (int i = 0; i < inventoryStacks.size(); ++i) {
-				@Nonnull
-				ItemStack iStack = inventoryStacks.get(i);
-				if (!iStack.isEmpty()) {
-					final NBTTagCompound item = new NBTTagCompound();
-					item.setByte("Slot", (byte) i);
-					iStack.writeToNBT(item);
-					items.appendTag(item);
-				}
-			}
+			ItemStackHelper.saveAllItems(tagCompound, inventoryStacks, true);
 		}
-		tagCompound.setTag("Items", items);
 		tagCompound.setByte("Type", (byte) type);
 		final AssemblerUpgrade upgrade = getUpgrade();
 		if (upgrade != null) {
@@ -370,6 +346,9 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 
 	@Override
 	public void markDirty() {
+		super.markDirty();
+		final IBlockState state = getWorld().getBlockState(getPos());
+		getWorld().notifyBlockUpdate(getPos(), state, state, 2);
 		if (getUpgrade() != null) {
 			final InventoryEffect inv = getUpgrade().getInventoryEffect();
 			if (inv != null) {
@@ -502,12 +481,11 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 		return false;
 	}
 
-	@Override
-	public void update() {
-		super.update();
-		if (shouldSetType) {
-			world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockUpgrade.TYPE, type).withProperty(BlockUpgrade.FACING, getSide()));
-			shouldSetType = false;
-		}
+	public void setCreativeBroken() {
+		isCreativeBroken = true;
+	}
+
+	public boolean isCreativeBroken() {
+		return isCreativeBroken;
 	}
 }

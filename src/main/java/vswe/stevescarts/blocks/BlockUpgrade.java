@@ -1,6 +1,7 @@
 package vswe.stevescarts.blocks;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
@@ -30,59 +31,54 @@ import vswe.stevescarts.upgrades.AssemblerUpgrade;
 
 public class BlockUpgrade extends BlockContainerBase implements ModBlocks.ICustomItemBlock, ModBlocks.ISubtypeItemBlockModelDefinition {
 
-	public static PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 	public static final PropertyInteger TYPE = PropertyInteger.create("type", 0, 19); //Set to number of upgrades
+	public static final PropertyBool CONNECTED = PropertyBool.create("connected");
+
+	private static AxisAlignedBB IDLE_BB = new AxisAlignedBB(0.1875f, 0.125f, 0.1875f, 1.0f - 0.1875f, 1.0f - 0.125f, 1.0f - 0.1875f);
+	private static AxisAlignedBB[] BBS = new AxisAlignedBB[6];
+	static {
+		final float margin = 0.1875f;
+		final float width = 0.125f;
+		BBS[EnumFacing.DOWN.getIndex()] = new AxisAlignedBB(margin, 0.0f, margin, 1.0f - margin, width, 1.0f - margin);
+		BBS[EnumFacing.UP.getIndex()] = new AxisAlignedBB(margin, 1.0f - width, margin, 1.0f - margin, 1.0f, 1.0f - margin);
+		BBS[EnumFacing.WEST.getIndex()] = new AxisAlignedBB(0.0f, margin, margin, width, 1.0f - margin, 1.0f - margin);
+		BBS[EnumFacing.EAST.getIndex()] = new AxisAlignedBB(1.0f - width, margin, margin, 1.0f, 1.0f - margin, 1.0f - margin);
+		BBS[EnumFacing.NORTH.getIndex()] = new AxisAlignedBB(margin, margin, 0.0f, 1.0f - margin, 1.0f - margin, width);
+		BBS[EnumFacing.SOUTH.getIndex()] = new AxisAlignedBB(margin, margin, 1.0f - width, 1.0f - margin, 1.0f - margin, 1.0f);
+	}
 
 	public BlockUpgrade() {
 		super(Material.ROCK);
 		setCreativeTab(StevesCarts.tabsSC2Blocks);
-		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, 0));
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TYPE, 0).withProperty(CONNECTED, true));
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+		TileEntity te = worldIn.getTileEntity(pos);
+		if (te instanceof TileEntityUpgrade)
+			state = state.withProperty(TYPE, ((TileEntityUpgrade) te).getType());
+		return super.getActualState(state, worldIn, pos);
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, FACING, TYPE);
+		return new BlockStateContainer(this, FACING, TYPE, CONNECTED);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return getMetaFromEnum(state.getValue(FACING));
+		return state.getValue(FACING).getIndex() | (state.getValue(CONNECTED) ? 1 << 3: 0);
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(FACING, getSideFromMeta(meta));
-	}
-
-	public EnumFacing getSideFromMeta(int i) {
-		if (i == 0) {
-			return EnumFacing.NORTH;
-		} else if (i == 1) {
-			return EnumFacing.SOUTH;
-		} else if (i == 2) {
-			return EnumFacing.EAST;
-		} else if (i == 3) {
-			return EnumFacing.WEST;
-		}
-		return EnumFacing.NORTH;
-	}
-
-	public int getMetaFromEnum(EnumFacing facing) {
-		if (facing == EnumFacing.NORTH) {
-			return 0;
-		} else if (facing == EnumFacing.SOUTH) {
-			return 1;
-		} else if (facing == EnumFacing.EAST) {
-			return 2;
-		} else if (facing == EnumFacing.WEST) {
-			return 3;
-		}
-		return 0;
+		return getDefaultState().withProperty(FACING, EnumFacing.getFront(meta & 7)).withProperty(CONNECTED, ((meta & 8) >> 3) == 1);
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {
-	}
+	public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune) {}
 
 	@Override
 	public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
@@ -100,6 +96,7 @@ public class BlockUpgrade extends BlockContainerBase implements ModBlocks.ICusto
 		if (tile instanceof TileEntityUpgrade) {
 			TileEntityUpgrade upgrade = (TileEntityUpgrade) tile;
 			upgrade.setType(stack.getItemDamage());
+			((BlockCartAssembler) ModBlocks.CART_ASSEMBLER.getBlock()).addUpgrade(worldIn, pos);
 		}
 	}
 
@@ -115,7 +112,7 @@ public class BlockUpgrade extends BlockContainerBase implements ModBlocks.ICusto
 			TileEntity tile = worldIn.getTileEntity(pos);
 			if (tile instanceof TileEntityUpgrade) {
 				TileEntityUpgrade upgrade = (TileEntityUpgrade) tile;
-				upgrade.setType(1);
+				upgrade.setCreativeBroken();
 			}
 		}
 		super.onBlockHarvested(worldIn, pos, state, player);
@@ -128,7 +125,7 @@ public class BlockUpgrade extends BlockContainerBase implements ModBlocks.ICusto
 			final TileEntityUpgrade upgrade = (TileEntityUpgrade) tile;
 			if (upgrade.getUpgrade() != null)
 				upgrade.getUpgrade().removed(upgrade);
-			if (upgrade.getType() != 1)
+			if (!upgrade.isCreativeBroken())
 				spawnAsEntity(world, pos, new ItemStack(this, 1, upgrade.getType()));
 			if (upgrade.hasInventory())
 				InventoryHelper.dropInventoryItems(world, pos, upgrade);
@@ -165,34 +162,9 @@ public class BlockUpgrade extends BlockContainerBase implements ModBlocks.ICusto
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		return getUpgradeBounds(source, pos, state);
-	}
-
-	public final AxisAlignedBB getUpgradeBounds(IBlockAccess world, BlockPos pos, IBlockState state) {
-		EnumFacing side = state.getValue(FACING).getOpposite();
-		final float margin = 0.1875f;
-		final float width = 0.125f;
-		if (side == EnumFacing.DOWN) {
-			return new AxisAlignedBB(margin, 0.0f, margin, 1.0f - margin, width, 1.0f - margin);
-		} else if (side == EnumFacing.UP) {
-			return new AxisAlignedBB(margin, 1.0f - width, margin, 1.0f - margin, 1.0f, 1.0f - margin);
-		} else if (side == EnumFacing.WEST) {
-			return new AxisAlignedBB(0.0f, margin, margin, width, 1.0f - margin, 1.0f - margin);
-		} else if (side == EnumFacing.EAST) {
-			return new AxisAlignedBB(1.0f - width, margin, margin, 1.0f, 1.0f - margin, 1.0f - margin);
-		} else if (side == EnumFacing.NORTH) {
-			return new AxisAlignedBB(margin, margin, 0.0f, 1.0f - margin, 1.0f - margin, width);
-		} else if (side == EnumFacing.SOUTH) {
-			return new AxisAlignedBB(margin, margin, 1.0f - width, 1.0f - margin, 1.0f - margin, 1.0f);
-		}
-		return FULL_BLOCK_AABB;
-	}
-
-	//TODO make idle model
-	public AxisAlignedBB getIdleBlockBounds() {
-		final float margin = 0.1875f;
-		final float width = 0.125f;
-		return new AxisAlignedBB(margin, width, margin, 1.0f - margin, 1.0f - width, 1.0f - margin);
+		if(!state.getValue(CONNECTED))
+			return IDLE_BB;
+		return BBS[state.getValue(FACING).getOpposite().getIndex()];
 	}
 
 	@Override
