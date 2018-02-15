@@ -1,7 +1,9 @@
 package vswe.stevescarts.containers.slots;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
+import reborncore.common.util.FluidUtils;
 import vswe.stevescarts.blocks.tileentities.TileEntityCartAssembler;
 
 import javax.annotation.Nonnull;
@@ -20,15 +22,11 @@ public class SlotAssemblerFuel extends SlotAssembler {
 	}
 
 	@Override
-	public boolean isItemValid(
-		@Nonnull
-			ItemStack itemstack) {
-		return TileEntityFurnace.getItemBurnTime(itemstack) > 0;
+	public boolean isItemValid(@Nonnull ItemStack itemstack) {
+		return itemstack.getItem() == Items.COAL || (getAssembler().isCombustionFuelValid() && FluidUtils.getFluidStackInContainer(itemstack) == null && TileEntityFurnace.getItemBurnTime(itemstack) > 0);
 	}
 
-	public int getFuelLevel(
-		@Nonnull
-			ItemStack itemstack) {
+	public int getFuelLevel(@Nonnull ItemStack itemstack) {
 		if (isItemValid(itemstack)) {
 			return (int) (TileEntityFurnace.getItemBurnTime(itemstack) * 0.25f);
 		}
