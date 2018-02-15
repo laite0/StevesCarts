@@ -39,7 +39,7 @@ public class SCTank extends FluidTank {
 		ItemStack item = owner.getInputContainer(tankid);
 		if (!item.isEmpty()) {
 			IFluidHandler handler = FluidUtils.getFluidHandler(item);
-			if (handler != null) {
+			if (handler != null && (this.fluid == null || this.capacity - this.fluid.amount >= Fluid.BUCKET_VOLUME)) {
 				FluidStack fluidStack = handler.drain(Fluid.BUCKET_VOLUME, false);
 				if (fluidStack != null && fluidStack.amount >= Fluid.BUCKET_VOLUME) {
 					FluidActionResult result = FluidUtil.tryEmptyContainer(item, this, Fluid.BUCKET_VOLUME, null, false);

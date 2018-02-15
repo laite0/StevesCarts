@@ -305,7 +305,7 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 				changed = true;
 			} else if (tanks[i].getFluid() != null) {
 				if (isNew || con.oldLiquids[i] == null) {
-					this.updateGuiData(con, crafting, id, (short) this.tanks[i].getFluid().amount);
+					updateGuiData(con, crafting, id, (short) this.tanks[i].getFluid().amount);
 					updateGuiData(con, crafting, amount1, getShortFromInt(true, tanks[i].getFluid().amount));
 					updateGuiData(con, crafting, amount2, getShortFromInt(false, tanks[i].getFluid().amount));
 					changed = true;

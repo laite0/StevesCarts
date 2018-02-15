@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import reborncore.common.network.NetworkManager;
 import vswe.stevescarts.blocks.tileentities.TileEntityUpgrade;
 import vswe.stevescarts.containers.ContainerUpgrade;
 import vswe.stevescarts.containers.slots.SlotLiquidOutput;
@@ -14,6 +15,7 @@ import vswe.stevescarts.containers.slots.SlotLiquidUpgradeInput;
 import vswe.stevescarts.guis.GuiUpgrade;
 import vswe.stevescarts.helpers.ResourceHelper;
 import vswe.stevescarts.helpers.storages.SCTank;
+import vswe.stevescarts.packet.PacketFluidSync;
 
 public abstract class TankEffect extends InventoryEffect {
 	private static final int tankInterfaceX = 35;
@@ -74,22 +76,18 @@ public abstract class TankEffect extends InventoryEffect {
 		final int id = 0;
 		final int amount1 = 1;
 		final int amount2 = 2;
-		final int meta = 3;
 		final FluidStack oldfluid = (FluidStack) con.olddata;
 		if ((isNew || oldfluid != null) && upgrade.tank.getFluid() == null) {
 			upgrade.updateGuiData(con, crafting, id, (short) (-1));
 			changed = true;
 		} else if (upgrade.tank.getFluid() != null) {
 			if (isNew || oldfluid == null) {
-				//upgrade.updateGuiData(con, crafting, id, (short) upgrade.tank.getFluid().fluidID);
+				upgrade.updateGuiData(con, crafting, id, (short) upgrade.tank.getFluid().amount);
 				upgrade.updateGuiData(con, crafting, amount1, upgrade.getShortFromInt(true, upgrade.tank.getFluid().amount));
 				upgrade.updateGuiData(con, crafting, amount2, upgrade.getShortFromInt(false, upgrade.tank.getFluid().amount));
 				changed = true;
 			} else {
-				if (!oldfluid.getFluid().getName().equals(upgrade.tank.getFluid().getFluid().getName())) {
-					//upgrade.updateGuiData(con, crafting, id, (short) upgrade.tank.getFluid().fluidID);
-					changed = true;
-				}
+				NetworkManager.sendToWorld(new PacketFluidSync(upgrade.tank.getFluid(), upgrade.getPos(), upgrade.getWorld().provider.getDimension(), 0), upgrade.getWorld());
 				if (oldfluid.amount != upgrade.tank.getFluid().amount) {
 					upgrade.updateGuiData(con, crafting, amount1, upgrade.getShortFromInt(true, upgrade.tank.getFluid().amount));
 					upgrade.updateGuiData(con, crafting, amount2, upgrade.getShortFromInt(false, upgrade.tank.getFluid().amount));
@@ -111,8 +109,6 @@ public abstract class TankEffect extends InventoryEffect {
 		if (id == 0) {
 			if (data == -1) {
 				upgrade.tank.setFluid(null);
-			} else if (upgrade.tank.getFluid() == null) {
-				//upgrade.tank.setFluid(new FluidStack(FluidRegistry.get, 0));
 			}
 		} else if (upgrade.tank.getFluid() != null) {
 			upgrade.tank.getFluid().amount = upgrade.getIntFromShort(id == 1, upgrade.tank.getFluid().amount, data);

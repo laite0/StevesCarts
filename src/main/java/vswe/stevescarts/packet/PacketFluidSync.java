@@ -11,6 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import reborncore.common.network.ExtendedPacketBuffer;
 import reborncore.common.network.INetworkPacket;
 import vswe.stevescarts.blocks.tileentities.TileEntityLiquid;
+import vswe.stevescarts.blocks.tileentities.TileEntityUpgrade;
 
 import java.io.IOException;
 
@@ -56,8 +57,10 @@ public class PacketFluidSync implements INetworkPacket<PacketFluidSync> {
 				FMLClientHandler.instance().getClient().addScheduledTask(() -> processData(message, context));
 			} else {
 				TileEntity tile = Minecraft.getMinecraft().world.getTileEntity(message.pos);
-				if(tile != null && tile instanceof TileEntityLiquid){
+				if(tile instanceof TileEntityLiquid){
 					((TileEntityLiquid)tile).tanks[message.tankID].setFluid(message.fluidStack);
+				} else if (tile instanceof TileEntityUpgrade) {
+					((TileEntityUpgrade) tile).tank.setFluid(message.fluidStack);
 				}
 			}
 		}
