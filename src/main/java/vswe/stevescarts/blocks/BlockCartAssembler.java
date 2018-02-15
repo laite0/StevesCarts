@@ -42,19 +42,16 @@ public class BlockCartAssembler extends BlockContainerBase {
 	}
 
 	public void updateMultiBlock(final World world, final BlockPos pos) {
-		if(!(world.getTileEntity(pos) instanceof TileEntityCartAssembler)){
-			return;
-		}
-		final TileEntityCartAssembler master = (TileEntityCartAssembler) world.getTileEntity(pos);
-		if (master != null) {
-			master.clearUpgrades();
+		TileEntity master = world.getTileEntity(pos);
+		if (master instanceof TileEntityCartAssembler) {
+			((TileEntityCartAssembler) master).clearUpgrades();
 		}
 		checkForUpgrades(world, pos);
 		if (!world.isRemote) {
 			PacketStevesCarts.sendBlockInfoToClients(world, new byte[0], pos);
 		}
-		if (master != null) {
-			master.onUpgradeUpdate();
+		if (master instanceof TileEntityCartAssembler) {
+			((TileEntityCartAssembler) master).onUpgradeUpdate();
 		}
 	}
 
@@ -78,9 +75,8 @@ public class BlockCartAssembler extends BlockContainerBase {
 				master.addUpgrade(upgrade);
 				upgrade.setMaster(master, pair.second().getOpposite());
 				return master;
-			} else {
-				world.markChunkDirty(pos, tile);
 			}
+			world.markChunkDirty(pos, tile);
 			for (final Pair<TileEntityCartAssembler, EnumFacing> master2 : masters) {
 				master2.first().removeUpgrade(upgrade);
 			}
@@ -135,7 +131,7 @@ public class BlockCartAssembler extends BlockContainerBase {
 	public void removeUpgrade(final World world, final BlockPos pos) {
 		final TileEntityCartAssembler master = getValidMaster(world, pos);
 		if (master != null) {
-			updateMultiBlock(world, pos);
+			updateMultiBlock(world, master.getPos());
 		}
 	}
 

@@ -83,7 +83,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	public void setType(final int type, boolean setBlockState) {
 		this.type = type;
 		if (setBlockState) {
-			world.setBlockState(pos, blockUpgrade.getDefaultState().withProperty(BlockUpgrade.FACING, getSide()).withProperty(BlockUpgrade.TYPE, type));//.withProperty(BlockUpgrade.CONNECTED, getMaster() != null));
+			world.setBlockState(pos, blockUpgrade.getDefaultState().withProperty(BlockUpgrade.FACING, getSide()).withProperty(BlockUpgrade.TYPE, type).withProperty(BlockUpgrade.CONNECTED, getMaster() != null));
 		}
 		if (!initialized) {
 			initialized = true;
@@ -349,8 +349,6 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 	@Override
 	public void markDirty() {
 		super.markDirty();
-		//final IBlockState state = getWorld().getBlockState(getPos());
-		//getWorld().notifyBlockUpdate(getPos(), state, state, 2);
 		if (getUpgrade() != null) {
 			final InventoryEffect inv = getUpgrade().getInventoryEffect();
 			if (inv != null) {
@@ -480,7 +478,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return false;
+		return oldState.getBlock() != newSate.getBlock();
 	}
 
 	public void setCreativeBroken() {
