@@ -45,6 +45,7 @@ import java.util.ArrayList;
 public class TileEntityCartAssembler extends TileEntityBase implements IInventory, ISidedInventory {
 	private int maxAssemblingTime;
 	private float currentAssemblingTime;
+	private int fuelCheckTimer;
 	@Nonnull
 	protected ItemStack outputItem = ItemStack.EMPTY;
 	protected NonNullList<ItemStack> spareModules;
@@ -815,7 +816,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 				}
 			}
 		}
-		if (!world.isRemote && fuelSlot != null && !fuelSlot.getStack().isEmpty()) {
+		if (!world.isRemote && fuelCheckTimer-- <= 0 && fuelSlot != null && !fuelSlot.getStack().isEmpty() && getFuelLevel() < getMaxFuelLevel()) {
 			final int fuel = fuelSlot.getFuelLevel(fuelSlot.getStack());
 			if (fuel > 0 && getFuelLevel() + fuel <= getMaxFuelLevel()) {
 				setFuelLevel(getFuelLevel() + fuel);
@@ -829,6 +830,8 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 				if (fuelSlot.getStack().getCount() <= 0) {
 					fuelSlot.putStack(ItemStack.EMPTY);
 				}
+			} else {
+				fuelCheckTimer = 20;
 			}
 		}
 		updateSlots();
