@@ -6,11 +6,33 @@
     "X#X"
   ],
   "key": {
-    "B": {
-      "type": "minecraft:item_nbt",
-      "item": "minecraft:enchanted_book",
-      "nbt": "{StoredEnchantments: [{lvl: 2s, id: 32s}]}"
-    },
+    "B": [
+      {
+        "type": "minecraft:item_nbt",
+        "item": "minecraft:enchanted_book",
+        "nbt": "{StoredEnchantments: [{lvl: 2s, id: 32s}]}"
+      },
+      {
+        "type": "minecraft:item_nbt",
+        "item": "minecraft:enchanted_book",
+        "nbt": "{RepairCost: 1, StoredEnchantments: [{lvl: 2s, id: 32s}]}"
+      },
+      {
+        "type": "minecraft:item_nbt",
+        "item": "minecraft:enchanted_book",
+        "nbt": "{RepairCost: 2, StoredEnchantments: [{lvl: 2s, id: 32s}]}"
+      },
+      {
+        "type": "minecraft:item_nbt",
+        "item": "minecraft:enchanted_book",
+        "nbt": "{RepairCost: 3, StoredEnchantments: [{lvl: 2s, id: 32s}]}"
+      },
+      {
+        "type": "minecraft:item_nbt",
+        "item": "minecraft:enchanted_book",
+        "nbt": "{RepairCost: 4, StoredEnchantments: [{lvl: 2s, id: 32s}]}"
+      }
+    ],
     "L": {
       "item": "stevescarts:modulecomponents",
       "data": 16
