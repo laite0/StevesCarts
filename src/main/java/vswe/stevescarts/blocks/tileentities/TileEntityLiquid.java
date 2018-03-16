@@ -121,23 +121,26 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 
 	@Override
 	protected boolean doTransfer(final TransferManager transfer) {
-		final int maximumToTransfer = hasMaxAmount(transfer.getSetting()) ? Math.min(getMaxAmount(transfer.getSetting()) - transfer.getWorkload(), 1000) : 1000;
+		final int maximumToTransfer = hasMaxAmount(transfer.getSetting()) ? Math.min(getMaxAmount(transfer.getSetting()) - transfer.getWorkload(), Fluid.BUCKET_VOLUME) : Fluid.BUCKET_VOLUME;
 		boolean sucess = false;
+
 		if (toCart[transfer.getSetting()]) {
-			int i = 0;
-			while (i < tanks.length) {
+			boolean allFull = true;
+			for (int i = 0; i < tanks.length; i++) {
 				final int fill = fillTank(transfer.getCart(), i, transfer.getSetting(), maximumToTransfer, false);
 				if (fill > 0) {
 					fillTank(transfer.getCart(), i, transfer.getSetting(), fill, true);
 					sucess = true;
+					if (fill >= maximumToTransfer)
+						allFull = false;
 					if (hasMaxAmount(transfer.getSetting())) {
 						transfer.setWorkload(transfer.getWorkload() + fill);
-						break;
 					}
 					break;
-				} else {
-					++i;
 				}
+			}
+			if (allFull) {
+				return false;
 			}
 		} else {
 			final ArrayList<ModuleTank> cartTanks = transfer.getCart().getTanks();
@@ -148,7 +151,6 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 					sucess = true;
 					if (hasMaxAmount(transfer.getSetting())) {
 						transfer.setWorkload(transfer.getWorkload() + drain);
-						break;
 					}
 					break;
 				}
@@ -170,8 +172,7 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 			if (isFluidValid(sideId, fluidToFill)) {
 				final ArrayList<ModuleTank> cartTanks = cart.getTanks();
 				for (final IFluidTank cartTank : cartTanks) {
-					final FluidStack fluidStack = fluidToFill;
-					fluidStack.amount -= cartTank.fill(fluidToFill, doFill);
+					fluidToFill.amount -= cartTank.fill(fluidToFill, doFill);
 					if (fluidToFill.amount <= 0) {
 						return fillAmount;
 					}
