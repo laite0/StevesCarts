@@ -18,6 +18,7 @@ import vswe.stevescarts.modules.addons.ModuleChunkLoader;
 import vswe.stevescarts.modules.addons.ModuleInvisible;
 import vswe.stevescarts.modules.addons.ModuleShield;
 import vswe.stevescarts.modules.realtimers.ModuleCage;
+import vswe.stevescarts.modules.workers.ModuleRemover;
 import vswe.stevescarts.modules.workers.tools.ModuleDrill;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class TileEntityActivator extends TileEntityBase {
 		options.add(new ActivatorOption(Localization.GUI.TOGGLER.OPTION_CHUNK, ModuleChunkLoader.class));
 		options.add(new ActivatorOption(Localization.GUI.TOGGLER.OPTION_CAGE_AUTO, ModuleCage.class, 0));
 		options.add(new ActivatorOption(Localization.GUI.TOGGLER.OPTION_CAGE, ModuleCage.class, 1));
+		options.add(new ActivatorOption(Localization.GUI.TOGGLER.OPTION_REMOVER, ModuleRemover.class));
 	}
 
 	public ArrayList<ActivatorOption> getOptions() {

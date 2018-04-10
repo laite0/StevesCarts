@@ -88,6 +88,7 @@ gui.SC2:optionInvisibility=Invisibilidade
 gui.SC2:optionChunk=Chunk loading
 gui.SC2:optionCageAuto=Cage auto pick up
 gui.SC2:optionCage=Cage pick up
+gui.SC2:optionRemover=Track removing
 gui.SC2:settingDisabled=Desativado
 gui.SC2:settingOrange=Direc��o Laranja
 gui.SC2:settingBlue=Direc��o Azul

@@ -93,6 +93,7 @@ gui.SC2:optionInvisibility=Näkymättömyys
 gui.SC2:optionChunk=Chunkkien lataaja
 gui.SC2:optionCageAuto=Häkin automaattinen poiminta
 gui.SC2:optionCage=Häkin poiminta
+gui.SC2:optionRemover=Track removing
 gui.SC2:settingDisabled=Pois päältä
 gui.SC2:settingOrange=Oranssi suunta
 gui.SC2:settingBlue=Sininen suunta

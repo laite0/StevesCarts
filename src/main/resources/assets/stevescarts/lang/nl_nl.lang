@@ -86,13 +86,14 @@ gui.SC2:transferAllLiquidShort=MAX
 gui.SC2:transferBucketShort=B
 
 # Module Toggler gui localization
-gui.SC2:moduleToggler:Module schakelaar
+gui.SC2:moduleToggler=Module schakelaar
 gui.SC2:optionDrill=Boor
 gui.SC2:optionShield=Schild
 gui.SC2:optionInvisibility=Onzichtbaarheid
 gui.SC2:optionChunk=Chunk laden
 gui.SC2:optionCageAuto=Pak kooi automatisch op
 gui.SC2:optionCage=Pak kooi op
+gui.SC2:optionRemover=Track removing
 gui.SC2:settingDisabled=Uitgeschakeld
 gui.SC2:settingOrange=Richting oranje
 gui.SC2:settingBlue=Richting blauw
