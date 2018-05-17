@@ -93,6 +93,7 @@ gui.SC2:optionInvisibility=Usynlighed
 gui.SC2:optionChunk=Chunk indlæsning
 gui.SC2:optionCageAuto=Bur auto-opsamling
 gui.SC2:optionCage=Bur opsamling
+gui.SC2:optionRemover=Track removing
 gui.SC2:settingDisabled=Deaktiveret
 gui.SC2:settingOrange=Orange retning
 gui.SC2:settingBlue=Blå retning

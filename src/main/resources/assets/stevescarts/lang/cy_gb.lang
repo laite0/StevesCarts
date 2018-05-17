@@ -91,6 +91,7 @@ gui.SC2:optionInvisibility=Anweledigrwydd
 gui.SC2:optionChunk=Llwytho darn
 gui.SC2:optionCageAuto=Casglu cawell yn awtomatig
 gui.SC2:optionCage=Casglu cawell
+gui.SC2:optionRemover=Track removing
 gui.SC2:settingDisabled=Wedi’i ananalluogiablu
 gui.SC2:settingOrange=Cyfeiriad oren
 gui.SC2:settingBlue=Cyfeiriad glas

@@ -2,21 +2,40 @@ package vswe.stevescarts.modules.workers;
 
 import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import vswe.stevescarts.entitys.EntityMinecartModular;
+import vswe.stevescarts.modules.IActivatorModule;
 
 import javax.annotation.Nonnull;
 
-public class ModuleRemover extends ModuleWorker {
+public class ModuleRemover extends ModuleWorker implements IActivatorModule {
 	@Nonnull
 	private BlockPos remove;
+	private DataParameter<Boolean> IS_ENABLED;
 
 	public ModuleRemover(final EntityMinecartModular cart) {
 		super(cart);
 		remove = new BlockPos(0, -1, 0);
+	}
+
+	@Override
+	public void initDw() {
+		IS_ENABLED = createDw(DataSerializers.BOOLEAN);
+		registerDw(IS_ENABLED, true);
+	}
+
+	@Override
+	public int numberOfPackets() {
+		return 1;
+	}
+
+	@Override
+	public int numberOfDataWatchers() {
+		return 1;
 	}
 
 	@Override
@@ -61,15 +80,17 @@ public class ModuleRemover extends ModuleWorker {
 		if (flag) {
 			IBlockState blockState = world.getBlockState(pos);
 			if (BlockRailBase.isRailBlock(blockState)) {
-				if (doPreWork()) {
-					startWorking(12);
-					return true;
-				}
-				@Nonnull
-				ItemStack iStack = new ItemStack(blockState.getBlock(), 1, 0);
-				getCart().addItemToChest(iStack);
-				if (iStack.getCount() == 0) {
-					world.setBlockToAir(pos);
+				if (isRemovingEnabled()) {
+					if (doPreWork()) {
+						startWorking(12);
+						return true;
+					}
+					@Nonnull
+					ItemStack iStack = new ItemStack(blockState.getBlock(), 1, 0);
+					getCart().addItemToChest(iStack);
+					if (iStack.getCount() == 0) {
+						world.setBlockToAir(pos);
+					}
 				}
 				remove = new BlockPos(pos.getX(), -1, pos.getZ());
 			} else {
@@ -84,5 +105,30 @@ public class ModuleRemover extends ModuleWorker {
 		}
 		stopWorking();
 		return false;
+	}
+
+	private void enableRemoving(final boolean remove) {
+		if (!isPlaceholder()) {
+			updateDw(IS_ENABLED, remove);
+		}
+	}
+
+	private boolean isRemovingEnabled() {
+		return !isPlaceholder() && getDw(IS_ENABLED);
+	}
+
+	@Override
+	public void doActivate(final int id) {
+		enableRemoving(true);
+	}
+
+	@Override
+	public void doDeActivate(final int id) {
+		enableRemoving(false);
+	}
+
+	@Override
+	public boolean isActive(final int id) {
+		return isRemovingEnabled();
 	}
 }

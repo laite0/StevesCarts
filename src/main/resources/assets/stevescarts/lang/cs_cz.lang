@@ -89,6 +89,7 @@ gui.SC2:optionInvisibility=Neviditelnost
 gui.SC2:optionChunk=Nacitani chunku
 gui.SC2:optionCageAuto=Automaticky zvedat klece
 gui.SC2:optionCage=Zvednout klec
+gui.SC2:optionRemover=Sbirani koleji
 gui.SC2:settingDisabled=Zrusit
 gui.SC2:settingOrange=Oranzova strana
 gui.SC2:settingBlue=Modra strana

@@ -175,6 +175,7 @@ public final class Localization {
 			OPTION_CHUNK("optionChunk"),
 			OPTION_CAGE_AUTO("optionCageAuto"),
 			OPTION_CAGE("optionCage"),
+			OPTION_REMOVER("optionRemover"),
 			SETTING_DISABLED("settingDisabled"),
 			SETTING_ORANGE("settingOrange"),
 			SETTING_BLUE("settingBlue"),

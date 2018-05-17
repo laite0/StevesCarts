@@ -78,13 +78,14 @@ gui.SC2:transferAllLiquidShort=MAX
 gui.SC2:transferBucketShort=H
 
 # Module Toggler gui localization
-gui.SC2:moduleToggler:Modul på/av
+gui.SC2:moduleToggler=Modul på/av
 gui.SC2:optionDrill=Borr
 gui.SC2:optionShield=Sköld
 gui.SC2:optionInvisibility=Osynlighet
 gui.SC2:optionChunk=Chunkladdare
 gui.SC2:optionCageAuto=Bur autoupplockning
 gui.SC2:optionCage=Bur upplockning
+gui.SC2:optionRemover=Track removing
 gui.SC2:settingDisabled=Av
 gui.SC2:settingOrange=Orange riktning
 gui.SC2:settingBlue=Blå riktning

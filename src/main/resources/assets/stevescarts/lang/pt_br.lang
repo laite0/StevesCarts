@@ -93,6 +93,7 @@ gui.SC2:optionInvisibility=Invisibilidade
 gui.SC2:optionChunk=Carregador de Chunks
 gui.SC2:optionCageAuto=Capturar automaticamente com a jaula
 gui.SC2:optionCage=Capturar com a jaula
+gui.SC2:optionRemover=Track removing
 gui.SC2:settingDisabled=Desativado
 gui.SC2:settingOrange=Direção laranja
 gui.SC2:settingBlue=Direção azul

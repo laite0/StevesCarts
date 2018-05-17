@@ -90,6 +90,7 @@ gui.SC2:optionInvisibility=Unsichtbarkeit
 gui.SC2:optionChunk=Chunk laden
 gui.SC2:optionCageAuto=Käfig sammelt automatisch auf
 gui.SC2:optionCage=Käfig aufsammeln
+gui.SC2:optionRemover=Track removing
 gui.SC2:settingDisabled=Deaktiviert
 gui.SC2:settingOrange=Richtung Orange
 gui.SC2:settingBlue=Richtung Blau
