@@ -78,7 +78,7 @@ public class ModuleFlowerRemover extends ModuleBase {
 	}
 
 	private void shearEntities() {
-		final List<EntityLiving> entities = getCart().world.getEntitiesWithinAABB(EntityLiving.class, getCart().getEntityBoundingBox().expand(getBlocksOnSide(), getBlocksFromLevel() + 2.0f, getBlocksOnSide()));
+		final List<EntityLiving> entities = getCart().world.getEntitiesWithinAABB(EntityLiving.class, getCart().getEntityBoundingBox().grow(getBlocksOnSide(), getBlocksFromLevel() + 2.0f, getBlocksOnSide()));
 		for (EntityLiving target : entities) {
 			if (target instanceof IShearable) {
 				BlockPos pos = target.getPosition();

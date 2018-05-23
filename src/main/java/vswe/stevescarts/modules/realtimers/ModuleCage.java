@@ -145,7 +145,7 @@ public class ModuleCage extends ModuleBase implements IActivatorModule {
 		if (getCart().world.isRemote || !isCageEmpty()) {
 			return;
 		}
-		final List<EntityLivingBase> entities = getCart().world.getEntitiesWithinAABB(EntityLivingBase.class, getCart().getEntityBoundingBox().expand(searchDistance, 4.0, searchDistance));
+		final List<EntityLivingBase> entities = getCart().world.getEntitiesWithinAABB(EntityLivingBase.class, getCart().getEntityBoundingBox().grow(searchDistance, 4.0, searchDistance));
 		entities.sort(sorter);
 		for (EntityLivingBase target : entities) {
 			if (!(target instanceof EntityPlayer) && !(target instanceof EntityIronGolem) && !(target instanceof EntityDragon) && !(target instanceof EntitySlime) && !(target instanceof EntityWaterMob) && !(target instanceof EntityWither) && !(target instanceof EntityEnderman) && (!(target instanceof EntitySpider) || target instanceof EntityCaveSpider) && !(target instanceof EntityGiantZombie) && !(target instanceof EntityFlying)) {
