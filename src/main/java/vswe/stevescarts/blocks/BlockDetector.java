@@ -83,7 +83,7 @@ public class BlockDetector extends BlockContainerBase implements ModBlocks.ICust
 		if (side == null) {
 			return false;
 		}
-		final DetectorType type = DetectorType.getTypeFromSate(world.getBlockState(pos));
+		final DetectorType type = DetectorType.getTypeFromSate(state);
 		return type.shouldEmitRedstone() || type == DetectorType.REDSTONE;
 	}
 
