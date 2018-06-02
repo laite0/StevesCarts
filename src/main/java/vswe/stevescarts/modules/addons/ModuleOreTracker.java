@@ -69,7 +69,7 @@ public class ModuleOreTracker extends ModuleAddon {
 		EnumFacing facing = EnumFacing.getFacingFromVector(x, y, z);
 		RayTraceResult hit = new RayTraceResult(new Vec3d(0,0,0), facing, pos);
 		ItemStack stack = b.getPickBlock(state, hit, getCart().world, pos, getFakePlayer());
-		if (stack.isEmpty()) {
+		if (stack == null || stack.isEmpty()) {
 			return false;
 		}
 		final int[] oreIds = OreDictionary.getOreIDs(stack);
