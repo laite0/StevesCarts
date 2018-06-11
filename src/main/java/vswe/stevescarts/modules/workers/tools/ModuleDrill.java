@@ -79,8 +79,7 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 			stopDrill();
 			stopWorking();
 			return false;
-		}
-		if (!doPreWork()) {
+		} else if (!doPreWork()) {
 			stopDrill();
 			stopWorking();
 		}
@@ -88,18 +87,20 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 			return false;
 		}
 		BlockPos next = getNextblock();
-		final int[] range = mineRange();
-		for (int holeY = range[1]; holeY >= range[0]; --holeY) {
-			for (int holeX = -blocksOnSide(); holeX <= blocksOnSide(); ++holeX) {
+		int[] range = mineRange();
+ 		for (int holeY = range[1]; holeY >= range[0]; holeY--) {
+			for (int holeX = -blocksOnSide(); holeX <= blocksOnSide(); holeX++) {
 				if (intelligence == null || intelligence.isActive(holeX + blocksOnSide(), holeY, range[2], next.getX() > getCart().x() || next.getZ() < getCart().z())) {
-					if (mineBlockAndRevive(world, next.add(((getCart().z() != next.getZ()) ? holeX : 0), holeY, ((getCart().x() != next.getX()) ? holeX : 0)), next, holeX, holeY)) {
+
+					BlockPos mine = next.add(((getCart().z() != next.getZ()) ? holeX : 0), holeY, ((getCart().x() != next.getX()) ? holeX : 0));
+					if (mineBlockAndRevive(world, mine, next, holeX, holeY)) {
 						return true;
 					}
 				}
 			}
 		}
 		BlockPos pos = next.add(0, range[0], 0);
-		if (countsAsAir(pos) && !isValidForTrack(world, pos, true) && mineBlockAndRevive(world, pos.down(), next, 0, range[0] - 1)) {
+		if (countsAsAir(pos) && !isValidForTrack(pos, true) && mineBlockAndRevive(world, pos.down(), next, 0, range[0] - 1)) {
 			return true;
 		}
 		stopWorking();
@@ -107,9 +108,9 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 		return false;
 	}
 
-	protected int[] mineRange() {
+	private int[] mineRange() {
 		BlockPos next = getNextblock();
-		final int yTarget = getCart().getYTarget();
+		int yTarget = getCart().getYTarget();
 		if (BlockRailBase.isRailBlock(getCart().world, next) || BlockRailBase.isRailBlock(getCart().world, next.down())) {
 			return new int[] { 0, blocksOnTop() - 1, 1 };
 		}
@@ -137,8 +138,7 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 	private boolean mineBlockAndRevive(World world, BlockPos coord, BlockPos next, final int holeX, final int holeY) {
 		if (mineBlock(world, coord, next, holeX, holeY, false)) {
 			return true;
-		}
-		if (isDead()) {
+		} else if (isDead()) {
 			revive();
 			return true;
 		}
@@ -165,9 +165,9 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 		if (h < 0.0f) {
 			h = 0.0f;
 		}
+		//TODO change to capabilities
 		if (storage != null) {
 			for (int i = 0; i < ((IInventory) storage).getSizeInventory(); ++i) {
-				@Nonnull
 				ItemStack iStack = ((IInventory) storage).getStackInSlot(i);
 				if (!iStack.isEmpty()) {
 					if (!minedItem(world, iStack, next)) {
@@ -179,7 +179,6 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 		}
 		final int fortune = (enchanter != null) ? enchanter.getFortuneLevel() : 0;
 		if (shouldSilkTouch(blockState, coord)) {
-			@Nonnull
 			ItemStack item = getSilkTouchedItem(blockState);
 			if (!item.isEmpty() && !minedItem(world, item, next)) {
 				return false;
@@ -210,7 +209,7 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 		if (iStack.isEmpty() || iStack.getCount() <= 0) {
 			return true;
 		}
-		for (final ModuleBase module : getCart().getModules()) {
+		for (ModuleBase module : getCart().getModules()) {
 			if (module instanceof ModuleIncinerator) {
 				((ModuleIncinerator) module).incinerate(iStack);
 				if (iStack.getCount() <= 0) {
@@ -219,13 +218,13 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 				continue;
 			}
 		}
-		final int size = iStack.getCount();
+		int size = iStack.getCount();
 		getCart().addItemToChest(iStack);
 		if (iStack.getCount() == 0) {
 			return true;
 		}
 		boolean hasChest = false;
-		for (final ModuleBase module2 : getCart().getModules()) {
+		for (ModuleBase module2 : getCart().getModules()) {
 			if (module2 instanceof ModuleChest) {
 				hasChest = true;
 				break;
@@ -281,9 +280,10 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 		if ((holeX != 0 || holeY > 0) && (block == Blocks.TORCH || block == Blocks.REDSTONE_WIRE || block == Blocks.REDSTONE_TORCH || block == Blocks.UNLIT_REDSTONE_TORCH || block == Blocks.POWERED_REPEATER || block == Blocks.UNPOWERED_REPEATER || block == Blocks.POWERED_COMPARATOR || block == Blocks.UNPOWERED_COMPARATOR || block == ModBlocks.MODULE_TOGGLER.getBlock())) {
 			return null;
 		}
+		//TODO change to capabilities
 		if (block instanceof BlockContainer) {
 			final TileEntity tileentity = world.getTileEntity(pos);
-			if (tileentity != null && IInventory.class.isInstance(tileentity)) {
+			if (IInventory.class.isInstance(tileentity)) {
 				if (holeX != 0 || holeY > 0) {
 					return null;
 				}

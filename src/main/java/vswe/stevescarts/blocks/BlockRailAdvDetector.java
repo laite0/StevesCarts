@@ -44,11 +44,11 @@ public class BlockRailAdvDetector extends BlockRail {
 		if (world.isRemote || !(entityMinecart instanceof EntityMinecartModular)) {
 			return;
 		}
-		final EntityMinecartModular cart = (EntityMinecartModular) entityMinecart;
+		EntityMinecartModular cart = (EntityMinecartModular) entityMinecart;
 		if (world.getBlockState(pos.down()).getBlock() == ModBlocks.DETECTOR_UNIT.getBlock() && DetectorType.getTypeFromSate(world.getBlockState(pos.down())).canInteractWithCart()) {
-			final TileEntity tileentity = world.getTileEntity(pos.down());
-			if (tileentity != null && tileentity instanceof TileEntityDetector) {
-				final TileEntityDetector detector = (TileEntityDetector) tileentity;
+			TileEntity tileentity = world.getTileEntity(pos.down());
+			if (tileentity instanceof TileEntityDetector) {
+				TileEntityDetector detector = (TileEntityDetector) tileentity;
 				detector.handleCart(cart);
 			}
 			return;
@@ -63,9 +63,9 @@ public class BlockRailAdvDetector extends BlockRail {
 					BlockPos offset = pos.add(i, 0, j);
 					Block block = world.getBlockState(offset).getBlock();
 					if (block == ModBlocks.CARGO_MANAGER.getBlock() || block == ModBlocks.LIQUID_MANAGER.getBlock()) {
-						final TileEntity tileentity = world.getTileEntity(offset);
-						if (tileentity != null && tileentity instanceof TileEntityManager) {
-							final TileEntityManager manager = (TileEntityManager) tileentity;
+						TileEntity tileentity = world.getTileEntity(offset);
+						if (tileentity instanceof TileEntityManager) {
+							TileEntityManager manager = (TileEntityManager) tileentity;
 							if (manager.getCart() == null) {
 								manager.setCart(cart);
 								manager.setSide(side);
@@ -74,9 +74,9 @@ public class BlockRailAdvDetector extends BlockRail {
 						return;
 					}
 					if (block == ModBlocks.MODULE_TOGGLER.getBlock()) {
-						final TileEntity tileentity = world.getTileEntity(offset);
-						if (tileentity != null && tileentity instanceof TileEntityActivator) {
-							final TileEntityActivator activator = (TileEntityActivator) tileentity;
+						TileEntity tileentity = world.getTileEntity(offset);
+						if (tileentity instanceof TileEntityActivator) {
+							TileEntityActivator activator = (TileEntityActivator) tileentity;
 							boolean isOrange = false;
 							if (cart.temppushX == 0.0 == (cart.temppushZ == 0.0)) {
 								continue;
@@ -94,27 +94,27 @@ public class BlockRailAdvDetector extends BlockRail {
 									isOrange = (cart.temppushZ < 0.0);
 								}
 							}
-							final boolean isBlueBerry = false;
+							boolean isBlueBerry = false;
 							activator.handleCart(cart, isOrange);
 							cart.releaseCart();
 						}
 						return;
 					}
 					if (block == ModBlocks.UPGRADE.getBlock()) {
-						final TileEntity tileentity = world.getTileEntity(offset);
-						final TileEntityUpgrade upgrade = (TileEntityUpgrade) tileentity;
+						TileEntity tileentity = world.getTileEntity(offset);
+						TileEntityUpgrade upgrade = (TileEntityUpgrade) tileentity;
 						if (upgrade != null && upgrade.getUpgrade() != null) {
-							for (final BaseEffect effect : upgrade.getUpgrade().getEffects()) {
+							for (BaseEffect effect : upgrade.getUpgrade().getEffects()) {
 								if (effect instanceof Transposer) {
-									final Transposer transposer = (Transposer) effect;
+									Transposer transposer = (Transposer) effect;
 									if (upgrade.getMaster() == null) {
 										continue;
 									}
-									for (final TileEntityUpgrade tile : upgrade.getMaster().getUpgradeTiles()) {
+									for (TileEntityUpgrade tile : upgrade.getMaster().getUpgradeTiles()) {
 										if (tile.getUpgrade() != null) {
-											for (final BaseEffect effect2 : tile.getUpgrade().getEffects()) {
+											for (BaseEffect effect2 : tile.getUpgrade().getEffects()) {
 												if (effect2 instanceof Disassemble) {
-													final Disassemble disassembler = (Disassemble) effect2;
+													Disassemble disassembler = (Disassemble) effect2;
 													if (tile.getStackInSlot(0).isEmpty()) {
 														tile.setInventorySlotContents(0, ModuleData.createModularCart(cart));
 														upgrade.getMaster().managerInteract(cart, false);
@@ -154,19 +154,19 @@ public class BlockRailAdvDetector extends BlockRail {
 		}
 		for (EnumFacing facing: EnumFacing.HORIZONTALS) {
 			BlockPos posOther = pos.offset(facing);
-			final Block block = world.getBlockState(posOther).getBlock();
+			Block block = world.getBlockState(posOther).getBlock();
 			if (block == ModBlocks.CARGO_MANAGER.getBlock() || block == ModBlocks.LIQUID_MANAGER.getBlock() || block == ModBlocks.MODULE_TOGGLER.getBlock()) {
 				return false;
 			}
 			if (block == ModBlocks.UPGRADE.getBlock()) {
-				final TileEntity tileentity = world.getTileEntity(posOther);
-				final TileEntityUpgrade upgrade = (TileEntityUpgrade) tileentity;
+				TileEntity tileentity = world.getTileEntity(posOther);
+				TileEntityUpgrade upgrade = (TileEntityUpgrade) tileentity;
 				if (upgrade != null && upgrade.getUpgrade() != null) {
-					for (final BaseEffect effect : upgrade.getUpgrade().getEffects()) {
+					for (BaseEffect effect : upgrade.getUpgrade().getEffects()) {
 						if (effect instanceof Transposer && upgrade.getMaster() != null) {
-							for (final TileEntityUpgrade tile : upgrade.getMaster().getUpgradeTiles()) {
+							for (TileEntityUpgrade tile : upgrade.getMaster().getUpgradeTiles()) {
 								if (tile.getUpgrade() != null) {
-									for (final BaseEffect effect2 : tile.getUpgrade().getEffects()) {
+									for (BaseEffect effect2 : tile.getUpgrade().getEffects()) {
 										if (effect2 instanceof Disassemble) {
 											return false;
 										}
@@ -181,7 +181,7 @@ public class BlockRailAdvDetector extends BlockRail {
 		return true;
 	}
 
-	private boolean isCartReadyForAction(final EntityMinecartModular cart, BlockPos pos) {
+	private boolean isCartReadyForAction(EntityMinecartModular cart, BlockPos pos) {
 		return cart.disabledPos != null && cart.disabledPos.equals(pos) && cart.isDisabled();
 	}
 
@@ -191,7 +191,7 @@ public class BlockRailAdvDetector extends BlockRail {
 		return blockState.getBlock() == ModBlocks.DETECTOR_UNIT.getBlock() && ModBlocks.DETECTOR_UNIT.getBlock().onBlockActivated(world, pos, blockState, player, hand, side, hitX, hitY, hitZ);
 	}
 
-	public void refreshState(World world, BlockPos pos, IBlockState state, final boolean flag) {
+	public void refreshState(World world, BlockPos pos, IBlockState state, boolean flag) {
 		new BlockRailBase.Rail(world, pos, state).place(flag, false);
 	}
 }

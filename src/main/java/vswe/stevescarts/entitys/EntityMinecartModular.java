@@ -597,8 +597,8 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 
 	public int getYTarget() {
 		if (modules != null) {
-			for (final ModuleBase module : getModules()) {
-				final int yTarget = module.getYTarget();
+			for (ModuleBase module : getModules()) {
+				int yTarget = module.getYTarget();
 				if (yTarget != -1) {
 					return yTarget;
 				}
@@ -1244,6 +1244,10 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 		return MathHelper.floor(posZ);
 	}
 
+	public BlockPos getExactPosition() {
+		return new BlockPos(x(), y(), z());
+	}
+
 	public void addItemToChest(@Nonnull ItemStack iStack) {
 		TransferHandler.TransferItem(iStack, this, getCon(null), Slot.class, null, -1);
 	}
@@ -1612,9 +1616,19 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 	}
 
 	static {
-		railDirectionCoordinates = new int[][][] { { { 0, 0, -1 }, { 0, 0, 1 } }, { { -1, 0, 0 }, { 1, 0, 0 } }, { { -1, -1, 0 }, { 1, 0, 0 } }, { { -1, 0, 0 }, { 1, -1, 0 } },
-			{ { 0, 0, -1 }, { 0, -1, 1 } }, { { 0, -1, -1 }, { 0, 0, 1 } },
-			{ { 0, 0, 1 }, { 1, 0, 0 } }, { { 0, 0, 1 }, { -1, 0, 0 } }, { { 0, 0, -1 }, { -1, 0, 0 } }, { { 0, 0, -1 }, { 1, 0, 0 } } };
+		railDirectionCoordinates = new int[][][]
+		{
+				{ {  0,  0, -1 }, {  0,  0, 1 } },
+				{ { -1,  0,  0 }, {  1,  0, 0 } },
+				{ { -1, -1,  0 }, {  1,  0, 0 } },
+				{ { -1,  0,  0 }, {  1, -1, 0 } },
+				{ {  0,  0, -1 }, {  0, -1, 1 } },
+				{ {  0, -1, -1 }, {  0,  0, 1 } },
+				{ {  0,  0,  1 }, {  1,  0, 0 } },
+				{ {  0,  0,  1 }, { -1,  0, 0 } },
+				{ {  0,  0, -1 }, { -1,  0, 0 } },
+				{ {  0,  0, -1 }, {  1,  0, 0 } }
+		};
 	}
 
 	@Override

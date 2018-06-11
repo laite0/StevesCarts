@@ -1,9 +1,9 @@
 package vswe.stevescarts.modules;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockSnow;
 import net.minecraft.block.BlockVine;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
@@ -1326,12 +1326,12 @@ public abstract class ModuleBase {
 	 * @param pos The Blockpos of the block
 	 * @return If this block counts as air by the modules
 	 */
-	protected boolean countsAsAir(final BlockPos pos) {
+	protected boolean countsAsAir(BlockPos pos) {
 		if (getCart().world.isAirBlock(pos)) {
 			return true;
 		}
-		final IBlockState b = getCart().world.getBlockState(pos);
-		return b instanceof BlockSnow || b instanceof BlockFlower || b instanceof BlockVine;
+		Block b = getCart().world.getBlockState(pos).getBlock();
+		return b instanceof BlockSnow || b instanceof BlockFlower || b instanceof BlockVine || b.isReplaceable(getCart().world, pos);
 	}
 
 	/**

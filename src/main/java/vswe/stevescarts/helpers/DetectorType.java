@@ -19,32 +19,32 @@ public enum DetectorType implements IStringSerializable {
 	UNIT(1, false, false, false),
 	STATION(2, true, true, false) {
 		@Override
-		public void activate(final TileEntityDetector detector, final EntityMinecartModular cart) {
+		public void activate(TileEntityDetector detector, EntityMinecartModular cart) {
 			cart.releaseCart();
 		}
 	},
 	JUNCTION(3, true, false, false) {
 		@Override
-		public void activate(final TileEntityDetector detector, final EntityMinecartModular cart) {
+		public void activate(TileEntityDetector detector, EntityMinecartModular cart) {
 			update(detector, true);
 		}
 
 		@Override
-		public void deactivate(final TileEntityDetector detector) {
+		public void deactivate(TileEntityDetector detector) {
 			update(detector, false);
 		}
 
-		private void update(final TileEntityDetector detector, final boolean flag) {
-			if (detector.getWorld().getBlockState(detector.getPos()).getBlock() == ModBlocks.ADVANCED_DETECTOR.getBlock()) {
-				BlockPos posUp = detector.getPos().up();
-				IBlockState stateUp = detector.getWorld().getBlockState(posUp);
+		private void update(TileEntityDetector detector, boolean flag) {
+			BlockPos posUp = detector.getPos().up();
+			IBlockState stateUp = detector.getWorld().getBlockState(posUp);
+			if (stateUp.getBlock() == ModBlocks.ADVANCED_DETECTOR.getBlock()) {
 				((BlockRailAdvDetector) ModBlocks.ADVANCED_DETECTOR.getBlock()).refreshState(detector.getWorld(), posUp, stateUp, flag);
 			}
 		}
 	},
 	REDSTONE(4, false, false, false) {
 		@Override
-		public void initOperators(final HashMap<Byte, OperatorObject> operators) {
+		public void initOperators(HashMap<Byte, OperatorObject> operators) {
 			super.initOperators(operators);
 			new OperatorObject.OperatorObjectRedstone(operators, 11, Localization.GUI.DETECTOR.REDSTONE, 0, 0, 0);
 			new OperatorObject.OperatorObjectRedstone(operators, 12, Localization.GUI.DETECTOR.REDSTONE_TOP, 0, 1, 0);
@@ -62,7 +62,7 @@ public enum DetectorType implements IStringSerializable {
 	private boolean emitRedstone;
 	private HashMap<Byte, OperatorObject> operators;
 
-	DetectorType(final int meta, final boolean acceptCart, final boolean stopCart, final boolean emitRedstone) {
+	DetectorType(int meta, boolean acceptCart, boolean stopCart, boolean emitRedstone) {
 		this.meta = meta;
 		this.acceptCart = acceptCart;
 		this.stopCart = stopCart;
@@ -74,7 +74,7 @@ public enum DetectorType implements IStringSerializable {
 	}
 
 	public String getTranslatedName() {
-		final StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
 		return I18n.format(builder.append("item.SC2:BlockDetector").append(meta).append(".name").toString());
 	}
 
@@ -95,9 +95,9 @@ public enum DetectorType implements IStringSerializable {
 		return emitRedstone;
 	}
 
-	public void activate(final TileEntityDetector detector, final EntityMinecartModular cart) {}
+	public void activate(TileEntityDetector detector, EntityMinecartModular cart) {}
 
-	public void deactivate(final TileEntityDetector detector) {}
+	public void deactivate(TileEntityDetector detector) {}
 
 	public static DetectorType getTypeFromSate(IBlockState state) {
 		return state.getValue(SATE);
@@ -107,7 +107,7 @@ public enum DetectorType implements IStringSerializable {
 		return DetectorType.values()[meta];
 	}
 
-	public void initOperators(final HashMap<Byte, OperatorObject> operators) {
+	public void initOperators(HashMap<Byte, OperatorObject> operators) {
 		this.operators = operators;
 	}
 

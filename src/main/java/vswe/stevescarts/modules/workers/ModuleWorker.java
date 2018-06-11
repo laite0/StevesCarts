@@ -6,7 +6,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.modules.ModuleBase;
@@ -76,12 +75,13 @@ public abstract class ModuleWorker extends ModuleBase {
 			if (direction.isAscending()) {
 				pos = pos.up();
 			}
-			final int[][] logic = EntityMinecartModular.railDirectionCoordinates[direction.getMetadata()];
-			final double pX = getCart().pushX;
-			final double pZ = getCart().pushZ;
-			final boolean xDir = (pX > 0.0 && logic[0][0] > 0) || pX == 0.0 || logic[0][0] == 0 || (pX < 0.0 && logic[0][0] < 0);
-			final boolean zDir = (pZ > 0.0 && logic[0][2] > 0) || pZ == 0.0 || logic[0][2] == 0 || (pZ < 0.0 && logic[0][2] < 0);
-			final int dir = ((xDir && zDir) != flag) ? 1 : 0;
+
+			int[][] logic = EntityMinecartModular.railDirectionCoordinates[direction.getMetadata()];
+			double pX = getCart().pushX;
+			double pZ = getCart().pushZ;
+			boolean xDir = (pX > 0.0 && logic[0][0] > 0) || pX == 0.0 || logic[0][0] == 0 || (pX < 0.0 && logic[0][0] < 0);
+			boolean zDir = (pZ > 0.0 && logic[0][2] > 0) || pZ == 0.0 || logic[0][2] == 0 || (pZ < 0.0 && logic[0][2] < 0);
+			int dir = ((xDir && zDir) != flag) ? 1 : 0;
 			return pos.add(logic[dir][0], logic[dir][1], logic[dir][2]);
 		}
 		return pos;
@@ -95,16 +95,16 @@ public abstract class ModuleWorker extends ModuleBase {
 		return super.getMaxSpeed();
 	}
 
-	protected boolean isValidForTrack(World world, BlockPos pos, final boolean flag) {
-		boolean result = countsAsAir(pos) && (!flag || world.isSideSolid(pos.down(), EnumFacing.UP));
+	protected boolean isValidForTrack(BlockPos pos, boolean flag) {
+		boolean result = countsAsAir(pos) && (!flag || getCart().world.isSideSolid(pos.down(), EnumFacing.UP));
 		if (result) {
-			final int coordX = pos.getX() - (getCart().x() - pos.getX());
-			final int coordZ = pos.getY() - (getCart().z() - pos.getY());
-			final Block block = getCart().world.getBlockState(new BlockPos(coordX, pos.getY(), coordZ)).getBlock();
-			final boolean isWater = block == Blocks.WATER || block == Blocks.FLOWING_WATER || block == Blocks.ICE;
-			final boolean isLava = block == Blocks.LAVA || block == Blocks.FLOWING_LAVA;
-			final boolean isOther = block != null && block instanceof IFluidBlock;
-			final boolean isLiquid = isWater || isLava || isOther;
+			int coordX = pos.getX() - (getCart().x() - pos.getX());
+			int coordZ = pos.getZ() - (getCart().z() - pos.getZ());
+			Block block = getCart().world.getBlockState(new BlockPos(coordX, pos.getY(), coordZ)).getBlock();
+			boolean isWater = block == Blocks.WATER || block == Blocks.FLOWING_WATER || block == Blocks.ICE;
+			boolean isLava = block == Blocks.LAVA || block == Blocks.FLOWING_LAVA;
+			boolean isOther = block instanceof IFluidBlock;
+			boolean isLiquid = isWater || isLava || isOther;
 			result = !isLiquid;
 		}
 		return result;

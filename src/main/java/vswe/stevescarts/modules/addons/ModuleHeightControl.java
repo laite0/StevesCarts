@@ -20,7 +20,7 @@ public class ModuleHeightControl extends ModuleAddon {
 	private int oreMapY;
 	private DataParameter<Integer> Y_TARGET;
 
-	public ModuleHeightControl(final EntityMinecartModular cart) {
+	public ModuleHeightControl(EntityMinecartModular cart) {
 		super(cart);
 		levelNumberBoxX = 8;
 		levelNumberBoxY = 18;
@@ -52,7 +52,7 @@ public class ModuleHeightControl extends ModuleAddon {
 	}
 
 	@Override
-	public void drawForeground(final GuiMinecart gui) {
+	public void drawForeground(GuiMinecart gui) {
 		drawString(gui, getModuleName(), 8, 6, 4210752);
 		final String s = String.valueOf(getYTarget());
 		int x = levelNumberBoxX + 6;
@@ -69,7 +69,7 @@ public class ModuleHeightControl extends ModuleAddon {
 	}
 
 	@Override
-	public void drawBackground(final GuiMinecart gui, final int x, final int y) {
+	public void drawBackground(GuiMinecart gui, int x, int y) {
 		ResourceHelper.bindResource("/gui/heightcontrol.png");
 		drawImage(gui, levelNumberBoxX, levelNumberBoxY, 4, 36, 21, 15);
 		drawImage(gui, arrowUp, 4, 12);
@@ -78,9 +78,9 @@ public class ModuleHeightControl extends ModuleAddon {
 		for (int i = 0; i < HeightControlOre.ores.size(); ++i) {
 			final HeightControlOre ore = HeightControlOre.ores.get(i);
 			for (int j = 0; j < 11; ++j) {
-				final int altitude = getYTarget() - j + 5;
-				final boolean empty = ore.spanLowest > altitude || altitude > ore.spanHighest;
-				final boolean high = ore.bestLowest <= altitude && altitude <= ore.bestHighest;
+				int altitude = getYTarget() - j + 5;
+				boolean empty = ore.spanLowest > altitude || altitude > ore.spanHighest;
+				boolean high = ore.bestLowest <= altitude && altitude <= ore.bestHighest;
 				int srcY;
 				int srcX;
 				if (empty) {
@@ -99,15 +99,15 @@ public class ModuleHeightControl extends ModuleAddon {
 		if (getYTarget() != (int) getCart().posY) {
 			drawMarker(gui, 5, false);
 		}
-		final int pos = getYTarget() + 5 - (int) getCart().posY;
+		int pos = getYTarget() + 5 - (int) getCart().posY;
 		if (pos >= 0 && pos < 11) {
 			drawMarker(gui, pos, true);
 		}
 	}
 
-	private void drawMarker(final GuiMinecart gui, final int pos, final boolean isTargetLevel) {
-		final int srcX = 4;
-		final int srcY = isTargetLevel ? 6 : 0;
+	private void drawMarker(GuiMinecart gui, int pos, boolean isTargetLevel) {
+		int srcX = 4;
+		int srcY = isTargetLevel ? 6 : 0;
 		drawImage(gui, oreMapX - 1, oreMapY + pos * 4 - 1, srcX, srcY, 1, 6);
 		for (int i = 0; i < HeightControlOre.ores.size(); ++i) {
 			drawImage(gui, oreMapX + i * 4, oreMapY + pos * 4 - 1, srcX + 1, srcY, 4, 6);
@@ -116,7 +116,7 @@ public class ModuleHeightControl extends ModuleAddon {
 	}
 
 	@Override
-	public void mouseClicked(final GuiMinecart gui, final int x, final int y, final int button) {
+	public void mouseClicked(GuiMinecart gui, int x, int y, int button) {
 		if (button == 0) {
 			byte packetData = 0;
 			if (inRect(x, y, arrowMiddle)) {
@@ -137,9 +137,9 @@ public class ModuleHeightControl extends ModuleAddon {
 	}
 
 	@Override
-	protected void receivePacket(final int id, final byte[] data, final EntityPlayer player) {
+	protected void receivePacket(int id, byte[] data, EntityPlayer player) {
 		if (id == 0) {
-			final byte info = data[0];
+			byte info = data[0];
 			if ((info & 0x1) != 0x0) {
 				setYTarget((int) getCart().posY);
 			} else {
@@ -183,7 +183,7 @@ public class ModuleHeightControl extends ModuleAddon {
 		registerDw(Y_TARGET, (int) getCart().posY);
 	}
 
-	public void setYTarget(final int val) {
+	public void setYTarget(int val) {
 		updateDw(Y_TARGET, val);
 	}
 
@@ -200,12 +200,12 @@ public class ModuleHeightControl extends ModuleAddon {
 	}
 
 	@Override
-	protected void Save(final NBTTagCompound tagCompound, final int id) {
+	protected void Save(NBTTagCompound tagCompound, int id) {
 		tagCompound.setShort(generateNBTName("Height", id), (short) getYTarget());
 	}
 
 	@Override
-	protected void Load(final NBTTagCompound tagCompound, final int id) {
+	protected void Load(NBTTagCompound tagCompound, int id) {
 		setYTarget(tagCompound.getShort(generateNBTName("Height", id)));
 	}
 }

@@ -2,7 +2,6 @@ package vswe.stevescarts.modules.workers;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRailBase;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +16,6 @@ import vswe.stevescarts.guis.GuiMinecart;
 import vswe.stevescarts.helpers.Localization;
 import vswe.stevescarts.modules.ISuppliesModule;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
@@ -54,14 +52,14 @@ public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
 	public boolean work() {
 		World world = getCart().world;
 		BlockPos next = getNextblock();
-		final int x = next.getX();
-		final int y = next.getY();
-		final int z = next.getZ();
+		int x = next.getX();
+		int y = next.getY();
+		int z = next.getZ();
 		final ArrayList<Integer[]> pos = getValidRailPositions(x, y, z);
 		if (doPreWork()) {
 			boolean valid = false;
 			for (int i = 0; i < pos.size(); ++i) {
-				if (tryPlaceTrack(world, pos.get(i)[0], pos.get(i)[1], pos.get(i)[2], false)) {
+				if (tryPlaceTrack(pos.get(i)[0], pos.get(i)[1], pos.get(i)[2], false)) {
 					valid = true;
 					break;
 				}
@@ -83,12 +81,12 @@ public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
 			return true;
 		}
 		stopWorking();
-		for (int k = 0; k < pos.size() && !tryPlaceTrack(world, pos.get(k)[0], pos.get(k)[1], pos.get(k)[2], true); ++k) {}
+		for (int k = 0; k < pos.size() && !tryPlaceTrack(pos.get(k)[0], pos.get(k)[1], pos.get(k)[2], true); ++k) {}
 		return false;
 	}
 
-	protected ArrayList<Integer[]> getValidRailPositions(final int x, final int y, final int z) {
-		final ArrayList<Integer[]> lst = new ArrayList<>();
+	protected ArrayList<Integer[]> getValidRailPositions(int x, int y, int z) {
+		ArrayList<Integer[]> lst = new ArrayList<>();
 		if (y >= getCart().y()) {
 			lst.add(new Integer[] { x, y + 1, z });
 		}
@@ -97,12 +95,12 @@ public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
 		return lst;
 	}
 
-	protected boolean validRail(final Item item) {
+	protected boolean validRail(Item item) {
 		return Block.getBlockFromItem(item) instanceof BlockRailBase;
 	}
 
-	private boolean tryPlaceTrack(World world, final int i, final int j, final int k, final boolean flag) {
-		if (isValidForTrack(world, new BlockPos(i, j, k), true)) {
+	private boolean tryPlaceTrack(int i, int j, int k, boolean flag) {
+		if (isValidForTrack(new BlockPos(i, j, k), true)) {
 			for (int l = 0; l < getInventorySize(); ++l) {
 				if (!getStack(l).isEmpty() && validRail(getStack(l).getItem())) {
 					if (flag) {
