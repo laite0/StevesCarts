@@ -98,7 +98,7 @@ public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
 	}
 
 	protected boolean validRail(final Item item) {
-		return Block.getBlockFromItem(item) == Blocks.RAIL;
+		return Block.getBlockFromItem(item) instanceof BlockRailBase;
 	}
 
 	private boolean tryPlaceTrack(World world, final int i, final int j, final int k, final boolean flag) {
@@ -108,7 +108,6 @@ public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
 					if (flag) {
 						getCart().world.setBlockState(new BlockPos(i, j, k), Block.getBlockFromItem(getStack(l).getItem()).getStateFromMeta(getStack(l).getItemDamage()));
 						if (!getCart().hasCreativeSupplies()) {
-							@Nonnull
 							ItemStack stack = getStack(l);
 							stack.shrink(1);
 							if (getStack(l).getCount() == 0) {
@@ -175,14 +174,13 @@ public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
 	}
 
 	@Override
-	protected void Load(final NBTTagCompound tagCompound, final int id) {
+	protected void Load(NBTTagCompound tagCompound, final int id) {
 		calculateRails();
 	}
 
 	@Override
 	public boolean haveSupplies() {
 		for (int i = 0; i < getInventorySize(); ++i) {
-			@Nonnull
 			ItemStack item = getStack(i);
 			if (!item.isEmpty() && validRail(item.getItem())) {
 				return true;

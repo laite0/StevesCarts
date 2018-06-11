@@ -27,14 +27,14 @@ public class ItemStackRenderer extends TileEntityItemStackRenderer {
 		}
 		GlStateManager.pushMatrix();
 		GlStateManager.scale(-1.0f, -1.0f, 1.0f);
-		final NBTTagCompound info = itemStack.getTagCompound();
-		if (info != null) {
-			final NBTTagByteArray moduleIDTag = (NBTTagByteArray) info.getTag("Modules");
-			final byte[] bytes = moduleIDTag.getByteArray();
-			final HashMap<String, ModelCartbase> models = new HashMap<>();
+		NBTTagCompound info = itemStack.getTagCompound();
+		if (info != null && info.hasKey("Modules")) {
+			NBTTagByteArray moduleIDTag = (NBTTagByteArray) info.getTag("Modules");
+			byte[] bytes = moduleIDTag.getByteArray();
+			HashMap<String, ModelCartbase> models = new HashMap<>();
 			float lowestMult = 1.0f;
-			for (final byte id : bytes) {
-				final ModuleData module = ModuleData.getList().get(id);
+			for (byte id : bytes) {
+				ModuleData module = ModuleData.getList().get(id);
 				if (module != null && module.haveModels(true)) {
 					if (module.getModelMult() < lowestMult) {
 						lowestMult = module.getModelMult();
@@ -42,10 +42,10 @@ public class ItemStackRenderer extends TileEntityItemStackRenderer {
 					models.putAll(module.getModels(true));
 				}
 			}
-			for (final byte id : bytes) {
+			for (byte id : bytes) {
 				final ModuleData module = ModuleData.getList().get(id);
 				if (module != null && module.haveRemovedModels()) {
-					for (final String str : module.getRemovedModels()) {
+					for (String str : module.getRemovedModels()) {
 						models.remove(str);
 					}
 				}
