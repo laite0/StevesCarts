@@ -100,8 +100,8 @@ public class ModuleData {
 		final ModuleData coalStandard = new ModuleData(0, "Coal Engine", ModuleCoalStandard.class, 15);
 		final ModuleData coalTiny = new ModuleData(44, "Tiny Coal Engine", ModuleCoalTiny.class, 2);
 		addNemesis(coalTiny, coalStandard);
-		final ModuleData solar1 = new ModuleData(1, "Solar Engine", ModuleSolarStandard.class, 20);
-		final ModuleData solar2 = new ModuleData(45, "Basic Solar Engine", ModuleSolarBasic.class, 12);
+		final ModuleData solar1 = new ModuleData(1, "Solar Engine", ModuleSolarStandard.class, 20).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP }).removeModel("Top");
+		final ModuleData solar2 = new ModuleData(45, "Basic Solar Engine", ModuleSolarBasic.class, 12).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP }).removeModel("Top");
 		final ModuleData compactsolar = new ModuleData(56, "Compact Solar Engine", ModuleSolarCompact.class, 32).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
 
 		new ModuleData(2, "Side Chests", ModuleSideChests.class, 3).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
@@ -127,7 +127,9 @@ public class ModuleData {
 		addNemesis(railer, largerailer);
 
 		new ModuleData(12, "Bridge Builder", ModuleBridge.class, 14);
-		new ModuleData(13, "Track Remover", ModuleRemover.class, 8).addSides(new SIDE[] { SIDE.TOP, SIDE.BACK });
+		final ModuleData remover = new ModuleData(13, "Track Remover", ModuleRemover.class, 8).addSides(new SIDE[] { SIDE.TOP, SIDE.BACK });
+		addNemesis(remover, railer);
+		addNemesis(remover, largerailer);
 
 		final ModuleDataGroup farmerGroup = new ModuleDataGroup(Localization.MODULE_INFO.FARMER_GROUP);
 		final ModuleData farmerbasic = new ModuleDataTool(14, "Basic Farmer", ModuleFarmerDiamond.class, 36, false).addSide(SIDE.FRONT);

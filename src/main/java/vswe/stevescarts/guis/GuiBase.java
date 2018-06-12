@@ -4,20 +4,28 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import reborncore.client.RenderUtil;
 import vswe.stevescarts.modules.data.ModuleData;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
@@ -266,9 +274,19 @@ public abstract class GuiBase extends GuiContainer {
 	}
 
 	public void drawModuleIcon(ModuleData icon, final int targetX, final int targetY, final float sizeX, final float sizeY, final float offsetX, final float offsetY) {
-		RenderHelper.enableGUIStandardItemLighting();
 		RenderItem itemRenderer = Minecraft.getMinecraft().getRenderItem();
-		itemRenderer.renderItemAndEffectIntoGUI(icon.getItemStack(), targetX, targetY);
+		IBakedModel bakedModel = itemRenderer.getItemModelWithOverrides(icon.getItemStack(), null, Minecraft.getMinecraft().player);
+
+		RenderUtil.bindBlockTexture();
+		List<BakedQuad> quads = new LinkedList<>();
+		for (EnumFacing enumfacing : EnumFacing.values())
+		{
+			quads.addAll(bakedModel.getQuads(null, enumfacing, 0L));
+		}
+		quads.addAll(bakedModel.getQuads(null, null, 0));
+		for (BakedQuad quad : quads) {
+			drawIcon(quad.getSprite(), targetX, targetY, sizeX, sizeY, offsetX, offsetY);
+		}
 	}
 
 	public void drawTexturedModalRect(final int x, final int y, final int u, final int v, final int w, final int h, final RENDER_ROTATION rotation) {

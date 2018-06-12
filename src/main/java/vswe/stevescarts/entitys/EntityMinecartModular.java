@@ -96,7 +96,7 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 	public int keepAlive;
 	public static final int MODULAR_SPACE_WIDTH = 443;
 	public static final int MODULAR_SPACE_HEIGHT = 168;
-	protected int modularSpaceHeight;
+	public int modularSpaceHeight;
 	public boolean canScrollModules;
 	private ArrayList<ModuleCountPair> moduleCounts;
 	public static final int[][][] railDirectionCoordinates;

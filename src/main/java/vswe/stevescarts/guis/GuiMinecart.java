@@ -3,28 +3,37 @@ package vswe.stevescarts.guis;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Mouse;
+import reborncore.common.network.NetworkManager;
 import vswe.stevescarts.containers.slots.SlotBase;
 import vswe.stevescarts.entitys.EntityMinecartModular;
+import vswe.stevescarts.helpers.Localization;
 import vswe.stevescarts.helpers.ModuleCountPair;
 import vswe.stevescarts.helpers.ResourceHelper;
 import vswe.stevescarts.modules.ModuleBase;
+import vswe.stevescarts.packet.PacketReturnCart;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 @SideOnly(Side.CLIENT)
 public class GuiMinecart extends GuiBase {
 	private static ResourceLocation textureLeft;
 	private static ResourceLocation textureRight;
-	public static ResourceLocation moduleTexture;
+	private static ResourceLocation textureReturn;
 	private boolean isScrolling;
 	private int[] scrollBox;
 	private EntityMinecartModular cart;
 
+	private int[] returnButton;
+
 	public GuiMinecart(final InventoryPlayer invPlayer, final EntityMinecartModular cart) {
 		super(cart.getCon(invPlayer));
 		scrollBox = new int[] { 450, 15, 18, 225 };
+		returnButton = new int[] { 324, 173, 24, 12 };
 		setup(cart);
 	}
 
@@ -51,6 +60,7 @@ public class GuiMinecart extends GuiBase {
 					drawModuleMouseOver(module, x, y);
 				}
 				renderModuleListMouseOver(x, y);
+				renderReturnMouseOver(x, y);
 			}
 		}
 		GlStateManager.enableLighting();
@@ -89,6 +99,7 @@ public class GuiMinecart extends GuiBase {
 				drawModuleBackground(module, x, y);
 			}
 			renderModuleList(x, y);
+			renderReturnButton(x, y);
 			for (final ModuleBase module : cart.getModules()) {
 				drawModuleBackgroundItems(module, x, y);
 			}
@@ -99,29 +110,45 @@ public class GuiMinecart extends GuiBase {
 	private void renderModuleList(int x, int y) {
 		x -= getGuiLeft();
 		y -= getGuiTop();
-		final ArrayList<ModuleCountPair> moduleCounts = cart.getModuleCounts();
+		ArrayList<ModuleCountPair> moduleCounts = cart.getModuleCounts();
+
+		GlStateManager.pushMatrix();
 		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		for (int i = 0; i < moduleCounts.size(); ++i) {
-			final ModuleCountPair count = moduleCounts.get(i);
-			final float alpha = inRect(x, y, getModuleDisplayX(i), getModuleDisplayY(i), 16, 16) ? 1.0f : 0.5f;
+			ModuleCountPair count = moduleCounts.get(i);
+			float alpha = inRect(x, y, getModuleDisplayX(i), getModuleDisplayY(i), 16, 16) ? 1.0f : 0.1f;
+
 			GlStateManager.color(1.0f, 1.0f, 1.0f, alpha);
 			drawModuleIcon(count.getData(), getGuiLeft() + getModuleDisplayX(i), getGuiTop() + getModuleDisplayY(i), 1.0f, 1.0f, 0.0f, 0.0f);
 		}
 		GlStateManager.disableBlend();
+		GlStateManager.enableAlpha();
+		GlStateManager.popMatrix();
+		GlStateManager.color(1F, 1F, 1F, 1F);
+	}
+
+	private void renderReturnButton(int x, int y) {
+		x -= getGuiLeft();
+		y -= getGuiTop();
+		ResourceHelper.bindResource(GuiMinecart.textureReturn);
+		int uy = inRect(x, y, returnButton) ? 12: 0;
+		drawTexturedModalRect(returnButton[0] + getGuiLeft(), returnButton[1] + getGuiTop(), 0, uy, returnButton[2], returnButton[3]);
 	}
 
 	private void renderModuleListText(int x, int y) {
 		x -= getGuiLeft();
 		y -= getGuiTop();
-		final ArrayList<ModuleCountPair> moduleCounts = cart.getModuleCounts();
+		ArrayList<ModuleCountPair> moduleCounts = cart.getModuleCounts();
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		getFontRenderer().drawString(cart.getCartName(), 5, 172, 4210752);
 		GlStateManager.enableBlend();
 		for (int i = 0; i < moduleCounts.size(); ++i) {
-			final ModuleCountPair count = moduleCounts.get(i);
+			ModuleCountPair count = moduleCounts.get(i);
 			if (count.getCount() != 1) {
-				final int alpha = (int) ((inRect(x, y, getModuleDisplayX(i), getModuleDisplayY(i), 16, 16) ? 1.0f : 0.75f) * 256.0f);
-				final String str = String.valueOf(count.getCount());
+				int alpha = (int) ((inRect(x, y, getModuleDisplayX(i), getModuleDisplayY(i), 16, 16) ? 1.0f : 0.75f) * 256.0f);
+				String str = String.valueOf(count.getCount());
 				getFontRenderer().drawStringWithShadow(str, getModuleDisplayX(i) + 16 - getFontRenderer().getStringWidth(str), getModuleDisplayY(i) + 8, 0xFFFFFF | alpha << 24);
 			}
 		}
@@ -131,7 +158,7 @@ public class GuiMinecart extends GuiBase {
 	private void renderModuleListMouseOver(int x, int y) {
 		x -= getGuiLeft();
 		y -= getGuiTop();
-		final ArrayList<ModuleCountPair> moduleCounts = cart.getModuleCounts();
+		ArrayList<ModuleCountPair> moduleCounts = cart.getModuleCounts();
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		for (int i = 0; i < moduleCounts.size(); ++i) {
 			final ModuleCountPair count = moduleCounts.get(i);
@@ -141,26 +168,39 @@ public class GuiMinecart extends GuiBase {
 		}
 	}
 
-	private int getModuleDisplayX(final int id) {
+	private void renderReturnMouseOver(int x, int y) {
+		x -= getGuiLeft();
+		y -= getGuiTop();
+
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+		if (inRect(x, y, returnButton)) {
+			drawMouseOver(Localization.GUI.CART.RETURN.translate(), x, y);
+		}
+	}
+
+	private int getModuleDisplayX(int id) {
 		return id % 8 * 18 + 7;
 	}
 
-	private int getModuleDisplayY(final int id) {
+	private int getModuleDisplayY(int id) {
 		return id / 8 * 18 + 182;
 	}
 
 	@Override
-	public void mouseClick(final int x, final int y, final int button) {
+	public void mouseClick(int x, int y, int button) {
 		super.mouseClick(x, y, button);
-		final ModuleBase thief = cart.getInterfaceThief();
+		ModuleBase thief = cart.getInterfaceThief();
 		if (thief != null) {
 			handleModuleMouseClicked(thief, x, y, button);
 		} else if (cart.getModules() != null) {
 			if (inRect(x - getGuiLeft(), y - getGuiTop(), scrollBox[0], scrollBox[1], scrollBox[2], scrollBox[3])) {
 				isScrolling = true;
 			}
-			for (final ModuleBase module : cart.getModules()) {
+			for (ModuleBase module : cart.getModules()) {
 				handleModuleMouseClicked(module, x, y, button);
+			}
+			if (inRect(x - getGuiLeft(), y - getGuiTop(), returnButton)) {
+				NetworkManager.sendToServer(new PacketReturnCart());
 			}
 		}
 	}
@@ -301,9 +341,35 @@ public class GuiMinecart extends GuiBase {
 		module.keyPress(this, character, extraInformation);
 	}
 
+	@Override
+	public void handleMouseInput() throws IOException {
+		super.handleMouseInput();
+		int d = Mouse.getDWheel();
+		if (d != -1) {
+			int x = Mouse.getEventX() * width / mc.displayWidth;
+			int y = height - Mouse.getEventY() * height / mc.displayHeight - 1;
+
+			if (d < 0) {
+				d = -1;
+			}
+			if(d > 0)
+			{
+				d = 1;
+			}
+
+			if (this.inRect(x - getGuiLeft(), y - getGuiTop(),  0, 0, xSize, ySize))
+			{
+				int moduleSize = this.cart.modularSpaceHeight;
+				int scroll = cart.getScrollY() + (-d * 7500) / (moduleSize - EntityMinecartModular.MODULAR_SPACE_HEIGHT);
+				scroll = MathHelper.clamp(scroll, 0, 198);
+				cart.setScrollY(scroll);
+			}
+		}
+	}
+
 	static {
 		GuiMinecart.textureLeft = ResourceHelper.getResource("/gui/guiBase1.png");
 		GuiMinecart.textureRight = ResourceHelper.getResource("/gui/guiBase2.png");
-		GuiMinecart.moduleTexture = ResourceHelper.getResourceFromPath("/atlas/items.png");
+		GuiMinecart.textureReturn = ResourceHelper.getResource("/gui/return.png");
 	}
 }

@@ -203,6 +203,8 @@ gui.SC2:stateTanksFull=Are the tanks completely full
 gui.SC2:stateTanksEmpty=Are the tanks completely empty
 gui.SC2:stateTankEmpty=Is there any completely empty tank
 
+# Cart GUI
+gui.SC2:returnButton=Reverse cart direction
 
 # ======================================
 				ITEMS

@@ -94,9 +94,14 @@ public class ModulePowerObserver extends ModuleAddon {
 		}
 	}
 
-	private void drawEngine(final GuiMinecart gui, final int id, final int[] rect) {
+	private void drawEngine(GuiMinecart gui, int id, int[] rect) {
 		ModuleEngine engine = getCart().getEngines().get(id);
-		gui.drawModuleIcon(engine.getData(), gui.getGuiLeft() + getX() + rect[0], gui.getGuiTop() + getY() + rect[1], rect[2], rect[3], 0, 0);
+		rect = cloneRect(rect);
+		int srcY = 0;
+		if (!doStealInterface()) {
+			srcY -= handleScroll(rect);
+		}
+		gui.drawModuleIcon(engine.getData(), gui.getGuiLeft() + getX() + rect[0], gui.getGuiTop() + getY() + rect[1], rect[2] / 16, rect[3] / 16, 0, srcY / 16);
 	}
 
 	private int[] getAreaRect(final int id) {

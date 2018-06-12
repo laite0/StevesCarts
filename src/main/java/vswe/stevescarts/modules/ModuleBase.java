@@ -602,7 +602,7 @@ public abstract class ModuleBase {
 	 * @param rect The rectangle to be clones {targetX, targetY, sizeX, sizeY}
 	 * @return The cloned rectangle {targetX, targetY, sizeX, sizeY}
 	 */
-	private int[] cloneRect(final int[] rect) {
+	protected int[] cloneRect(final int[] rect) {
 		return new int[] { rect[0], rect[1], rect[2], rect[3] };
 	}
 

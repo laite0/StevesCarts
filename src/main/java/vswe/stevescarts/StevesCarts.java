@@ -35,6 +35,7 @@ import vswe.stevescarts.helpers.GiftItem;
 import vswe.stevescarts.items.ModItems;
 import vswe.stevescarts.modules.data.ModuleData;
 import vswe.stevescarts.packet.PacketFluidSync;
+import vswe.stevescarts.packet.PacketReturnCart;
 import vswe.stevescarts.packet.PacketStevesCarts;
 import vswe.stevescarts.plugins.PluginLoader;
 import vswe.stevescarts.upgrades.AssemblerUpgrade;
@@ -128,6 +129,7 @@ public class StevesCarts {
 		event.registerPacket(PacketStevesCarts.class, Side.CLIENT);
 		event.registerPacket(PacketStevesCarts.class, Side.SERVER);
 		event.registerPacket(PacketFluidSync.class, Side.CLIENT);
+		event.registerPacket(PacketReturnCart.class, Side.SERVER);
 	}
 
 	static {

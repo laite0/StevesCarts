@@ -311,6 +311,21 @@ public final class Localization {
 				return doTranslate("gui.SC2:" + name, vars);
 			}
 		}
+
+		public enum CART {
+			RETURN("returnButton");
+
+			private String name;
+
+			CART(final String name) {
+				this.name = name;
+			}
+
+			public String translate(final String... vars) {
+				return doTranslate("gui.SC2:" + name, vars);
+			}
+		}
+
 	}
 
 	public enum MODULE_INFO {
