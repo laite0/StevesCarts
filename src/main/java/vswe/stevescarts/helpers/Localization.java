@@ -447,6 +447,7 @@ public final class Localization {
 			LOCKED("intelligenceLockedBlock"),
 			CHANGE_INTELLIGENCE("intelligenceChange"),
 			CURRENT_INTELLIGENCE("intelligenceCurrent"),
+			RESTRICTED_INTELLIGENCE("intelligenceRestricted"),
 			ENCHANT_INSTRUCTION("enchanterInstruction"),
 			INVISIBILITY("invisibilityToggle"),
 			NAME("informationProviderLabelName"),

@@ -2,6 +2,7 @@ package vswe.stevescarts.modules.addons;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.guis.GuiMinecart;
 import vswe.stevescarts.helpers.Localization;
@@ -52,7 +53,7 @@ public class ModuleDrillIntelligence extends ModuleAddon {
 
 	@Override
 	public void drawForeground(final GuiMinecart gui) {
-		drawString(gui, getModuleName(), 8, 6, 4210752);
+		drawString(gui, getModuleName(), 8, 6, 0x404040);
 	}
 
 	private int getDrillWidth() {
@@ -93,10 +94,15 @@ public class ModuleDrillIntelligence extends ModuleAddon {
 		for (int i = 0; i < w; ++i) {
 			for (int j = 0; j < h; ++j) {
 				final int[] rect = getSettingRect(i, j);
-				int srcX = (!hasHeightController || (j != 0 && j != h - 1)) ? 0 : 8;
+				int maxY = ((getDrillHeight() / 2 - 1) - SCConfig.drillSize) * 2;
+				int srcX = (!hasHeightController || (j != maxY && j != h - 1)) ? 0 : 8;
 				int srcY = 0;
 				drawImage(gui, rect, srcX, srcY);
-				if (isActive(j * w + i)) {
+				if (isRestricted(j * w + i)) {
+					srcX = 16;
+					srcY = 8;
+					drawImage(gui, rect, srcX, srcY);
+				} else if (isActive(j * w + i)) {
 					srcX = (isLocked(j * w + i) ? 8 : 0);
 					srcY = 8;
 					drawImage(gui, rect, srcX, srcY);
@@ -125,23 +131,34 @@ public class ModuleDrillIntelligence extends ModuleAddon {
 		return isActive(y * getDrillWidth() + x);
 	}
 
-	private boolean isActive(final int id) {
+	private boolean isActive(int id) {
 		initDisabledData();
-		return isLocked(id) || (isDisabled[id / 16] & 1 << id % 16) == 0x0;
+		return !isRestricted(id) && (isLocked(id) || (isDisabled[id / 16] & 1 << id % 16) == 0x0);
 	}
 
-	private boolean isLocked(final int id) {
+	private boolean isLocked(int id) {
 		final int x = id % getDrillWidth();
 		final int y = id / getDrillWidth();
 		return (y == getDrillHeight() - 1 || (hasHeightController && y == getDrillHeight() - 2)) && x == (getDrillWidth() - 1) / 2;
 	}
 
+	private boolean isRestricted(int id) {
+		int size = SCConfig.drillSize;
+		int centerX = (getDrillWidth() - 1) / 2;
+		int x = id % getDrillWidth();
+
+		int y = getDrillHeight() - (id / getDrillWidth()) - 3;
+		int maxHeight = size * 2 + 1 - (hasHeightController ? 1: 3);
+
+		boolean validX = x > centerX + size || x < centerX - size;
+		boolean validY = y > maxHeight;
+		return validX || validY;
+	}
+
 	private void swapActiveness(final int id) {
 		initDisabledData();
-		if (!isLocked(id)) {
-			final short[] isDisabled = this.isDisabled;
-			final int n = id / 16;
-			isDisabled[n] ^= (short) (1 << id % 16);
+		if (!isRestricted(id) && !isLocked(id)) {
+			isDisabled[id / 16] ^= (short) (1 << id % 16);
 		}
 	}
 
@@ -156,7 +173,7 @@ public class ModuleDrillIntelligence extends ModuleAddon {
 		for (int i = 0; i < w; ++i) {
 			for (int j = 0; j < h; ++j) {
 				final int[] rect = getSettingRect(i, j);
-				final String str = isLocked(j * w + i) ? Localization.MODULES.ADDONS.LOCKED.translate()
+				final String str = isRestricted(j * w + i) ? Localization.MODULES.ADDONS.RESTRICTED_INTELLIGENCE.translate(): isLocked(j * w + i) ? Localization.MODULES.ADDONS.LOCKED.translate()
 				                                       : (Localization.MODULES.ADDONS.CHANGE_INTELLIGENCE.translate() + "\n" + Localization.MODULES.ADDONS.CURRENT_INTELLIGENCE.translate(
 					                                       isActive(j * w + i) ? "0" : "1"));
 				drawStringOnMouseOver(gui, str, x, y, rect);

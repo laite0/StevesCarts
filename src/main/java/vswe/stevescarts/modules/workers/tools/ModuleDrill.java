@@ -18,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import vswe.stevescarts.SCConfig;
 import vswe.stevescarts.blocks.ModBlocks;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.guis.GuiMinecart;
@@ -25,10 +26,7 @@ import vswe.stevescarts.helpers.Localization;
 import vswe.stevescarts.helpers.ResourceHelper;
 import vswe.stevescarts.modules.IActivatorModule;
 import vswe.stevescarts.modules.ModuleBase;
-import vswe.stevescarts.modules.addons.ModuleDrillIntelligence;
-import vswe.stevescarts.modules.addons.ModuleIncinerator;
-import vswe.stevescarts.modules.addons.ModuleLiquidSensors;
-import vswe.stevescarts.modules.addons.ModuleOreTracker;
+import vswe.stevescarts.modules.addons.*;
 import vswe.stevescarts.modules.storages.chests.ModuleChest;
 
 import javax.annotation.Nonnull;
@@ -38,6 +36,7 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 	private ModuleDrillIntelligence intelligence;
 	private ModuleLiquidSensors liquidsensors;
 	private ModuleOreTracker tracker;
+	private boolean hasHeightController;
 	private byte sensorLight;
 	private float drillRotation;
 	private int miningCoolDown;
@@ -69,6 +68,9 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 			if (module instanceof ModuleOreTracker) {
 				tracker = (ModuleOreTracker) module;
 			}
+			if (module instanceof ModuleHeightControl) {
+				hasHeightController = true;
+			}
 		}
 	}
 
@@ -90,8 +92,7 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 		int[] range = mineRange();
  		for (int holeY = range[1]; holeY >= range[0]; holeY--) {
 			for (int holeX = -blocksOnSide(); holeX <= blocksOnSide(); holeX++) {
-				if (intelligence == null || intelligence.isActive(holeX + blocksOnSide(), holeY, range[2], next.getX() > getCart().x() || next.getZ() < getCart().z())) {
-
+				if (isMiningSpotAllowed(next, holeX, holeY, range)) {
 					BlockPos mine = next.add(((getCart().z() != next.getZ()) ? holeX : 0), holeY, ((getCart().x() != next.getX()) ? holeX : 0));
 					if (mineBlockAndRevive(world, mine, next, holeX, holeY)) {
 						return true;
@@ -105,6 +106,14 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 		}
 		stopWorking();
 		stopDrill();
+		return false;
+	}
+
+	private boolean isMiningSpotAllowed(BlockPos next, int holeX, int holeY, int[] range) {
+		int maxHeight = SCConfig.drillSize * 2 + 1 - (hasHeightController ? range[2] == 0 ? -1: 1: 0);
+		if (Math.abs(holeX) <= SCConfig.drillSize && holeY <= maxHeight) {
+			return intelligence == null || intelligence.isActive(holeX + blocksOnSide(), holeY, range[2], next.getX() > getCart().x() || next.getZ() < getCart().z());
+		}
 		return false;
 	}
 
