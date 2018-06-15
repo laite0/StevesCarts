@@ -6,9 +6,9 @@
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
-  "updateUrl": "",
-  "authorList": ["Vswe"],
-  "credits": "",
+  "updateUrl": "https://minecraft.curseforge.com/projects/steves-carts-reborn",
+  "authorList": ["modmuss50", "Gory_Moon","Vswe"],
+  "credits": "Credits to Vswe for the original mod",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

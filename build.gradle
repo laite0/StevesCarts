@@ -21,7 +21,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = "2.4.20"
+version = "2.4.21"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -48,10 +48,6 @@ repositories {
 		name = "Modmuss50"
 		url = "http://maven.modmuss50.me/"
 	}
-	maven {
-		name = "ic2"
-		url = "http://maven.ic2.player.to/"
-	}
 }
 
 
@@ -62,7 +58,7 @@ dependencies {
 	compile ('RebornCore:RebornCore-1.12.2:+:dev'){
 		transitive = false
 	}
-	deobfCompile  'net.industrial-craft:industrialcraft-2:2.8.23-ex112'
+	deobfCompile  'net.industrial-craft:industrialcraft-2:2.8.85-ex112'
 }
 
 processResources{

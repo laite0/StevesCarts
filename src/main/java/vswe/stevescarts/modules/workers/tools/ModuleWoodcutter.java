@@ -211,7 +211,7 @@ public abstract class ModuleWoodcutter extends ModuleTool implements ISuppliesMo
 					for (ItemStack stack : drops) {
 						getCart().addItemToChest(stack);
 					}
-					return true;
+					return drops.size() > 0;
 				} else {
 					final ArrayList<BlockPos> checked = new ArrayList<>();
 					if (removeAt(world, pos, checked)) {
