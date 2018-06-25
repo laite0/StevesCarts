@@ -338,7 +338,7 @@ public class TileEntityUpgrade extends TileEntityBase implements IInventory, ISi
 		} else {
 			@Nonnull
 			ItemStack item = getStackInSlot(i);
-			if (item != ItemStack.EMPTY) {
+			if (!item.isEmpty()) {
 				setInventorySlotContents(i, ItemStack.EMPTY);
 				return item;
 			}

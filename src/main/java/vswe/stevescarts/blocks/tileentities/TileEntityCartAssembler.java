@@ -1030,7 +1030,7 @@ public class TileEntityCartAssembler extends TileEntityBase implements IInventor
 	@Override
 	@Nonnull
 	public ItemStack decrStackSize(final int i, final int j) {
-		if (inventoryStacks.get(i) == ItemStack.EMPTY) {
+		if (inventoryStacks.get(i).isEmpty()) {
 			return ItemStack.EMPTY;
 		}
 		if (inventoryStacks.get(i).getCount() <= j) {
