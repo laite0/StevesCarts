@@ -75,7 +75,7 @@ public class ModuleTorch extends ModuleWorker implements ISuppliesModule {
 			for (int side = -1; side <= 1; side += 2) {
 				final int xTorch = x + ((cartZ != z) ? side : 0);
 				final int zTorch = z + ((cartX != x) ? side : 0);
-				for (int level = 2; level >= -2; --level) {
+				for (int level = 2; level >= -2; level--) {
 					BlockPos pos = new BlockPos(xTorch, y + level, zTorch);
 					if (world.isAirBlock(pos) && Blocks.TORCH.canPlaceBlockAt(world, pos)) {
 						int i = 0;
@@ -103,8 +103,7 @@ public class ModuleTorch extends ModuleWorker implements ISuppliesModule {
 							}
 						}
 						break;
-					}
-					if (world.getBlockState(pos).getBlock() == Blocks.TORCH) {
+					} else if (world.getBlockState(pos).getBlock() == Blocks.TORCH) {
 						break;
 					}
 				}

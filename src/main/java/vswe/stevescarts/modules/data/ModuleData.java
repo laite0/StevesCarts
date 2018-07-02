@@ -1,13 +1,11 @@
 package vswe.stevescarts.modules.data;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -100,8 +98,8 @@ public class ModuleData {
 		final ModuleData coalStandard = new ModuleData(0, "Coal Engine", ModuleCoalStandard.class, 15);
 		final ModuleData coalTiny = new ModuleData(44, "Tiny Coal Engine", ModuleCoalTiny.class, 2);
 		addNemesis(coalTiny, coalStandard);
-		final ModuleData solar1 = new ModuleData(1, "Solar Engine", ModuleSolarStandard.class, 20).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP }).removeModel("Top");
-		final ModuleData solar2 = new ModuleData(45, "Basic Solar Engine", ModuleSolarBasic.class, 12).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP }).removeModel("Top");
+		final ModuleData solar1 = new ModuleData(1, "Solar Engine", ModuleSolarStandard.class, 20).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP });
+		final ModuleData solar2 = new ModuleData(45, "Basic Solar Engine", ModuleSolarBasic.class, 12).addSides(new SIDE[] { SIDE.CENTER, SIDE.TOP });
 		final ModuleData compactsolar = new ModuleData(56, "Compact Solar Engine", ModuleSolarCompact.class, 32).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
 
 		new ModuleData(2, "Side Chests", ModuleSideChests.class, 3).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
@@ -184,7 +182,7 @@ public class ModuleData {
 		new ModuleDataHull(38, "Standard Hull", ModuleStandard.class).setCapacity(200).setEngineMax(3).setAddonMax(6).setComplexityMax(50);
 		new ModuleDataHull(39, "Reinforced Hull", ModuleReinforced.class).setCapacity(500).setEngineMax(5).setAddonMax(12).setComplexityMax(150);
 		final ModuleData pumpkinhull = new ModuleDataHull(47, "Pumpkin chariot", ModulePumpkin.class).setCapacity(40).setEngineMax(1).setAddonMax(0).setComplexityMax(15);
-		new ModuleDataHull(62, "Mechanical Pig", ModulePig.class).setCapacity(150).setEngineMax(2).setAddonMax(4).setComplexityMax(50).addSide(SIDE.FRONT);
+		new ModuleDataHull(62, "Mechanical Pig", ModulePig.class).setCapacity(150).setEngineMax(2).setAddonMax(4).setComplexityMax(50).addSide(SIDE.FRONT).addMessage(Localization.MODULE_INFO.PIG_MESSAGE);
 		new ModuleDataHull(76, "Creative Hull", ModuleCheatHull.class).setCapacity(10000).setEngineMax(5).setAddonMax(12).setComplexityMax(150);
 		new ModuleDataHull(81, "Galgadorian Hull", ModuleGalgadorian.class).setCapacity(1000).setEngineMax(5).setAddonMax(12).setComplexityMax(150);
 
@@ -231,10 +229,10 @@ public class ModuleData {
 		final ModuleData internalTank = new ModuleData(63, "Internal SCTank", ModuleInternalTank.class, 37).setAllowDuplicate();
 		final ModuleData sideTank = new ModuleData(64, "Side Tanks", ModuleSideTanks.class, 10).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
 		final ModuleData topTank = new ModuleData(65, "Top SCTank", ModuleTopTank.class, 22).addSide(SIDE.TOP);
-		final ModuleData advancedTank = new ModuleData(66, "Advanced SCTank", ModuleAdvancedTank.class, 54);
+		final ModuleData advancedTank = new ModuleData(66, "Advanced SCTank", ModuleAdvancedTank.class, 54).addSides(new SIDE[]{ SIDE.CENTER, SIDE.TOP});
 		final ModuleData frontTank = new ModuleData(67, "Front SCTank", ModuleFrontTank.class, 15).addSide(SIDE.FRONT);
 		final ModuleData creativeTank = new ModuleData(72, "Creative SCTank", ModuleCheatTank.class, 1).setAllowDuplicate().addMessage(Localization.MODULE_INFO.OCEAN_MESSAGE);
-		final ModuleData topTankOpen = new ModuleData(73, "Open SCTank", ModuleOpenTank.class, 31);
+		final ModuleData topTankOpen = new ModuleData(73, "Open SCTank", ModuleOpenTank.class, 31).addSide(SIDE.TOP).addMessage(Localization.MODULE_INFO.OPEN_TANK);
 		addNemesis(frontTank, cleaner);
 		tankGroup.add(internalTank).add(sideTank).add(topTank).add(advancedTank).add(frontTank).add(creativeTank).add(topTankOpen);
 
@@ -321,8 +319,8 @@ public class ModuleData {
 	public static void initModels() {
 		ModuleData.moduleList.get((byte) 0).addModel("Engine", new ModelEngineFrame()).addModel("Fire", new ModelEngineInside());
 		ModuleData.moduleList.get((byte) 44).addModel("Engine", new ModelEngineFrame()).addModel("Fire", new ModelEngineInside());
-		ModuleData.moduleList.get((byte) 1).addModel("SolarPanelBase", new ModelSolarPanelBase()).addModel("SolarPanels", new ModelSolarPanelHeads(4));
-		ModuleData.moduleList.get((byte) 45).addModel("SolarPanelBase", new ModelSolarPanelBase()).addModel("SolarPanels", new ModelSolarPanelHeads(2));
+		ModuleData.moduleList.get((byte) 1).addModel("SolarPanelBase", new ModelSolarPanelBase()).addModel("SolarPanels", new ModelSolarPanelHeads(4)).removeModel("Top");
+		ModuleData.moduleList.get((byte) 45).addModel("SolarPanelBase", new ModelSolarPanelBase()).addModel("SolarPanels", new ModelSolarPanelHeads(2)).removeModel("Top");
 		ModuleData.moduleList.get((byte) 56).addModel("SolarPanelSide", new ModelCompactSolarPanel());
 		ModuleData.moduleList.get((byte) 2).addModel("SideChest", new ModelSideChests());
 		ModuleData.moduleList.get((byte) 3).removeModel("Top").addModel("TopChest", new ModelTopChest());
