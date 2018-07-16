@@ -18,6 +18,7 @@ import vswe.stevescarts.helpers.Pair;
 import vswe.stevescarts.packet.PacketStevesCarts;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BlockCartAssembler extends BlockContainerBase {
 
@@ -152,7 +153,14 @@ public class BlockCartAssembler extends BlockContainerBase {
 		tile.isDead = true;
 		updateMultiBlock(world, pos);
 		if (!tile.isEmpty()) {
-			InventoryHelper.dropInventoryItems(world, pos, tile);
+			List<ItemStack> stacks = new ArrayList<>();
+			for (int i = 0; i < tile.getSizeInventory(); i++) {
+				ItemStack stack = tile.getStackInSlot(i);
+				if(TileEntityCartAssembler.getSlotStatus(stack) > 0){
+					stacks.add(stack);
+				}
+			}
+			stacks.forEach(stack -> InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack));
 			ItemStack outputItem = tile.getOutputOnInterupt();
 			if (!outputItem.isEmpty()) {
 				final EntityItem eItem = new EntityItem(world, pos.getX() + 0.20000000298023224, pos.getY() + 0.20000000298023224, pos.getZ() + 0.2f, outputItem);
