@@ -346,6 +346,7 @@ public final class Localization {
 		ATTACHMENT_CATEGORY("moduleCategoryAttachment"),
 		PIG_MESSAGE("pigExtraMessage"),
 		OCEAN_MESSAGE("oceanExtraMessage"),
+		OPEN_TANK("openExtraMessage"),
 		ALPHA_MESSAGE("alphaExtraMessage"),
 		STORAGE_EMPTY("storageEmpty"),
 		STORAGE_FULL("storageFull"),

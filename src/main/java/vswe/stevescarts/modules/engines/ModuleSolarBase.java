@@ -3,6 +3,7 @@ package vswe.stevescarts.modules.engines;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.entitys.EntityMinecartModular;
@@ -63,7 +64,7 @@ public abstract class ModuleSolarBase extends ModuleEngine {
 		if (!getCart().world.isDaytime() || getCart().world.isRaining()) {
 			light = 0;
 		} else {
-			light = getCart().world.getLight(getCart().getPosition());
+			light = getCart().world.getLightFor(EnumSkyBlock.SKY, getCart().getPosition());
 			if (light == 15 && !getCart().world.canBlockSeeSky(getCart().getPosition())) {
 				light = 14;
 			}
