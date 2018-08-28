@@ -32,8 +32,13 @@ public class PluginLoader {
 			StevesCarts.logger.info("Found plugin candidate:" + asmData.getClassName());
 			if (asmData.getAnnotationInfo().size() != 0) {
 				String modId = (String) asmData.getAnnotationInfo().get("dependentMod");
-				if (!Loader.isModLoaded(modId)) {
-					StevesCarts.logger.info("Plugin was NOT loaded due to mod '" + modId + "' missing, this isn't an error");
+				if (modId != null && !modId.isEmpty() && !Loader.isModLoaded(modId)) {
+					StevesCarts.logger.info("Plugin (" + asmData.getClassName() + ") was NOT loaded due to mod '" + modId + "' missing, this isn't an error");
+					continue;
+				}
+				modId = (String) asmData.getAnnotationInfo().get("incompatibleMod");
+				if (modId != null && !modId.isEmpty() && Loader.isModLoaded(modId)) {
+					StevesCarts.logger.info("Plugin (" + asmData.getClassName() + ") was NOT loaded due to mod '" + modId + "' being incompatible, this isn't an error");
 					continue;
 				}
 			}
@@ -48,7 +53,6 @@ public class PluginLoader {
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 				StevesCarts.logger.error("Plugin was not loaded due to an error, please contact the mod author of " + asmData.getClassName());
 				e.printStackTrace();
-
 			}
 		}
 		apiHelper = new APIHelper();

@@ -12,7 +12,15 @@ public @interface SCLoadingPlugin {
 	/**
 	 * Set this if the Plugin depends on a mod, no need to set this if you are adding support from within your own mod
 	 *
-	 * @return the mod id of the mdo
+	 * @return the mod id of the mod
 	 */
 	String dependentMod() default "";
+
+	/**
+	 *
+	 * If the plugin is incompatible with a mod use this to stop it from being loaded.
+	 *
+	 * @returnthe mod id of the incompatible mod
+	 */
+	String incompatibleMod() default "";
 }
