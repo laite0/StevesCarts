@@ -1050,7 +1050,7 @@ public class ComputerTask {
 			return "~";
 		}
 		if (isVarRand()) {
-			return "rand(";
+			return "random(";
 		}
 		return "";
 	}

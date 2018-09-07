@@ -21,6 +21,6 @@ public class Community extends CardPlace {
 
 	@Override
 	public Card getCard() {
-		return CardCommunity.cards.get(game.getModule().getCart().rand.nextInt(CardCommunity.cards.size()));
+		return CardCommunity.cards.get(game.getModule().getCart().random.nextInt(CardCommunity.cards.size()));
 	}
 }

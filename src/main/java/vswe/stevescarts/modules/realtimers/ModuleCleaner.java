@@ -64,7 +64,7 @@ public class ModuleCleaner extends ModuleBase {
 					int stackSize = eItem.getItem().getCount();
 					getCart().addItemToChest(eItem.getItem());
 					if (stackSize != eItem.getItem().getCount()) {
-						getCart().world.playSound(null, getCart().getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.NEUTRAL, 0.2f, ((this.getCart().rand.nextFloat() - this.getCart().rand.nextFloat()) * 0.7f + 1.0f) * 2.0f);
+						getCart().world.playSound(null, getCart().getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.NEUTRAL, 0.2f, ((this.getCart().random.nextFloat() - this.getCart().random.nextFloat()) * 0.7f + 1.0f) * 2.0f);
 						if (eItem.getItem().getCount() <= 0) {
 							eItem.setDead();
 						}
@@ -79,7 +79,7 @@ public class ModuleCleaner extends ModuleBase {
 					ItemStack iItem = new ItemStack(Items.ARROW, 1);
 					getCart().addItemToChest(iItem);
 					if (iItem.getCount() <= 0) {
-						getCart().world.playSound(null, getCart().getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.NEUTRAL, 0.2f, ((this.getCart().rand.nextFloat() - this.getCart().rand.nextFloat()) * 0.7f + 1.0f) * 2.0f);
+						getCart().world.playSound(null, getCart().getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.NEUTRAL, 0.2f, ((this.getCart().random.nextFloat() - this.getCart().random.nextFloat()) * 0.7f + 1.0f) * 2.0f);
 						eItem2.setDead();
 					} else if (failPickup(iItem)) {
 						eItem2.setDead();

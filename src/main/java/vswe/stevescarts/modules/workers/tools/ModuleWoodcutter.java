@@ -114,7 +114,7 @@ public abstract class ModuleWoodcutter extends ModuleTool implements ISuppliesMo
 	private void dropItemByMultiplierChance(List<ItemStack> items, @Nonnull ItemStack item, int percentage) {
 		int drop = 0;
 		while (percentage > 0) {
-			if (getCart().rand.nextInt(100) < percentage) {
+			if (getCart().random.nextInt(100) < percentage) {
 				items.add(item.copy());
 				++drop;
 			}
@@ -288,7 +288,7 @@ public abstract class ModuleWoodcutter extends ModuleTool implements ISuppliesMo
 					applerand = 40;
 				}
 			}
-			if (block == Blocks.LEAVES && blockState.getValue(BlockOldLeaf.VARIANT) == EnumType.OAK && getCart().rand.nextInt(applerand) == 0) {
+			if (block == Blocks.LEAVES && blockState.getValue(BlockOldLeaf.VARIANT) == EnumType.OAK && getCart().random.nextInt(applerand) == 0) {
 				stuff.add(new ItemStack(Items.APPLE, 1, 0));
 			}
 		}

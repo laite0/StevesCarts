@@ -119,8 +119,8 @@ public class ModuleFertilizer extends ModuleWorker implements ISuppliesModule {
 			if (blockTop instanceof IGrowable) {
 				IGrowable growable = (IGrowable) blockTop;
 				if (growable.canGrow(world, pos, stateOfTopBlock, false)) {
-					if (growable.canUseBonemeal(world, getCart().rand, pos, stateOfTopBlock)) {
-						growable.grow(world, getCart().rand, pos, stateOfTopBlock);
+					if (growable.canUseBonemeal(world, getCart().random, pos, stateOfTopBlock)) {
+						growable.grow(world, getCart().random, pos, stateOfTopBlock);
 						fert -= 2;
 						return true;
 					}

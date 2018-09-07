@@ -90,10 +90,10 @@ public abstract class ModuleCoalBase extends ModuleEngine {
 		if (getCart().motionZ != 0.0) {
 			oZ = ((getCart().motionZ > 0.0) ? -1 : 1);
 		}
-		if (getCart().rand.nextInt(2) == 0) {
+		if (getCart().random.nextInt(2) == 0) {
 			getCart().world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, getCart().posX + oX * 0.85, getCart().posY + 0.12, getCart().posZ + oZ * 0.85, 0.0, 0.0, 0.0);
 		}
-		if (getCart().rand.nextInt(30) == 0) {
+		if (getCart().random.nextInt(30) == 0) {
 			getCart().world.spawnParticle(EnumParticleTypes.FLAME, getCart().posX + oX * 0.75, getCart().posY + 0.15, getCart().posZ + oZ * 0.75, getCart().motionX, getCart().motionY, getCart().motionZ);
 		}
 	}
@@ -137,7 +137,7 @@ public abstract class ModuleCoalBase extends ModuleEngine {
 	public void update() {
 		super.update();
 		if (fireCoolDown <= 0) {
-			fireIndex = getCart().rand.nextInt(4) + 1;
+			fireIndex = getCart().random.nextInt(4) + 1;
 			fireCoolDown = 2;
 		} else {
 			--fireCoolDown;

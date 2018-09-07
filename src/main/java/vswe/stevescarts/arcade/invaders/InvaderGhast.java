@@ -16,9 +16,9 @@ public class InvaderGhast extends Unit {
 
 	public InvaderGhast(final ArcadeInvaders game, final int x, final int y) {
 		super(game, x, y);
-		tentacleTextureId = game.getModule().getCart().rand.nextInt(4);
+		tentacleTextureId = game.getModule().getCart().random.nextInt(4);
 		shooting = -10;
-		if (game.canSpawnPahighast && !game.hasPahighast && game.getModule().getCart().rand.nextInt(1000) == 0) {
+		if (game.canSpawnPahighast && !game.hasPahighast && game.getModule().getCart().random.nextInt(1000) == 0) {
 			isPahighast = true;
 			game.hasPahighast = true;
 		}
@@ -61,7 +61,7 @@ public class InvaderGhast extends Unit {
 		}
 		if (shooting > -10) {
 			if (shooting == 0) {
-				Random random = game.getModule().getCart().rand;
+				Random random = game.getModule().getCart().random;
 				ArcadeGame.playSound(SoundEvents.ENTITY_GHAST_SHOOT, 0.1f, (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
 				this.game.projectiles.add(new Projectile(this.game, x + 8 - 3, y + 8 - 3, false));
 			}
@@ -78,7 +78,7 @@ public class InvaderGhast extends Unit {
 				return UPDATE_RESULT.TURN_BACK;
 			}
 		}
-		if (!isPahighast && shooting == -10 && game.getModule().getCart().rand.nextInt(300) == 0) {
+		if (!isPahighast && shooting == -10 && game.getModule().getCart().random.nextInt(300) == 0) {
 			shooting = 10;
 		}
 		return UPDATE_RESULT.DONE;

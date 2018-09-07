@@ -108,7 +108,7 @@ public class ModuleFirework extends ModuleBase {
 		if (hasPaper && hasGunpowder) {
 			@Nonnull
 			ItemStack firework2 = new ItemStack(Items.FIREWORKS);
-			final int maxGunpowder = getCart().rand.nextInt(3) + 1;
+			final int maxGunpowder = getCart().random.nextInt(3) + 1;
 			int countGunpowder = 0;
 			boolean removedPaper = false;
 			for (int j = 0; j < getInventorySize(); ++j) {
@@ -127,7 +127,7 @@ public class ModuleFirework extends ModuleBase {
 				}
 			}
 			int chargeCount;
-			for (chargeCount = 1; chargeCount < 7 && getCart().rand.nextInt(3 + chargeCount / 3) == 0; ++chargeCount) {}
+			for (chargeCount = 1; chargeCount < 7 && getCart().random.nextInt(3 + chargeCount / 3) == 0; ++chargeCount) {}
 			final NBTTagCompound itemstackNBT = new NBTTagCompound();
 			final NBTTagCompound fireworksNBT = new NBTTagCompound();
 			final NBTTagList explosionsNBT = new NBTTagList();
@@ -169,10 +169,10 @@ public class ModuleFirework extends ModuleBase {
 		final NBTTagCompound explosionNBT = new NBTTagCompound();
 		byte type = 0;
 		boolean removedGunpowder = false;
-		final boolean canHasTrail = getCart().rand.nextInt(16) == 0;
-		final boolean canHasFlicker = getCart().rand.nextInt(8) == 0;
-		final boolean canHasModifier = getCart().rand.nextInt(4) == 0;
-		final byte modifierType = (byte) (getCart().rand.nextInt(4) + 1);
+		final boolean canHasTrail = getCart().random.nextInt(16) == 0;
+		final boolean canHasFlicker = getCart().random.nextInt(8) == 0;
+		final boolean canHasModifier = getCart().random.nextInt(4) == 0;
+		final byte modifierType = (byte) (getCart().random.nextInt(4) + 1);
 		boolean removedModifier = false;
 		boolean removedDiamond = false;
 		boolean removedGlow = false;
@@ -203,7 +203,7 @@ public class ModuleFirework extends ModuleBase {
 			return null;
 		}
 		explosionNBT.setIntArray("Colors", colors);
-		if (getCart().rand.nextInt(4) == 0) {
+		if (getCart().random.nextInt(4) == 0) {
 			final int[] fade = generateColors(8);
 			if (fade != null) {
 				explosionNBT.setIntArray("FadeColors", fade);
@@ -228,7 +228,7 @@ public class ModuleFirework extends ModuleBase {
 			}
 		}
 		int colorCount;
-		for (colorCount = getCart().rand.nextInt(2) + 1; colorCount <= maxColorCount - 2 && getCart().rand.nextInt(2) == 0; colorCount += 2) {}
+		for (colorCount = getCart().random.nextInt(2) + 1; colorCount <= maxColorCount - 2 && getCart().random.nextInt(2) == 0; colorCount += 2) {}
 		final ArrayList<Integer> colorPointers = new ArrayList<>();
 		for (int j = 0; j < 16; ++j) {
 			if (maxColors[j] > 0) {
@@ -240,7 +240,7 @@ public class ModuleFirework extends ModuleBase {
 		}
 		final ArrayList<Integer> usedColors = new ArrayList<>();
 		while (colorCount > 0 && colorPointers.size() > 0) {
-			final int pointerId = getCart().rand.nextInt(colorPointers.size());
+			final int pointerId = getCart().random.nextInt(colorPointers.size());
 			final int colorId = colorPointers.get(pointerId);
 			final int[] array2 = currentColors;
 			final int n = colorId;

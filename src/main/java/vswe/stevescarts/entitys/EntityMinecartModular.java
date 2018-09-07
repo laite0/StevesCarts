@@ -105,7 +105,7 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 	private ArrayList<ModuleEngine> engineModules;
 	private ArrayList<ModuleTank> tankModules;
 	private ModuleCreativeSupplies creativeSupplies;
-	public Random rand;
+	public Random random;
 	protected String name;
 	public byte cartVersion;
 	private int scrollY;
@@ -152,7 +152,7 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 		super(world, x, y, z);
 		engineFlag = false;
 		fixedRailDirection = null;
-		rand = new Random();
+		random = new Random();
 		cartVersion = info.getByte("CartVersion");
 		loadModules(info);
 		this.name = name;
@@ -167,7 +167,7 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 		super(world);
 		engineFlag = false;
 		fixedRailDirection = null;
-		rand = new Random();
+		random = new Random();
 	}
 
 	public EntityMinecartModular(final World world, final TileEntityCartAssembler assembler, final byte[] data) {
@@ -519,11 +519,11 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 				@Nonnull
 				ItemStack itemstack = getStackInSlot(i);
 				if (!itemstack.isEmpty()) {
-					final float f = rand.nextFloat() * 0.8f + 0.1f;
-					final float f2 = rand.nextFloat() * 0.8f + 0.1f;
-					final float f3 = rand.nextFloat() * 0.8f + 0.1f;
+					final float f = random.nextFloat() * 0.8f + 0.1f;
+					final float f2 = random.nextFloat() * 0.8f + 0.1f;
+					final float f3 = random.nextFloat() * 0.8f + 0.1f;
 					while (itemstack.getCount() > 0) {
-						int j = rand.nextInt(21) + 10;
+						int j = random.nextInt(21) + 10;
 						if (j > itemstack.getCount()) {
 							j = itemstack.getCount();
 						}
@@ -532,9 +532,9 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 						itemStack.shrink(j);
 						final EntityItem entityitem = new EntityItem(world, posX + f, posY + f2, posZ + f3, new ItemStack(itemstack.getItem(), j, itemstack.getItemDamage()));
 						final float f4 = 0.05f;
-						entityitem.motionX = (float) rand.nextGaussian() * f4;
-						entityitem.motionY = (float) rand.nextGaussian() * f4 + 0.2f;
-						entityitem.motionZ = (float) rand.nextGaussian() * f4;
+						entityitem.motionX = (float) random.nextGaussian() * f4;
+						entityitem.motionY = (float) random.nextGaussian() * f4 + 0.2f;
+						entityitem.motionZ = (float) random.nextGaussian() * f4;
 						world.spawnEntity(entityitem);
 					}
 				}

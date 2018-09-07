@@ -150,7 +150,7 @@ public class ModuleShooterAdv extends ModuleShooter {
 			setHeading(projectile, disX, disY + (double) disD5, disZ, 1.6f, 0.0f);
 		}
 		BlockPos pos = getCart().getPosition();
-		getCart().world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0f, 1.0f / (getCart().rand.nextFloat() * 0.4f + 0.8f));
+		getCart().world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0f, 1.0f / (getCart().random.nextFloat() * 0.4f + 0.8f));
 
 		setProjectileDamage(projectile);
 		setProjectileOnFire(projectile);

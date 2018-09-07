@@ -58,6 +58,6 @@ public class Die {
 	}
 
 	public void randomize() {
-		number = game.getModule().getCart().rand.nextInt(6) + 1;
+		number = game.getModule().getCart().random.nextInt(6) + 1;
 	}
 }

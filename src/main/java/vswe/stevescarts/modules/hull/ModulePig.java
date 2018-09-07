@@ -27,11 +27,11 @@ public class ModulePig extends ModuleHull {
 	}
 
 	private void oink() {
-		//		this.getCart().world.playSoundAtEntity((Entity) this.getCart(), "mob.pig.say", 1.0f, (this.getCart().rand.nextFloat() - this.getCart().rand.nextFloat()) * 0.2f + 1.0f);
+		//		this.getCart().world.playSoundAtEntity((Entity) this.getCart(), "mob.pig.say", 1.0f, (this.getCart().random.nextFloat() - this.getCart().random.nextFloat()) * 0.2f + 1.0f);
 	}
 
 	private int getRandomTimer() {
-		return oinkTimer = getCart().rand.nextInt(900) + 300;
+		return oinkTimer = getCart().random.nextInt(900) + 300;
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public class ModuleEggBasket extends ModuleChest {
 		if (b == 0) {
 			return;
 		}
-		final Random rand = getCart().rand;
+		final Random rand = getCart().random;
 		final int eggs = 1 + rand.nextInt(4) + rand.nextInt(4);
 		@Nonnull
 		ItemStack easterEgg = ComponentTypes.PAINTED_EASTER_EGG.getItemStack(eggs);

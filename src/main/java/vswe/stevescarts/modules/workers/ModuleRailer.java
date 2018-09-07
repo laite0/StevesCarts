@@ -164,7 +164,7 @@ public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
 		if (!hasGeneratedAngles) {
 			railAngles = new float[getInventorySize()];
 			for (int j = 0; j < getInventorySize(); ++j) {
-				railAngles[j] = getCart().rand.nextFloat() / 2.0f - 0.25f;
+				railAngles[j] = getCart().random.nextFloat() / 2.0f - 0.25f;
 			}
 			hasGeneratedAngles = true;
 		}

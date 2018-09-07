@@ -148,7 +148,7 @@ public class TetrisPiece {
 					}
 					if (SCConfig.useArcadeMobSounds) {
 						if (sound != null) {
-							ArcadeGame.playSound(sound, volume, (game.getModule().getCart().rand.nextFloat() - game.getModule().getCart().rand.nextFloat()) * 0.2f + 1.0f);
+							ArcadeGame.playSound(sound, volume, (game.getModule().getCart().random.nextFloat() - game.getModule().getCart().random.nextFloat()) * 0.2f + 1.0f);
 						}
 					} else {
 						ArcadeGame.playSound(SoundHandler.BOOP, 1.0f, 1.0f);

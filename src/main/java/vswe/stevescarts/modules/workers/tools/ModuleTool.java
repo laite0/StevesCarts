@@ -181,7 +181,7 @@ public abstract class ModuleTool extends ModuleWorker {
 
 	public void damageTool(final int val) {
 		final int unbreaking = (enchanter != null) ? enchanter.getUnbreakingLevel() : 0;
-		if (getCart().rand.nextInt(100) < 100 / (unbreaking + 1)) {
+		if (getCart().random.nextInt(100) < 100 / (unbreaking + 1)) {
 			currentDurability -= val;
 			if (currentDurability < 0) {
 				currentDurability = 0;
