@@ -60,7 +60,7 @@ dependencies {
 	compile ('RebornCore:RebornCore-1.12.2:+:dev'){
 		transitive = false
 	}
-	deobfCompile  'net.industrial-craft:industrialcraft-2:2.8.85-ex112'
+	deobfCompile  'net.industrial-craft:industrialcraft-2:2.8.99-ex112'
 }
 
 processResources{

@@ -1,6 +1,7 @@
 package vswe.stevescarts.modules.realtimers;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -87,7 +88,7 @@ public class ModuleCage extends ModuleBase implements IActivatorModule {
 	}
 
 	private boolean isCageEmpty() {
-		return getCart().getRidingEntity() == null;
+		return getCart().getCartRider() == null;
 	}
 
 	@Override
@@ -132,7 +133,7 @@ public class ModuleCage extends ModuleBase implements IActivatorModule {
 
 	private void manualDrop() {
 		if (!isCageEmpty()) {
-			getCart().startRiding((Entity) null);
+			getCart().removePassengers();
 			cooldown = 20;
 		}
 	}
@@ -153,7 +154,6 @@ public class ModuleCage extends ModuleBase implements IActivatorModule {
 					target.startRiding(getCart());
 					return;
 				}
-				continue;
 			}
 		}
 	}
@@ -222,22 +222,22 @@ public class ModuleCage extends ModuleBase implements IActivatorModule {
 		}
 	}
 
-	private static class EntityNearestTarget implements Comparator {
+	private static class EntityNearestTarget implements Comparator<EntityLivingBase> {
 		private Entity entity;
 
-		public EntityNearestTarget(final Entity entity) {
+		public EntityNearestTarget(Entity entity) {
 			this.entity = entity;
 		}
 
-		public int compareDistanceSq(final Entity entity1, final Entity entity2) {
+		public int compareDistanceSq(Entity entity1, Entity entity2) {
 			final double distance1 = entity.getDistanceSq(entity1);
 			final double distance2 = entity.getDistanceSq(entity2);
-			return (distance1 < distance2) ? -1 : ((distance1 > distance2) ? 1 : 0);
+			return Double.compare(distance1, distance2);
 		}
 
 		@Override
-		public int compare(final Object obj1, final Object obj2) {
-			return compareDistanceSq((Entity) obj1, (Entity) obj2);
+		public int compare(EntityLivingBase livingBase, EntityLivingBase livingBase1) {
+			return compareDistanceSq(livingBase, livingBase1);
 		}
 	}
 }
