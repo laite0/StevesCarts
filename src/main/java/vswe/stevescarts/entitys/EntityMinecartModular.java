@@ -1563,6 +1563,11 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 		return "container.modularcart";
 	}
 
+	@Override
+	public String getName() {
+		return getCartName();
+	}
+
 	public String getCartName() {
 		if (name == null || name.length() == 0) {
 			return "Modular Cart";

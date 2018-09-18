@@ -38,7 +38,7 @@ public class ItemCarts extends ItemMinecart {
 	}
 
 	public String getName() {
-		return "Modular cart";
+		return "Modular Cart";
 	}
 
 	@Override
