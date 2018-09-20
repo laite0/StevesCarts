@@ -37,6 +37,7 @@ import vswe.stevescarts.packet.PacketStevesCarts;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -219,6 +220,18 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 		return inventories;
 	}
 
+	public HashMap<Integer, Integer> getInventorySides() {
+		TileEntityManager[] managers = getInventories();
+		HashMap<Integer, Integer> map = new HashMap<>();
+		int id = 0;
+		for (int i = 0; i < managers.length; i++) {
+			for (int j = 0; j < managers[i].getSizeInventory(); j++) {
+				map.put(id++, i);
+			}
+		}
+		return map;
+	}
+
 	private void generateInventories() {
 		final TileEntityManager bot = generateManager(-1);
 		final TileEntityManager top = generateManager(1);
@@ -253,13 +266,13 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 		return world.getTileEntity(pos) == this && entityplayer.getDistanceSqToCenter(pos) <= 64.0;
 	}
 
-	private int translateSlotId(final int slot) {
-		return slot % 60;
+	private int translateSlotId(final int slot, TileEntityManager manager) {
+		return slot % manager.getSizeInventory();
 	}
 
 	private TileEntityManager getManagerFromSlotId(final int slot) {
 		final TileEntityManager[] invs = getInventories();
-		int id = slot / 60;
+		int id = getInventorySides().getOrDefault(slot, 0);
 		if (!hasTop || !hasBot) {
 			id = 0;
 		}
@@ -271,7 +284,7 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 
 	@Override
 	public int getSizeInventory() {
-		return 120;
+		return Arrays.stream(getInventories()).mapToInt(TileEntityManager::getSizeInventory).sum();
 	}
 
 	@Override
@@ -284,7 +297,7 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	public ItemStack getStackInSlot(final int slot) {
 		final TileEntityManager manager = getManagerFromSlotId(slot);
 		if (manager != null) {
-			return manager.getStackInSlot(translateSlotId(slot));
+			return manager.getStackInSlot(translateSlotId(slot, manager));
 		}
 		return ItemStack.EMPTY;
 	}
@@ -294,7 +307,7 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	public ItemStack decrStackSize(final int slot, final int count) {
 		final TileEntityManager manager = getManagerFromSlotId(slot);
 		if (manager != null) {
-			return manager.decrStackSize(translateSlotId(slot), count);
+			return manager.decrStackSize(translateSlotId(slot, manager), count);
 		}
 		return ItemStack.EMPTY;
 	}
@@ -303,13 +316,13 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	public void setInventorySlotContents(final int slot, @Nonnull ItemStack itemstack) {
 		final TileEntityManager manager = getManagerFromSlotId(slot);
 		if (manager != null) {
-			manager.setInventorySlotContents(translateSlotId(slot), itemstack);
+			manager.setInventorySlotContents(translateSlotId(slot, manager), itemstack);
 		}
 	}
 
 	@Override
 	public String getName() {
-		return "container.cargodistributor";
+		return "tile.SC2:BlockDistributor.name";
 	}
 
 	@Override
@@ -333,7 +346,7 @@ public class TileEntityDistributor extends TileEntityBase implements IInventory,
 	public ItemStack removeStackFromSlot(final int slot) {
 		final TileEntityManager manager = getManagerFromSlotId(slot);
 		if (manager != null) {
-			return manager.getStackInSlotOnClosing(translateSlotId(slot));
+			return manager.getStackInSlotOnClosing(translateSlotId(slot, manager));
 		}
 		return ItemStack.EMPTY;
 	}

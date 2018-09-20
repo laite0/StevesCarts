@@ -79,7 +79,7 @@ public class TileEntityCargo extends TileEntityManager {
 
 	@Override
 	public String getName() {
-		return "container.cargomanager";
+		return "tile.SC2:BlockCargoManager.name";
 	}
 
 	@Override

@@ -84,7 +84,7 @@ public class TileEntityLiquid extends TileEntityManager implements ITankHolder {
 
 	@Override
 	public String getName() {
-		return "container.fluidmanager";
+		return "tile.SC2:BlockLiquidManager.name";
 	}
 
 	@Override
