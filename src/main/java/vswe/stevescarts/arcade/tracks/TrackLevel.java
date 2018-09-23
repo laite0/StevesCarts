@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class TrackLevel {
 	public static final TrackLevel editor;
 	private static String MAP_FOLDER_PATH;
-	private Localization.STORIES.THE_BEGINNING name;
+	private String name;
 	private int playerX;
 	private int playerY;
 	private TrackOrientation.DIRECTION playerDir;
@@ -29,8 +29,8 @@ public class TrackLevel {
 	public static ArrayList<TrackLevel> loadMapsFromFolder() {
 		final ArrayList<TrackLevel> maps = new ArrayList<>();
 		try {
-			final File dir = new File(Minecraft.getMinecraft().mcDataDir, TrackLevel.MAP_FOLDER_PATH);
-			final File[] children = dir.listFiles();
+			File dir = new File(Minecraft.getMinecraft().mcDataDir, TrackLevel.MAP_FOLDER_PATH);
+			File[] children = dir.listFiles();
 			if (children != null) {
 				for (final File child : children) {
 					if (child.isFile()) {
@@ -83,6 +83,8 @@ public class TrackLevel {
 		final int itemY = header >> 16 & 0xF;
 		final int tracksize = header >> 20 & 0x1FF;
 		final TrackLevel map = new TrackLevel(null, playerX, playerY, playerDir, itemX, itemY);
+		if (!name.isEmpty())
+			map.setName(name);
 		for (int i = 0; i < tracksize; ++i) {
 			final int trackdata = data.read() << 16 | data.read() << 8 | data.read() << 0;
 			final int trackX = trackdata & 0x1F;
@@ -100,13 +102,7 @@ public class TrackLevel {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static boolean saveMap(final String name,
-	                              final int playerX,
-	                              final int playerY,
-	                              final TrackOrientation.DIRECTION playerDir,
-	                              final int itemX,
-	                              final int itemY,
-	                              final ArrayList<Track> tracks) {
+	public static boolean saveMap(String name, int playerX, int playerY, TrackOrientation.DIRECTION playerDir, int itemX, int itemY, ArrayList<Track> tracks) {
 		try {
 			final byte[] bytes = saveMapData(name, playerX, playerY, playerDir, itemX, itemY, tracks);
 			writeToFile(new File(Minecraft.getMinecraft().mcDataDir, "sc2/arcade/trackoperator/" + name.replace(" ", "_") + ".dat"), bytes);
@@ -117,13 +113,7 @@ public class TrackLevel {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static String saveMapToString(final String name,
-	                                     final int playerX,
-	                                     final int playerY,
-	                                     final TrackOrientation.DIRECTION playerDir,
-	                                     final int itemX,
-	                                     final int itemY,
-	                                     final ArrayList<Track> tracks) {
+	public static String saveMapToString(String name, int playerX, int playerY, TrackOrientation.DIRECTION playerDir, int itemX, int itemY, ArrayList<Track> tracks) {
 		try {
 			final byte[] bytes = saveMapData(name, playerX, playerY, playerDir, itemX, itemY, tracks);
 			String str = "TrackLevel.loadMap(new byte[] {";
@@ -207,8 +197,9 @@ public class TrackLevel {
 		}
 	}
 
-	public TrackLevel(final Localization.STORIES.THE_BEGINNING name, final int playerX, final int playerY, final TrackOrientation.DIRECTION playerDir, final int itemX, final int itemY) {
-		this.name = name;
+	public TrackLevel(Localization.STORIES.THE_BEGINNING name, final int playerX, final int playerY, final TrackOrientation.DIRECTION playerDir, final int itemX, final int itemY) {
+		if (name != null)
+			this.name = name.translate();
 		this.playerX = playerX;
 		this.playerY = playerY;
 		this.playerDir = playerDir;
@@ -219,10 +210,13 @@ public class TrackLevel {
 	}
 
 	public String getName() {
-		return name.translate();
+		return name;
 	}
 
-	public void setName(final Localization.STORIES.THE_BEGINNING name) {
+	public void setName(Localization.STORIES.THE_BEGINNING name) {
+		this.name = name.translate();
+	}
+	public void setName(String name) {
 		this.name = name;
 	}
 

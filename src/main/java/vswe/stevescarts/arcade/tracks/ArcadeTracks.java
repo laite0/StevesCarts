@@ -141,13 +141,11 @@ public class ArcadeTracks extends ArcadeGame {
 		userMaps = TrackLevel.loadMapsFromFolder();
 		if (Constants.arcadeDevOperator) {
 			for (int i = 0; i < TrackStory.stories.size(); ++i) {
-				for (int j = 0; j < TrackStory.stories.get(i).getLevels().size(); ++j) {
-					userMaps.add(TrackStory.stories.get(i).getLevels().get(j));
-				}
+				userMaps.addAll(TrackStory.stories.get(i).getLevels());
 			}
 		}
-		for (int i = 0; i < userMaps.size(); ++i) {
-			userList.add(userMaps.get(i).getName());
+		for (TrackLevel userMap : userMaps) {
+			userList.add(userMap.getName());
 		}
 	}
 
@@ -659,7 +657,7 @@ public class ArcadeTracks extends ArcadeGame {
 				return Localization.ARCADE.BUTTON_REFRESH.translate();
 			}
 			case 10: {
-				return Localization.ARCADE.BUTTON_START.translate();
+				return Localization.ARCADE.BUTTON_SAVE.translate();
 			}
 			case 11: {
 				return Localization.ARCADE.BUTTON_SAVE_AS.translate();
