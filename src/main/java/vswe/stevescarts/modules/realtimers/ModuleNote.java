@@ -57,7 +57,7 @@ public class ModuleNote extends ModuleBase {
 	private boolean veryLongTrack;
 	private int speedSetting;
 
-	private DataParameter<Boolean> PLAYING;
+	private static DataParameter<Boolean> PLAYING = createDw(DataSerializers.BOOLEAN);
 
 	public ModuleNote(final EntityMinecartModular cart) {
 		super(cart);
@@ -527,7 +527,6 @@ public class ModuleNote extends ModuleBase {
 
 	@Override
 	public void initDw() {
-		PLAYING = createDw(DataSerializers.BOOLEAN);
 		registerDw(PLAYING, false);
 	}
 

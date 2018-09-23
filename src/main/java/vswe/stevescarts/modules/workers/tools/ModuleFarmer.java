@@ -30,7 +30,7 @@ public abstract class ModuleFarmer extends ModuleTool implements ISuppliesModule
 	private int farming;
 	private float farmAngle;
 	private float rigAngle;
-	private DataParameter<Boolean> IS_FARMING;
+	private static DataParameter<Boolean> IS_FARMING = createDw(DataSerializers.BOOLEAN);
 
 	public ModuleFarmer(final EntityMinecartModular cart) {
 		super(cart);
@@ -243,7 +243,6 @@ public abstract class ModuleFarmer extends ModuleTool implements ISuppliesModule
 
 	@Override
 	public void initDw() {
-		IS_FARMING = createDw(DataSerializers.BOOLEAN);
 		registerDw(IS_FARMING, false);
 	}
 

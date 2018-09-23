@@ -24,10 +24,10 @@ public class ModuleLabel extends ModuleAddon {
 	private int delay;
 	private ArrayList<SlotBase> storageSlots;
 	private ModuleTool tool;
-	private DataParameter<Integer> SECONDS;
-	private DataParameter<Byte> USED;
-	private DataParameter<Integer> DATA;
-	private DataParameter<Byte> ACTIVE;
+	private static DataParameter<Integer> SECONDS = createDw(DataSerializers.VARINT);
+	private static DataParameter<Byte> USED = createDw(DataSerializers.BYTE);
+	private static DataParameter<Integer> DATA = createDw(DataSerializers.VARINT);
+	private static DataParameter<Byte> ACTIVE = createDw(DataSerializers.BYTE);
 
 	public ModuleLabel(final EntityMinecartModular cart) {
 		super(cart);
@@ -176,10 +176,6 @@ public class ModuleLabel extends ModuleAddon {
 
 	@Override
 	public void initDw() {
-		SECONDS = createDw(DataSerializers.VARINT);
-		USED = createDw(DataSerializers.BYTE);
-		DATA = createDw(DataSerializers.VARINT);
-		ACTIVE = createDw(DataSerializers.BYTE);
 		registerDw(ACTIVE, (byte) 0);
 		registerDw(SECONDS, 0);
 		registerDw(USED, (byte) 0);
