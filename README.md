@@ -1,4 +1,4 @@
-SC2
+SC2 - Steve's Carts 2
 ===
 
 All credit goes to VSWE for the orginal mod
