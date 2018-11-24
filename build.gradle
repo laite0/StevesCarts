@@ -54,13 +54,13 @@ repositories {
 
 
 dependencies {
-	deobfCompile ('net.sengir.forestry:forestry_1.12.2:+'){
+	deobfCompile ('net.sengir.forestry:forestry_1.12.2:5.8.2.374'){
 		transitive = false
 	}
 	compile ('RebornCore:RebornCore-1.12.2:+:dev'){
 		transitive = false
 	}
-	deobfCompile  'net.industrial-craft:industrialcraft-2:2.8.99-ex112'
+	deobfCompile  'net.industrial-craft:industrialcraft-2:2.8.104-ex112'
 }
 
 processResources{

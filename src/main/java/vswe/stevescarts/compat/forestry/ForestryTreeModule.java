@@ -5,6 +5,8 @@ import forestry.api.arboriculture.ITreeRoot;
 import forestry.api.genetics.AlleleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -34,6 +36,9 @@ public class ForestryTreeModule implements ITreeModule {
 
 	@Override
 	public EnumHarvestResult isLeaves(IBlockState blockState, BlockPos pos, EntityMinecartModular cart) {
+		if(leaves == null || leaves == Blocks.AIR){
+			return EnumHarvestResult.SKIP;
+		}
 		return blockState.getBlock() == leaves ? EnumHarvestResult.ALLOW : EnumHarvestResult.SKIP;
 	}
 
@@ -45,6 +50,9 @@ public class ForestryTreeModule implements ITreeModule {
 
 	@Override
 	public boolean isSapling(@Nonnull ItemStack itemStack) {
+		if(sapling == null || sapling == Items.AIR){
+			return false;
+		}
 		return itemStack.getItem() == sapling;
 	}
 
