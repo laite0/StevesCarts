@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
 	private boolean hasGeneratedAngles;
 	private float[] railAngles;
-	private static DataParameter<Byte> RAILS = createDw(DataSerializers.BYTE);
+	private DataParameter<Byte> RAILS;
 
 	public ModuleRailer(final EntityMinecartModular cart) {
 		super(cart);
@@ -125,6 +125,7 @@ public class ModuleRailer extends ModuleWorker implements ISuppliesModule {
 
 	@Override
 	public void initDw() {
+		RAILS = createDw(DataSerializers.BYTE);
 		registerDw(RAILS, (byte) 0);
 	}
 

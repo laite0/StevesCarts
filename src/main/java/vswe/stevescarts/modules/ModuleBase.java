@@ -20,7 +20,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializer;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.datasync.EntityDataManager.DataEntry;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
@@ -1065,8 +1064,8 @@ public abstract class ModuleBase {
 		return getCart().getDataManager().get(key);
 	}
 
-	protected static  <T> DataParameter<T> createDw(DataSerializer<T> serializer) {
-		return EntityDataManager.createKey(EntityMinecartModular.class, serializer);
+	protected <T> DataParameter<T> createDw(DataSerializer<T> serializer) {
+		return serializer.createKey(cart.getNextDataWatcher());
 	}
 
 	/**

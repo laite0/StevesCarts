@@ -17,7 +17,7 @@ public abstract class ModuleCoalBase extends ModuleEngine {
 	private int fireCoolDown;
 	private int fireIndex;
 
-	private static DataParameter<Integer> PRIORITY = createDw(DataSerializers.VARINT);
+	private DataParameter<Integer> PRIORITY;
 
 	public ModuleCoalBase(final EntityMinecartModular cart) {
 		super(cart);
@@ -30,6 +30,7 @@ public abstract class ModuleCoalBase extends ModuleEngine {
 
 	@Override
 	public void initDw() {
+		PRIORITY = createDw(DataSerializers.VARINT);
 		super.initDw();
 	}
 

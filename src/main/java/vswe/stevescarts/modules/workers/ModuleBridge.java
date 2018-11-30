@@ -17,7 +17,7 @@ import vswe.stevescarts.modules.ISuppliesModule;
 import javax.annotation.Nonnull;
 
 public class ModuleBridge extends ModuleWorker implements ISuppliesModule {
-	private static DataParameter<Boolean> BRIDGE = createDw(DataSerializers.BOOLEAN);;
+	private DataParameter<Boolean> BRIDGE;
 
 	public ModuleBridge(final EntityMinecartModular cart) {
 		super(cart);
@@ -100,6 +100,7 @@ public class ModuleBridge extends ModuleWorker implements ISuppliesModule {
 
 	@Override
 	public void initDw() {
+		BRIDGE = createDw(DataSerializers.BOOLEAN);
 		registerDw(BRIDGE, false);
 	}
 

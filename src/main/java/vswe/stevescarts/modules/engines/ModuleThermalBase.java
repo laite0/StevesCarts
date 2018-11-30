@@ -11,7 +11,7 @@ import vswe.stevescarts.helpers.Localization;
 public abstract class ModuleThermalBase extends ModuleEngine {
 	private short coolantLevel;
 	private static final int RELOAD_LIQUID_SIZE = 1;
-	private static DataParameter<Integer> PRIORITY = createDw(DataSerializers.VARINT);
+	private DataParameter<Integer> PRIORITY;
 
 	public ModuleThermalBase(final EntityMinecartModular cart) {
 		super(cart);
@@ -24,6 +24,7 @@ public abstract class ModuleThermalBase extends ModuleEngine {
 
 	@Override
 	public void initDw() {
+		PRIORITY = createDw(DataSerializers.VARINT);
 		super.initDw();
 	}
 

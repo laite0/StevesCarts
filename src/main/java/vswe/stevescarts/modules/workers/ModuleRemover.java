@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 public class ModuleRemover extends ModuleWorker implements IActivatorModule {
 	@Nonnull
 	private BlockPos remove;
-	private static DataParameter<Boolean> IS_ENABLED = createDw(DataSerializers.BOOLEAN);
+	private DataParameter<Boolean> IS_ENABLED;
 
 	public ModuleRemover(final EntityMinecartModular cart) {
 		super(cart);
@@ -24,6 +24,7 @@ public class ModuleRemover extends ModuleWorker implements IActivatorModule {
 
 	@Override
 	public void initDw() {
+		IS_ENABLED = createDw(DataSerializers.BOOLEAN);
 		registerDw(IS_ENABLED, true);
 	}
 
