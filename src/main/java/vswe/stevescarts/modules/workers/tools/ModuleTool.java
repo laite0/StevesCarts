@@ -60,8 +60,8 @@ public abstract class ModuleTool extends ModuleWorker {
 	public void drawBackground(final GuiMinecart gui, final int x, final int y) {
 		ResourceHelper.bindResource("/gui/tool.png");
 		drawBox(gui, 0, 0, 1.0f);
-		drawBox(gui, 0, 8, useDurability() ? (currentDurability / getMaxDurability()) : 1.0f);
-		drawBox(gui, 0, 16, remainingRepairUnits / maximumRepairUnits);
+		drawBox(gui, 0, 8, useDurability() ? (((float)currentDurability) / ((float)getMaxDurability())) : 1.0f);
+		drawBox(gui, 0, 16, ((float)remainingRepairUnits) / ((float)maximumRepairUnits));
 		if (inRect(x, y, durabilityRect)) {
 			drawBox(gui, 0, 24, 1.0f);
 		}
