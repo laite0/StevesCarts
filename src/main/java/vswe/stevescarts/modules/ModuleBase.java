@@ -918,7 +918,7 @@ public abstract class ModuleBase {
 	 * Sets the packet offset used as a header to determine which module own a packet. This is done by the cart.
 	 * @param val The packet offset
 	 */
-	public void setPacketStart(final int val) {
+	public void setPacketStart(int val) {
 		packetOffset = val;
 	}
 
@@ -926,7 +926,7 @@ public abstract class ModuleBase {
 	 * Sends a packet from the client to the server
 	 * @param id The local id of the packet
 	 */
-	protected void sendPacket(final int id) {
+	protected void sendPacket(int id) {
 		sendPacket(id, new byte[0]);
 	}
 
@@ -935,7 +935,7 @@ public abstract class ModuleBase {
 	 * @param id The local id of the packet
 	 * @param data An extra byte sent along
 	 */
-	public void sendPacket(final int id, final byte data) {
+	public void sendPacket(int id, byte data) {
 		sendPacket(id, new byte[] { data });
 	}
 
@@ -944,7 +944,7 @@ public abstract class ModuleBase {
 	 * @param id The local id of the packet
 	 * @param data A byte array of data sent along
 	 */
-	public void sendPacket(final int id, final byte[] data) {
+	public void sendPacket(int id, byte[] data) {
 		PacketStevesCarts.sendPacket(getPacketStart() + id, data);
 	}
 
@@ -953,7 +953,7 @@ public abstract class ModuleBase {
 	 * @param id The local id of the packet
 	 * @param player The player to send it to
 	 */
-	protected void sendPacket(final int id, final EntityPlayer player) {
+	protected void sendPacket(int id, EntityPlayer player) {
 		sendPacket(id, new byte[0], player);
 	}
 
@@ -963,7 +963,7 @@ public abstract class ModuleBase {
 	 * @param data An extra byte sent along
 	 * @param player The player to send it to
 	 */
-	protected void sendPacket(final int id, final byte data, final EntityPlayer player) {
+	protected void sendPacket(int id, byte data, EntityPlayer player) {
 		sendPacket(id, new byte[] { data }, player);
 	}
 
@@ -973,8 +973,34 @@ public abstract class ModuleBase {
 	 * @param data A byte array of data sent along
 	 * @param player The player to send it to
 	 */
-	protected void sendPacket(final int id, final byte[] data, final EntityPlayer player) {
+	protected void sendPacket(int id, byte[] data, EntityPlayer player) {
 		PacketStevesCarts.sendPacketToPlayer(getPacketStart() + id, data, player, getCart());
+	}
+
+	/**
+	 * Sends a packet from the server to all players around the cart
+	 * @param id The local id of the packet
+	 */
+	protected void sendPacketAround(int id) {
+		sendPacketAround(id, new byte[0]);
+	}
+
+	/**
+	 * Sends a packet from the server to all players around the cart
+	 * @param id The local id of the packet
+	 * @param data An extra byte sent along
+	 */
+	protected void sendPacketAround(int id, byte data) {
+		sendPacketAround(id, new byte[] { data });
+	}
+
+	/**
+	 * Sends a packet from the server to all players around the cart
+	 * @param id The local id of the packet
+	 * @param data A byte array of data sent along
+	 */
+	protected void sendPacketAround(int id, byte[] data) {
+		PacketStevesCarts.sendPacketToAllAround(getPacketStart() + id, data, getCart());
 	}
 
 	/**
@@ -983,7 +1009,7 @@ public abstract class ModuleBase {
 	 * @param data The byte array of extra data, could be empty
 	 * @param player The player who sent or received the packet
 	 */
-	protected void receivePacket(final int id, final byte[] data, final EntityPlayer player) {}
+	protected void receivePacket(int id, byte[] data, EntityPlayer player) {}
 
 	/**
 	 * Handles a packet received on the server or the client and sends it where it should be handled
@@ -991,7 +1017,7 @@ public abstract class ModuleBase {
 	 * @param data The byte array of extra data, could be empty
 	 * @param player The player who sent or received the packet
 	 */
-	public final void delegateReceivedPacket(final int id, final byte[] data, final EntityPlayer player) {
+	public final void delegateReceivedPacket(int id, byte[] data, EntityPlayer player) {
 		if (id < 0 || id >= totalNumberOfPackets()) {
 			return;
 		}
@@ -1000,7 +1026,6 @@ public abstract class ModuleBase {
 			if (buttonId < 0) {
 				buttonId += 256;
 			}
-			System.out.println("Received button " + buttonId);
 			for (final ButtonBase button : buttons) {
 				if (button.getIdInModule() == buttonId) {
 					final byte buttoninformation = data[1];

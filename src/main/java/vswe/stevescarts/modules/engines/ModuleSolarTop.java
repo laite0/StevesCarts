@@ -29,6 +29,13 @@ public abstract class ModuleSolarTop extends ModuleSolarBase {
 	}
 
 	@Override
+	protected void setAnimDone() {
+		innerRotation = maxAngle;
+		movingLevel = minVal;
+		down = false;
+	}
+
+	@Override
 	public boolean updatePanels() {
 		if (movingLevel > minVal) {
 			movingLevel = minVal;

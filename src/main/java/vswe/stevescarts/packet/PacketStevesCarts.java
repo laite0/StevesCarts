@@ -167,20 +167,7 @@ public class PacketStevesCarts implements INetworkPacket<PacketStevesCarts> {
 		NetworkManager.sendToServer(new PacketStevesCarts(bs.toByteArray()));
 	}
 
-	public static void sendPacket(final EntityMinecartModular cart, final int id, final byte[] extraData) {
-		final ByteArrayOutputStream bs = new ByteArrayOutputStream();
-		final DataOutputStream ds = new DataOutputStream(bs);
-		try {
-			ds.writeByte((byte) id);
-			ds.writeInt(cart.getEntityId());
-			for (final byte b : extraData) {
-				ds.writeByte(b);
-			}
-		} catch (IOException ex) {}
-		NetworkManager.sendToServer(new PacketStevesCarts(bs.toByteArray()));
-	}
-
-	public static void sendPacketToPlayer(final int id, final byte[] data, final EntityPlayer player, final EntityMinecartModular cart) {
+	private static byte[] makeCartPacket(EntityMinecartModular cart, int id, byte[] data) {
 		final ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		final DataOutputStream ds = new DataOutputStream(bs);
 		try {
@@ -189,8 +176,20 @@ public class PacketStevesCarts implements INetworkPacket<PacketStevesCarts> {
 			for (final byte b : data) {
 				ds.writeByte(b);
 			}
-		} catch (IOException ex) {}
-		NetworkManager.sendToPlayer(new PacketStevesCarts(bs.toByteArray()), (EntityPlayerMP) player);
+		} catch (IOException ignored) {}
+		return bs.toByteArray();
+	}
+
+	public static void sendPacket(final EntityMinecartModular cart, final int id, final byte[] extraData) {
+		NetworkManager.sendToServer(new PacketStevesCarts(makeCartPacket(cart, id, extraData)));
+	}
+
+	public static void sendPacketToPlayer(final int id, final byte[] data, final EntityPlayer player, final EntityMinecartModular cart) {
+		NetworkManager.sendToPlayer(new PacketStevesCarts(makeCartPacket(cart, id, data)), (EntityPlayerMP) player);
+	}
+
+	public static void sendPacketToAllAround(final int id, final byte[] data, final EntityMinecartModular cart) {
+		sendToAllAround(new PacketStevesCarts(makeCartPacket(cart, id, data)), cart.getExactPosition(), cart.getEntityWorld());
 	}
 
 	public static void sendBlockInfoToClients(final World world, final byte[] data, final BlockPos pos) {

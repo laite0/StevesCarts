@@ -15,8 +15,9 @@ public abstract class ModuleSolarBase extends ModuleEngine {
 	private int light;
 	private boolean maxLight;
 	private int panelCoolDown;
-	private boolean down;
+	protected boolean down;
 	private boolean upState;
+	private boolean setup;
 
 	private DataParameter<Integer> LIGHT;
 	private DataParameter<Boolean> UP_STATE;
@@ -141,8 +142,17 @@ public abstract class ModuleSolarBase extends ModuleEngine {
 	}
 
 	public void updateSolarModel() {
-		if (getCart().world.isRemote) {
+		if (getCart().getEntityWorld().isRemote) {
 			updateDataForModel();
+			if (UP_STATE != null && !setup) {
+				boolean tmpUp = getDw(UP_STATE);
+				if (tmpUp) {
+					setAnimDone();
+					upState = true;
+					down = false;
+				}
+				setup = true;
+			}
 		}
 		panelCoolDown += (maxLight ? 1 : -1);
 		if (down && panelCoolDown < 0) {
@@ -189,6 +199,8 @@ public abstract class ModuleSolarBase extends ModuleEngine {
 
 	protected abstract boolean updatePanels();
 
+	protected abstract void setAnimDone();
+
 	@Override
 	protected void Save(final NBTTagCompound tagCompound, final int id) {
 		super.Save(tagCompound, id);
@@ -201,5 +213,8 @@ public abstract class ModuleSolarBase extends ModuleEngine {
 		super.Load(tagCompound, id);
 		setFuelLevel(tagCompound.getInteger(generateNBTName("Fuel", id)));
 		upState = tagCompound.getBoolean(generateNBTName("Up", id));
+		if (upState) {
+			setAnimDone();
+		}
 	}
 }

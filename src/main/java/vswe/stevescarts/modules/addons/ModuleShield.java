@@ -19,6 +19,7 @@ public class ModuleShield extends ModuleAddon implements IActivatorModule {
 	private float shieldAngle;
 	private int[] buttonRect;
 	private DataParameter<Boolean> STATUS;
+	private boolean setup;
 
 	public ModuleShield(final EntityMinecartModular cart) {
 		super(cart);
@@ -46,6 +47,13 @@ public class ModuleShield extends ModuleAddon implements IActivatorModule {
 	@Override
 	public void update() {
 		super.update();
+		if (getCart().getEntityWorld().isRemote && !setup) {
+			if (isPlaceholder() || !getDw(STATUS)) {
+				shieldDistance = 0;
+				shield = false;
+			}
+			setup = true;
+		}
 		if (hasShield() && !getCart().hasFuelForModule() && !getCart().world.isRemote) {
 			setShieldStatus(false);
 		}
@@ -153,7 +161,7 @@ public class ModuleShield extends ModuleAddon implements IActivatorModule {
 
 	@Override
 	public int numberOfDataWatchers() {
-		return 1;
+		return 2;
 	}
 
 	@Override
