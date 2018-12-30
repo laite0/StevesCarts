@@ -29,6 +29,9 @@ public class SCConfig {
 	public static boolean useArcadeSounds = true;
 	public static boolean useArcadeMobSounds = true;
 	public static int drillSize = 4;
+	public static boolean enableEaster = true;
+	public static boolean enableHalloween = true;
+	public static boolean enableChristmas = true;
 
 	private static Multimap<String,String> ironTierRepair;
 	private static Multimap<String,String> diamondTierRepair;
@@ -60,11 +63,11 @@ public class SCConfig {
 			}
 		}
 
-		disableTimedCrafting = config.get("Settings", "DisableCartAssemberTime", false, "Set to true to disable the timer in the cart assember, it will still require fuel").getBoolean(false);
-		maxDynamites = Math.min(maxDynamites, config.get("Settings", "MaximumNumberOfDynamites", 50, "The max amount of dynamite you can put into a dynamite carrier").getInt(50));
-		useArcadeSounds = config.get("Settings", "useArcadeSounds", true, "If the sounds in the arcade should be enabled").getBoolean(true);
-		useArcadeMobSounds = config.get("Settings", "useTetrisMobSounds", true, "If mob sounds should be used in the tetris arcade game").getBoolean(true);
-		drillSize = config.get("Settings", "maxDrillWidth", 4, "The max width beside the cart that the drills can mine, the drill diameter will be (width * 2 + 1)\nMin: 1\nMax: 4", 1, 4).getInt(4);
+		disableTimedCrafting = config.getBoolean("DisableCartAssemberTime", "Settings", false, "Set to true to disable the timer in the cart assember, it will still require fuel");
+		maxDynamites =  config.getInt("MaximumNumberOfDynamites", "Settings", 50, 0, maxDynamites, "The max amount of dynamite you can put into a dynamite carrier");
+		useArcadeSounds = config.getBoolean("useArcadeSounds", "Settings", true, "If the sounds in the arcade should be enabled");
+		useArcadeMobSounds = config.getBoolean("useTetrisMobSounds", "Settings", true, "If mob sounds should be used in the tetris arcade game");
+		drillSize = config.getInt("maxDrillWidth", "Settings", 4, 1, 4, "The max width beside the cart that the drills can mine, the drill diameter will be (width * 2 + 1)\nMin: 1\nMax: 4");
 
         String[] ironRepair = config.getStringList("Iron Tier Repair Items", "Repair", new String[] {"minecraft:iron_ingot"}, "A list of items that can repair an iron tier tool");
         String[] diamondRepair = config.getStringList("Diamond Tier Repair Items", "Repair", new String[] {"ore:gemDiamond"}, "A list of items that can repair an diamond tier tool");
@@ -76,6 +79,10 @@ public class SCConfig {
 		diamondRepairName = config.getString("Diamond Tier Name", "Repair", "", "Set name of what is needed to repair diamond tier tool, blank uses default text");
 		hardenedRepairName = config.getString("Hardened Tier Name", "Repair", "", "Set name of what is needed to repair hardened tier tool, blank uses default text");
 
+		config.setCategoryComment("Events", "Whether to let the events happen during their time frames of not");
+		enableEaster = config.getBoolean("Enable Easter", "Events", true, "If the easter event can occur");
+		enableHalloween = config.getBoolean("Enable Halloween", "Events", true, "If the halloween event can occur");
+		enableChristmas = config.getBoolean("Enable Christmas", "Events", true, "If the christmas event can occur");
         save();
 	}
 
