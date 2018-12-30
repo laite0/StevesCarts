@@ -148,22 +148,22 @@ public class ItemCartComponent extends Item implements ModItems.IMultipleItemMod
 	public ItemStack onItemUseFinish(@Nonnull ItemStack item, World world, EntityLivingBase entity) {
 		if (entity instanceof EntityPlayer && isEdibleEgg(item)) {
 			EntityPlayer player = (EntityPlayer) entity;
-			if (item.getItemDamage() == 66) {
+			if (item.getItemDamage() == ComponentTypes.EXPLOSIVE_EASTER_EGG.getId()) {
 				world.createExplosion(null, entity.posX, entity.posY, entity.posZ, 0.1f, false);
-			} else if (item.getItemDamage() == 67) {
+			} else if (item.getItemDamage() == ComponentTypes.BURNING_EASTER_EGG.getId()) {
 				entity.setFire(5);
 				if (!world.isRemote) {
 					entity.addPotionEffect(new PotionEffect(MobEffects.WATER_BREATHING, 600, 0));
 				}
-			} else if (item.getItemDamage() == 68) {
+			} else if (item.getItemDamage() == ComponentTypes.GLISTERING_EASTER_EGG.getId()) {
 				if (!world.isRemote) {
 					entity.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 50, 2));
 				}
-			} else if (item.getItemDamage() == 69) {
+			} else if (item.getItemDamage() == ComponentTypes.CHOCOLATE_EASTER_EGG.getId()) {
 				if (!world.isRemote) {
 					entity.addPotionEffect(new PotionEffect(MobEffects.SPEED, 300, 4));
 				}
-			} else if (item.getItemDamage() == 70) {}
+			} else if (item.getItemDamage() == ComponentTypes.PAINTED_EASTER_EGG.getId()) {}
 			if (!player.capabilities.isCreativeMode) {
 				item.shrink(1);
 			}

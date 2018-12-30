@@ -85,16 +85,16 @@ public class StevesCarts {
 
 		PluginLoader.preInit(event);
 		MinecraftForge.EVENT_BUS.register(this);
+
+		if (Constants.isChristmas) {
+			MinecraftForge.EVENT_BUS.register(new TradeHandler());
+			MinecraftForge.EVENT_BUS.register(new EventHandlerChristmas());
+		}
 	}
 
 	@Mod.EventHandler
 	public void load(final FMLInitializationEvent evt) {
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
-
-		if (Constants.isChristmas) {
-			tradeHandler = new TradeHandler();
-			MinecraftForge.EVENT_BUS.register(new EventHandlerChristmas());
-		}
 
 		GiftItem.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(StevesCarts.instance, StevesCarts.proxy);

@@ -55,8 +55,10 @@ public class EventHandlerChristmas {
 					}
 					if (!player.world.isRemote) {
 						villager.setProfession(TradeHandler.santaProfession);
+						villager.getRecipes(player).clear();
 						try {
-							ReflectionHelper.findMethod(EntityVillager.class, "populateBuyingList", "func_175554_cu").invoke(null);
+							ReflectionHelper.setPrivateValue(EntityVillager.class, villager, 0, "careerLevel", "field_175562_bw");
+							ReflectionHelper.findMethod(EntityVillager.class, "populateBuyingList", "func_175554_cu").invoke(villager);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -76,7 +78,6 @@ public class EventHandlerChristmas {
 			final EntityPlayer player = event.player;
 			if (Constants.isChristmas && player.isPlayerFullyAsleep()) {
 				for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
-					@Nonnull
 					ItemStack item = player.inventory.getStackInSlot(i);
 					if (!item.isEmpty() && item.getItem() == ModItems.COMPONENTS && item.getItemDamage() == 56) {
 						item.setItemDamage(item.getItemDamage() + 1);
