@@ -58,6 +58,12 @@ dependencies {
 		transitive = false
 	}
 	compile ('RebornCore:RebornCore-1.12.2:+:dev'){
+		transitive = false		
+	}
+	deobfCompile ('TechReborn:TechReborn-1.12.2:+:universal'){
+		transitive = false
+	}
+	deobfCompile ('TechReborn:TechReborn-ModCompatibility-1.12.2:+:universal') {
 		transitive = false
 	}
 	deobfCompile  'net.industrial-craft:industrialcraft-2:2.8.104-ex112'

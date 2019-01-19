@@ -297,7 +297,7 @@ public class ModuleData {
 		new ModuleData(97, "Creative Supplies", ModuleCreativeSupplies.class, 1);
 		new ModuleData(99, "Cake Server", ModuleCakeServer.class, 10).addSide(SIDE.TOP).addMessage(Localization.MODULE_INFO.ALPHA_MESSAGE);
 		final ModuleData trickOrTreat = new ModuleData(100, "Trick-or-Treat Cake Server", ModuleCakeServerDynamite.class, 15).addSide(SIDE.TOP);
-		if (Loader.isModLoaded("ic2"))
+		if (Loader.isModLoaded("ic2") || Loader.isModLoaded("techreborn"))
 			new ModuleData(102, "TreeTap", ModuleTreeTap.class, 15).addRequirement(woodcutterGroup);
 
 		if (!Constants.isHalloween) {
