@@ -5,9 +5,10 @@ import net.minecraft.entity.passive.EntityVillager.ITradeList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerCareer;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
-import net.minecraftforge.registries.GameData;
 import vswe.stevescarts.Constants;
 import vswe.stevescarts.helpers.ComponentTypes;
 import vswe.stevescarts.helpers.ResourceHelper;
@@ -19,10 +20,12 @@ public class TradeHandler implements ITradeList {
 
 	public static VillagerProfession santaProfession;
 
-	public TradeHandler() {
+	@SubscribeEvent
+	public void registerVillagers(RegistryEvent.Register<VillagerProfession> event) {
 		santaProfession = new VillagerProfession(Constants.MOD_ID + ":santa", ResourceHelper.getResource("/models/santa.png").toString(), ResourceHelper.getResource("/models/santa_zombie.png").toString());
-		VillagerCareer career = new VillagerCareer(santaProfession, "santa");
-		GameData.register_impl(santaProfession);
+		event.getRegistry().register(santaProfession);
+
+		VillagerCareer career = new VillagerCareer(santaProfession, "sc_santa");
 		career.addTrade(1, this);
 	}
 

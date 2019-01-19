@@ -31,6 +31,7 @@ import vswe.stevescarts.handlers.EventHandlerChristmas;
 import vswe.stevescarts.handlers.TradeHandler;
 import vswe.stevescarts.helpers.ComponentTypes;
 import vswe.stevescarts.helpers.CreativeTabSC2;
+import vswe.stevescarts.helpers.EventHelper;
 import vswe.stevescarts.helpers.GiftItem;
 import vswe.stevescarts.items.ModItems;
 import vswe.stevescarts.modules.data.ModuleData;
@@ -40,6 +41,9 @@ import vswe.stevescarts.packet.PacketStevesCarts;
 import vswe.stevescarts.plugins.PluginLoader;
 import vswe.stevescarts.upgrades.AssemblerUpgrade;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
 @Mod(modid = Constants.MOD_ID, name = Constants.NAME, version = Constants.VERSION, dependencies = "required-after:reborncore;required-after:forge@[14.21.0.2373,);", acceptedMinecraftVersions = "[1.12,1.12.2]")
@@ -63,6 +67,7 @@ public class StevesCarts {
 	@Mod.EventHandler
 	public void preInit(final FMLPreInitializationEvent event) {
 		StevesCarts.logger = event.getModLog();
+		EventHelper.setupEvents();
 
 		ModuleData.init();
 		SCConfig.INSTANCE.load(event);
@@ -80,16 +85,16 @@ public class StevesCarts {
 
 		PluginLoader.preInit(event);
 		MinecraftForge.EVENT_BUS.register(this);
+
+		if (Constants.isChristmas) {
+			MinecraftForge.EVENT_BUS.register(new TradeHandler());
+			MinecraftForge.EVENT_BUS.register(new EventHandlerChristmas());
+		}
 	}
 
 	@Mod.EventHandler
 	public void load(final FMLInitializationEvent evt) {
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
-
-		if (Constants.isChristmas) {
-			tradeHandler = new TradeHandler();
-			MinecraftForge.EVENT_BUS.register(new EventHandlerChristmas());
-		}
 
 		GiftItem.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(StevesCarts.instance, StevesCarts.proxy);

@@ -8,7 +8,6 @@ import vswe.stevescarts.Constants;
 
 import java.util.HashMap;
 
-@SideOnly(Side.CLIENT)
 public class ResourceHelper {
 	private static HashMap<String, ResourceLocation> resources;
 	private static HashMap<String, ResourceLocation> pathResources;

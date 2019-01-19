@@ -11,6 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import vswe.stevescarts.Constants;
 import vswe.stevescarts.SCConfig;
+import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.entitys.EntityMinecartModular;
 import vswe.stevescarts.helpers.CartVersion;
 import vswe.stevescarts.helpers.Localization;
@@ -25,6 +26,7 @@ import vswe.stevescarts.models.pig.ModelPigHead;
 import vswe.stevescarts.models.pig.ModelPigHelmet;
 import vswe.stevescarts.models.pig.ModelPigTail;
 import vswe.stevescarts.models.realtimers.ModelGun;
+import vswe.stevescarts.models.realtimers.ModelSideGuns;
 import vswe.stevescarts.models.storages.chests.*;
 import vswe.stevescarts.models.storages.tanks.ModelAdvancedTank;
 import vswe.stevescarts.models.storages.tanks.ModelFrontTank;
@@ -285,8 +287,6 @@ public class ModuleData {
 		new ModuleData(85, "Lawn Mower", ModuleFlowerRemover.class, 38).addSides(new SIDE[] { SIDE.RIGHT, SIDE.LEFT });
 		new ModuleData(86, "Milker", ModuleMilker.class, 26).addParent(cage);
 		new ModuleData(87, "Crafter", ModuleCrafter.class, 22).setAllowDuplicate();
-		//new ModuleData(88, "Tree: Exotic", DefaultTreeModule.class, 30).addRequirement(woodcutterGroup).addRecipe(new Object[][] { { Items.GLOWSTONE_DUST, null, Items.GLOWSTONE_DUST },
-		//			{ Items.REDSTONE, Blocks.SAPLING, Items.REDSTONE }, { ComponentTypes.SIMPLE_PCB.getItemStack(), ComponentTypes.EMPTY_DISK.getItemStack(), ComponentTypes.SIMPLE_PCB.getItemStack() } });
 		new ModuleData(89, "Planter Range Extender", ModulePlantSize.class, 20).addRequirement(woodcutterGroup);
 		new ModuleData(91, "Smelter", ModuleSmelter.class, 22).setAllowDuplicate();
 		new ModuleData(92, "Advanced Crafter", ModuleCrafterAdv.class, 42).setAllowDuplicate();
@@ -313,6 +313,17 @@ public class ModuleData {
 		if (!Constants.isEaster) {
 			eggBasket.lock();
 		}
+
+		/*
+		 * Available module ids:
+		 * 17
+		 * 35
+		 * 46
+		 * 60
+		 * 88
+		 * 98
+		 * 103+
+		 */
 	}
 
 	@SideOnly(Side.CLIENT)

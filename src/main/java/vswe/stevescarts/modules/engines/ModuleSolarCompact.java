@@ -42,6 +42,12 @@ public class ModuleSolarCompact extends ModuleSolarBase {
 		return rig.update(isGoingDown());
 	}
 
+	@Override
+	protected void setAnimDone() {
+		rig.setAnimDone();
+		down = false;
+	}
+
 	public float getExtractionDist() {
 		return extraction.getVal() + extraction2.getVal();
 	}

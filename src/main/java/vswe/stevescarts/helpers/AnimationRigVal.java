@@ -33,6 +33,10 @@ public class AnimationRigVal {
 		return val;
 	}
 
+	public void setAnimDone() {
+		val = max;
+	}
+
 	public boolean update(final boolean goDown) {
 		final float target = goDown ? min : max;
 		if (target == val) {
@@ -51,10 +55,10 @@ public class AnimationRigVal {
 		}
 		if (goDown) {
 			if (down != null) {
-				down.update(goDown);
+				down.update(true);
 			}
 		} else if (up != null) {
-			up.update(goDown);
+			up.update(false);
 		}
 		return true;
 	}

@@ -118,7 +118,7 @@ public class GuiMinecart extends GuiBase {
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		for (int i = 0; i < moduleCounts.size(); ++i) {
 			ModuleCountPair count = moduleCounts.get(i);
-			float alpha = inRect(x, y, getModuleDisplayX(i), getModuleDisplayY(i), 16, 16) ? 1.0f : 0.1f;
+			float alpha = inRect(x, y, getModuleDisplayX(i), getModuleDisplayY(i), 16, 16) ? 1.0f : 0.05f;
 
 			GlStateManager.color(1.0f, 1.0f, 1.0f, alpha);
 			drawModuleIcon(count.getData(), getGuiLeft() + getModuleDisplayX(i), getGuiTop() + getModuleDisplayY(i), 1.0f, 1.0f, 0.0f, 0.0f);
@@ -163,6 +163,14 @@ public class GuiMinecart extends GuiBase {
 		for (int i = 0; i < moduleCounts.size(); ++i) {
 			final ModuleCountPair count = moduleCounts.get(i);
 			if (inRect(x, y, getModuleDisplayX(i), getModuleDisplayY(i), 16, 16)) {
+				for (ModuleBase module : cart.getModules()) {
+					if (module.getClass() == count.getData().getModuleClass()) {
+						if (module.hasExtraData()) {
+							count.setExtraData(module.getExtraData());
+						}
+						break;
+					}
+				}
 				drawMouseOver(count.toString(), x, y);
 			}
 		}

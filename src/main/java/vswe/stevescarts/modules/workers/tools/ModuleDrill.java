@@ -41,6 +41,7 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 	private float drillRotation;
 	private int miningCoolDown;
 	private int[] buttonRect;
+	private boolean setup;
 	private DataParameter<Boolean> IS_MINING;
 	private DataParameter<Boolean> IS_ENABLED;
 
@@ -312,8 +313,15 @@ public abstract class ModuleDrill extends ModuleTool implements IActivatorModule
 	@Override
 	public void update() {
 		super.update();
+		if (getCart().getEntityWorld().isRemote && !setup) {
+			if (isPlaceholder() || !getDw(IS_MINING)) {
+				drillRotation = 0;
+				miningCoolDown = 10;
+			}
+			setup = true;
+		}
 		if ((getCart().hasFuel() && isMining()) || miningCoolDown < 10) {
-			drillRotation = (float) ((drillRotation + 0.03f * (10 - miningCoolDown)) % 6.283185307179586);
+			drillRotation = (float) ((drillRotation + 0.03f * (10 - miningCoolDown)) % (Math.PI * 2));
 			if (isMining()) {
 				miningCoolDown = 0;
 			} else {
