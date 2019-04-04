@@ -14,9 +14,9 @@ public class EventHelper {
     private static final long TIME = CALENDAR.getTime().getTime();
 
     public static void setupEvents() {
-        Constants.isChristmas = SCConfig.enableChristmas && isActive(Calendar.DECEMBER, 1, 31);
-        Constants.isHalloween = SCConfig.enableHalloween && isActive(Calendar.OCTOBER, 23, 8);
-        Constants.isEaster = SCConfig.enableEaster && isActive(Calendar.MARCH, 23, 31);
+        Constants.isChristmas = SCConfig.enableChristmas && isActive(Calendar.DECEMBER, 1, 31) || SCConfig.persistentChristmas;
+        Constants.isHalloween = SCConfig.enableHalloween && isActive(Calendar.OCTOBER, 23, 8) || SCConfig.persistentHalloween;
+        Constants.isEaster = SCConfig.enableEaster && isActive(Calendar.MARCH, 23, 31) || SCConfig.persistentEaster;
     }
 
     private static boolean isActive(int month, int dayOfMonth, int durationDays) {

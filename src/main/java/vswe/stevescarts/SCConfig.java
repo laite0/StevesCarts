@@ -32,6 +32,9 @@ public class SCConfig {
 	public static boolean enableEaster = true;
 	public static boolean enableHalloween = true;
 	public static boolean enableChristmas = true;
+	public static boolean persistentEaster= false;
+	public static boolean persistentHalloween = false;
+	public static boolean persistentChristmas = false;
 
 	private static Multimap<String,String> ironTierRepair;
 	private static Multimap<String,String> diamondTierRepair;
@@ -83,6 +86,9 @@ public class SCConfig {
 		enableEaster = config.getBoolean("Enable Easter", "Events", true, "If the easter event can occur");
 		enableHalloween = config.getBoolean("Enable Halloween", "Events", true, "If the halloween event can occur");
 		enableChristmas = config.getBoolean("Enable Christmas", "Events", true, "If the christmas event can occur");
+		persistentEaster = config.getBoolean("Persistent Easter", "Events", false, "Every day is Easter!");
+		persistentHalloween = config.getBoolean("Persistent Halloween", "Events", false, "Every day is Halloween!");
+		persistentChristmas = config.getBoolean("Persistent Christmas", "Events", false, "Every day is Christmas!");
         save();
 	}
 
