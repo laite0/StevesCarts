@@ -1354,14 +1354,6 @@ public class EntityMinecartModular extends EntityMinecart implements IInventory,
 	}
 
 	@Override
-	public AxisAlignedBB getEntityBoundingBox() {
-		if (isPlaceholder) {
-			return null;
-		}
-		return super.getEntityBoundingBox();
-	}
-
-	@Override
 	public boolean canBeCollidedWith() {
 		return !isPlaceholder && super.canBeCollidedWith();
 	}
