@@ -39,9 +39,7 @@ public class ItemUpgrade extends ItemBlock {
 	}
 
 	@Override
-	public String getUnlocalizedName(
-		@Nonnull
-			ItemStack item) {
+	public String getTranslationKey(@Nonnull ItemStack item) {
 		final AssemblerUpgrade upgrade = AssemblerUpgrade.getUpgrade(item.getItemDamage());
 		if (upgrade != null) {
 			return "item.SC2:" + upgrade.getRawName();

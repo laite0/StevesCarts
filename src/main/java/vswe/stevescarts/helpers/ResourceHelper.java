@@ -22,7 +22,7 @@ public class ResourceHelper {
 
 	public static void bindResource(final ResourceLocation resource) {
 		if (resource != null) {
-			ResourceLocation lowercaseLocation = new ResourceLocation(resource.getResourceDomain().toLowerCase(), resource.getResourcePath().toLowerCase());
+			ResourceLocation lowercaseLocation = new ResourceLocation(resource.getNamespace().toLowerCase(), resource.getPath().toLowerCase());
 			Minecraft.getMinecraft().getTextureManager().bindTexture(lowercaseLocation);
 		}
 	}

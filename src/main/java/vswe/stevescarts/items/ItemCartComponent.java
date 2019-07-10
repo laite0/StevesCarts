@@ -55,15 +55,15 @@ public class ItemCartComponent extends Item implements ModItems.IMultipleItemMod
 	}
 
 	@Override
-	public String getUnlocalizedName(@Nonnull ItemStack item) {
+	public String getTranslationKey(@Nonnull ItemStack item) {
 		if (item.isEmpty() || item.getItemDamage() < 0 || item.getItemDamage() >= size() || getName(item.getItemDamage()) == null) {
-			return getUnlocalizedName();
+			return getTranslationKey();
 		}
 		return "item.SC2:" + getRawName(item.getItemDamage());
 	}
 
 	@Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "item.SC2:unknowncomponent";
 	}
 

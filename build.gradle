@@ -23,7 +23,7 @@ apply plugin: 'maven-publish'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = "2.4.30"
+version = "2.4.31"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
@@ -34,7 +34,7 @@ group= "vswe.stevescarts" // http://maven.apache.org/guides/mini/guide-naming-co
 
 minecraft {
 	version = project.forgeversion
-	mappings = "snapshot_20171003"
+	mappings = project.mcp_mappings
 	replace "@MODVERSION@", project.version
 	//  makeObfSourceJar = false
 	useDepAts = true
@@ -57,8 +57,11 @@ dependencies {
 	deobfCompile ('net.sengir.forestry:forestry_1.12.2:5.8.2.374'){
 		transitive = false
 	}
-	compile ('RebornCore:RebornCore-1.12.2:+:dev'){
-		transitive = false		
+	compileOnly ('RebornCore:RebornCore-1.12.2:+:dev'){
+		transitive = false
+	}
+	runtime ('RebornCore:RebornCore-1.12.2:+:universal'){
+		transitive = false
 	}
 	deobfCompile ('TechReborn:TechReborn-1.12.2:+:universal'){
 		transitive = false

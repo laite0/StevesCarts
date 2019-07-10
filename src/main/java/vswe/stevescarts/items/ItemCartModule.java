@@ -38,17 +38,17 @@ public class ItemCartModule extends Item implements ModItems.IMultipleItemModelD
 	}
 
 	@Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "item.SC2:unknownmodule";
 	}
 
 	@Override
-	public String getUnlocalizedName(@Nonnull ItemStack item) {
+	public String getTranslationKey(@Nonnull ItemStack item) {
 		final ModuleData data = getModuleData(item, true);
 		if (data != null) {
 			return "item.SC2:" + data.getRawName();
 		}
-		return getUnlocalizedName();
+		return getTranslationKey();
 	}
 
 	@Override
