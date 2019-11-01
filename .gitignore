@@ -1,17 +1,25 @@
-# everything
-/*
+# gradle
 
-# folders
-!/src
-!/gradle/
+.gradle/
+build/
+out/
+classes/
 
-# files
-!/.gitignore
-!/README.md
-!/build.gradle
-!/gradle.properties
-!/gradlew
-!/gradlew.bat
-!/build.conf
-!Jenkinsfile
-!settings.gradle
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# fabric
+
+run/

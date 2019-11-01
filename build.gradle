@@ -1,189 +1,80 @@
-buildscript {
-	repositories {
-		jcenter()
-		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
-		}
-		maven {
-			name = "sonatype"
-			url = "https://oss.sonatype.org/content/repositories/snapshots/"
-		}
-	}
-	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-	}
+plugins {
+	id 'fabric-loom' version '0.2.5-SNAPSHOT'
+	id 'maven-publish'
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-version = "2.4.31"
-
-def ENV = System.getenv()
-if (ENV.BUILD_NUMBER) {
-    version = version + "." + "${System.getenv().BUILD_NUMBER}"
-}
-
-group= "vswe.stevescarts" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
 
 minecraft {
-	version = project.forgeversion
-	mappings = project.mcp_mappings
-	replace "@MODVERSION@", project.version
-	//  makeObfSourceJar = false
-	useDepAts = true
-	runDir = "run"
 }
-
-repositories {
-	maven {
-		name = "ic2"
-		url = "http://maven.ic2.player.to/"
-	}
-	maven {
-		name = "Modmuss50"
-		url = "http://maven.modmuss50.me/"
-	}
-}
-
 
 dependencies {
-	deobfCompile ('net.sengir.forestry:forestry_1.12.2:5.8.2.374'){
-		transitive = false
-	}
-	compileOnly ('RebornCore:RebornCore-1.12.2:+:dev'){
-		transitive = false
-	}
-	runtime ('RebornCore:RebornCore-1.12.2:+:universal'){
-		transitive = false
-	}
-	deobfCompile ('TechReborn:TechReborn-1.12.2:+:universal'){
-		transitive = false
-	}
-	deobfCompile ('TechReborn:TechReborn-ModCompatibility-1.12.2:+:universal') {
-		transitive = false
-	}
-	deobfCompile  'net.industrial-craft:industrialcraft-2:2.8.104-ex112'
+	//to change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
+	// You may need to force-disable transitiveness on them.
 }
 
-processResources{
+processResources {
 	inputs.property "version", project.version
-	inputs.property "mcversion", project.minecraft.version
 
 	from(sourceSets.main.resources.srcDirs) {
-		include 'mcmod.info'
-		expand 'version': project.version, 'mcversion': project.minecraft.version
+		include "fabric.mod.json"
+		expand "version": project.version
 	}
 
 	from(sourceSets.main.resources.srcDirs) {
-		exclude 'mcmod.info'
+		exclude "fabric.mod.json"
 	}
 }
 
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    exclude "**/*.psd"
-    classifier = 'dev'
+// ensure that the encoding is set to UTF-8, no matter what the system default is
+// this fixes some edge cases with special characters not displaying correctly
+// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
 }
 
-task apiJar(type: Jar) {
+// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+// if it is present.
+// If you remove this task, sources will not be generated.
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = "sources"
 	from sourceSets.main.allSource
-	from sourceSets.main.output
-	include 'vswe/stevescarts/api/**/*'
-
-	classifier = "api"
 }
 
-apiJar.mustRunAfter deobfJar
-
-build.dependsOn deobfJar, apiJar
-
-import groovy.util.XmlSlurper
-import org.apache.commons.io.FileUtils
-
-task curseTools << {
-	def cacheFiles = new File(".gradle/curseTools")
-	if (!cacheFiles.exists()) {
-		cacheFiles.mkdirs()
-	}
-
-	def mavenMetadata = new File(cacheFiles, "maven-metadata.xml")
-
-	logger.lifecycle(":downloading curseTools metadata")
-	FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/maven-metadata.xml"), mavenMetadata)
-
-	def metadata = new XmlSlurper().parseText(FileUtils.readFileToString(mavenMetadata))
-	def curseToolsVersion = metadata.versioning.release
-
-	def curseTools = new File(cacheFiles, "${curseToolsVersion}.jar")
-
-	logger.lifecycle(":downloading CurseTools")
-	FileUtils.copyURLToFile(new URL("http://maven.modmuss50.me/CurseTools/CurseTools/${curseToolsVersion}/CurseTools-${curseToolsVersion}.jar"), curseTools)
-
-	logger.lifecycle(":launching CurseTools")
-	ant.java(jar: curseTools.getAbsolutePath(), fork: true, spawn: false) {
-		arg(value: jar.archivePath.getAbsolutePath())
-		arg(value: deobfJar.archivePath.getAbsolutePath())
-		arg(value: apiJar.archivePath.getAbsolutePath())
-	}
+jar {
+	from "LICENSE"
 }
 
-task signJar(type: SignJar, dependsOn: reobfJar) {
-	onlyIf {
-		project.hasProperty('keyStore')
-	}
-
-	if (project.hasProperty('keyStore')) {
-		keyStore = project.keyStore
-		alias = project.keyStoreAlias
-		storePass = project.keyStorePass
-		keyPass = project.keyStoreKeyPass
-		inputFile = jar.archivePath
-		outputFile = jar.archivePath
-	}
-
-}
-
-build.dependsOn signJar
-
+// configure the maven publication
 publishing {
 	publications {
-		maven(MavenPublication) {
-			groupId project.group
-			artifactId project.archivesBaseName
-			version project.version
-
-			from components.java
-
-			artifact apiJar {
-				classifier "api"
+		mavenJava(MavenPublication) {
+			// add all the jars that should be included when publishing to maven
+			artifact(remapJar) {
+				builtBy remapJar
 			}
-
-			artifact deobfJar {
-				classifier "dev"
-			}
-
-			//Removes all of the dependencies from the maven pom, fixes issues when other projects try to depend on tr
-			pom.withXml {
-				asNode().remove(asNode().get('dependencies'))
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
 			}
 		}
 	}
+
+	// select the repositories you want to publish to
 	repositories {
-		maven {
-			url "http://mavenupload.modmuss50.me/"
-			if (project.hasProperty('mavenPass')) {
-				credentials {
-					username 'buildslave'
-					password project.getProperty('mavenPass')
-				}
-			}
-		}
+		// uncomment to publish to the local maven
+		// mavenLocal()
 	}
 }
