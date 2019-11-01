@@ -1,6 +1,11 @@
 package vswe.stevescarts.api.component;
 
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandler;
+import org.apache.commons.lang3.Validate;
 import vswe.stevescarts.api.StevesCart;
+import vswe.stevescarts.impl.entity.CartEntity;
 
 public abstract class Component {
 
@@ -18,6 +23,21 @@ public abstract class Component {
 
 	public ComponentSettings<Component> getSettings() {
 		return settings;
+	}
+
+	protected static <T> TrackedData<T> createTracked(TrackedDataHandler<T> handler) {
+		return DataTracker.registerData(CartEntity.class, handler);
+	}
+
+	protected <T> T getData(TrackedData<T> dataTracker) {
+		return cart.getDataTracker().get(dataTracker);
+	}
+
+	protected <T> void setData(TrackedData<T> dataTracker, T t) {
+		Validate.notNull(dataTracker);
+		Validate.notNull(t);
+		Validate.notNull(cart.getDataTracker());
+		cart.getDataTracker().set(dataTracker, t);
 	}
 
 	public static class InitData {

@@ -43,22 +43,22 @@ public abstract class ListenerHandlerImpl<T extends Component> implements Listen
 	}
 
 	@Override
-	public <L extends Runnable> void listen(T component, Class<L> listerClass) {
+	public <L extends Runnable> void fire(T component, Class<L> listerClass) {
 		consumers.getOrDefault(listerClass, Collections.emptyList()).forEach(consumer -> consumer.accept(component));
 	}
 
 	@Override
-	public <A, L extends Consumer<A>> void listen(T component, Class<L> ListerClass, A a) {
+	public <A, L extends Consumer<A>> void fire(T component, Class<L> ListerClass, A a) {
 		biConsumers.getOrDefault(ListerClass, Collections.emptyList()).forEach(consumer -> consumer.accept(component, a));
 	}
 
 	@Override
-	public <A, B, L extends BiConsumer<A, B>> void listen(T component, Class<L> ListerClass, A a, B b) {
+	public <A, B, L extends BiConsumer<A, B>> void fire(T component, Class<L> ListerClass, A a, B b) {
 		triConsumers.getOrDefault(ListerClass, Collections.emptyList()).forEach(consumer -> consumer.accept(component, a, b));
 	}
 
 	@Override
-	public <A, B, C, L extends TriConsumer<A, B, C>> void listen(T component, Class<L> ListerClass, A a, B b, C c) {
+	public <A, B, C, L extends TriConsumer<A, B, C>> void fire(T component, Class<L> ListerClass, A a, B b, C c) {
 		quadConsumers.getOrDefault(ListerClass, Collections.emptyList()).forEach(consumer -> consumer.accept(component, a, b, c));
 	}
 }

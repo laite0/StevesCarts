@@ -17,8 +17,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.api.StevesCart;
-import vswe.stevescarts.api.listeners.PlayerInteractListener;
-import vswe.stevescarts.api.listeners.TickListener;
+import vswe.stevescarts.api.listeners.CartDataTracker;
+import vswe.stevescarts.api.listeners.CartTick;
+import vswe.stevescarts.api.listeners.PlayerInteract;
 
 public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 
@@ -26,21 +27,23 @@ public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 
 	public CartEntity(EntityType<?> entityType, World world) {
 		super(entityType, world);
+		componentStore.fire(CartDataTracker.class);
 	}
 
 	public CartEntity(World world, double x, double y, double z) {
 		super(StevesCarts.cartEntityType, world, x, y, z);
+		componentStore.fire(CartDataTracker.class);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
-		componentStore.listen(TickListener.class);
+		componentStore.fire(CartTick.class);
 	}
 
 	@Override
 	public boolean interact(PlayerEntity playerEntity, Hand hand) {
-		componentStore.listen(PlayerInteractListener.class, playerEntity);
+		componentStore.fire(PlayerInteract.class, playerEntity);
 		return super.interact(playerEntity, hand);
 	}
 

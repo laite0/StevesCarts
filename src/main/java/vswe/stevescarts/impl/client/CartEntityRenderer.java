@@ -1,7 +1,6 @@
 package vswe.stevescarts.impl.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -75,6 +74,7 @@ public class CartEntityRenderer extends EntityRenderer<CartEntity> {
 
 
 		cartEntity.getComponentStore().forEach((component, settings) -> {
+			bindTexture(settings.getRenderer().textureLocation(component));
 			settings.getRenderer().render(component, cartEntity, 0, 0, 0, 0.0625F, this);
 		});
 

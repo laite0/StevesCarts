@@ -8,13 +8,13 @@ import java.util.function.Consumer;
 
 public interface ListenerHandler<T extends Component> {
 
-	<L extends Runnable> void listen(T component, Class<L> listerClass);
+	<L extends Runnable> void fire(T component, Class<L> listerClass);
 
-	<A, L extends Consumer<A>> void listen(T component, Class<L> ListerClass, A a);
+	<A, L extends Consumer<A>> void fire(T component, Class<L> ListerClass, A a);
 
-	<A, B, L extends BiConsumer<A, B>> void listen(T component, Class<L> ListerClass, A a, B b);
+	<A, B, L extends BiConsumer<A, B>> void fire(T component, Class<L> ListerClass, A a, B b);
 
-	<A, B, C, L extends TriConsumer<A, B, C>> void listen(T component, Class<L> ListerClass, A a, B b, C c);
+	<A, B, C, L extends TriConsumer<A, B, C>> void fire(T component, Class<L> ListerClass, A a, B b, C c);
 
 
 }

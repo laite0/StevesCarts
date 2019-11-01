@@ -1,8 +1,13 @@
 package vswe.stevescarts.content.components;
 
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.player.PlayerEntity;
 import vswe.stevescarts.api.component.Component;
 
 public class SolarEngineComponent extends Component {
+
+	private static TrackedData<Boolean> DOWN = createTracked(TrackedDataHandlerRegistry.BOOLEAN);
 
 	private float minVal;
 	private float maxVal;
@@ -10,7 +15,6 @@ public class SolarEngineComponent extends Component {
 	private float maxAngle;
 	private float innerRotation;
 	private float movingLevel;
-	protected boolean down;
 
 	public SolarEngineComponent(InitData data) {
 		super(data);
@@ -20,6 +24,10 @@ public class SolarEngineComponent extends Component {
 		maxAngle = 1.5707964f;
 		innerRotation = 0.0f;
 		movingLevel = minVal;
+	}
+
+	public void initDataTracker() {
+		getCart().getDataTracker().startTracking(DOWN, false);
 	}
 
 	public float getInnerRotation() {
@@ -60,12 +68,20 @@ public class SolarEngineComponent extends Component {
 	}
 
 	boolean isGoingDown() {
-		return down;
+		if(true) {
+			return false;
+		}
+		return getData(DOWN);
 	}
 
 	public void tick() {
-		down = false;
 		updatePanels();
+	}
+
+	public void use(PlayerEntity playerEntity) {
+		if(!getCart().getWorld().isClient) {
+			setData(DOWN, !getData(DOWN));
+		}
 	}
 
 }

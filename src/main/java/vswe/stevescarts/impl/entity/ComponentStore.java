@@ -27,19 +27,23 @@ public class ComponentStore {
 		components.forEach(component -> biConsumer.accept(component, (ComponentSettingsImpl<Component>) component.getSettings()));
 	}
 
-	<L extends Runnable> void listen(Class<L> listenerClass) {
-		forEach((component, settings) -> settings.listen(component, listenerClass));
+	public void forEach(Consumer<Component> componentConsumer) {
+		components.forEach(componentConsumer);
 	}
 
-	<A, L extends Consumer<A>> void listen(Class<L> listenerClass, A a) {
-		forEach((component, settings) -> settings.listen(component, listenerClass, a));
+	<L extends Runnable> void fire(Class<L> listenerClass) {
+		forEach((component, settings) -> settings.fire(component, listenerClass));
 	}
 
-	<A, B, L extends BiConsumer<A, B>> void listen(Class<L> listenerClass, A a, B b) {
-		forEach((component, settings) -> settings.listen(component, listenerClass, a, b));
+	<A, L extends Consumer<A>> void fire(Class<L> listenerClass, A a) {
+		forEach((component, settings) -> settings.fire(component, listenerClass, a));
 	}
 
-	<A, B, C, L extends TriConsumer<A, B, C>> void listen(Class<L> listenerClass, A a, B b, C c) {
-		forEach((component, settings) -> settings.listen(component, listenerClass, a, b, c));
+	<A, B, L extends BiConsumer<A, B>> void fire(Class<L> listenerClass, A a, B b) {
+		forEach((component, settings) -> settings.fire(component, listenerClass, a, b));
+	}
+
+	<A, B, C, L extends TriConsumer<A, B, C>> void fire(Class<L> listenerClass, A a, B b, C c) {
+		forEach((component, settings) -> settings.fire(component, listenerClass, a, b, c));
 	}
 }
