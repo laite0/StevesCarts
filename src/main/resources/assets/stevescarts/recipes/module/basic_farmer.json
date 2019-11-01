@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 14
+    }
+  ],
+  "pattern": [
+    "DDD",
+    " I ",
+    "#X#"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "X": {
+      "item": "minecraft:gold_ingot"
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "D": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 14
+  }
+}

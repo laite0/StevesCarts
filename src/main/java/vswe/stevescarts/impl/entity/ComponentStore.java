@@ -20,10 +20,10 @@ public class ComponentStore {
 
 	public ComponentStore(StevesCart cart) {
 		this.cart = cart;
-		components.add(StevesCartsManager.getComponent(new Identifier(StevesCarts.MOD_ID, "creative_engine")).create(cart));
+		components.add(StevesCartsManager.getComponent(new Identifier(StevesCarts.MOD_ID, "solar_engine")).create(cart));
 	}
 
-	private void forEach(BiConsumer<Component, ComponentSettingsImpl<Component>> biConsumer) {
+	public void forEach(BiConsumer<Component, ComponentSettingsImpl<Component>> biConsumer) {
 		components.forEach(component -> biConsumer.accept(component, (ComponentSettingsImpl<Component>) component.getSettings()));
 	}
 

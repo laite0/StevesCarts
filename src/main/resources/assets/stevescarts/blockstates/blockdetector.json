@@ -1,0 +1,25 @@
+{
+  "forge_marker":1,
+  "defaults": {
+    "transform": "forge:default-block"
+  },
+  "variants":{
+    "detectortype": {
+      "normal": {
+        "model": "stevescarts:detector_normal"
+      },
+      "unit": {
+        "model": "stevescarts:detector_unit"
+      },
+      "station": {
+        "model": "stevescarts:detector_station"
+      },
+      "junction": {
+        "model": "stevescarts:detector_junction"
+      },
+      "redstone": {
+        "model": "stevescarts:detector_redstone"
+      }
+    }
+  }
+}

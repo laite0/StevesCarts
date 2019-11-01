@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:is_event",
+      "event": "easter"
+    }
+  ],
+  "pattern": [
+    "#B#",
+    "#X#",
+    "RMY"
+  ],
+  "key": {
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "egg"
+    },
+    "R": {
+      "type": "forge:ore_dict",
+      "ore": "dyeRed"
+    },
+    "Y": {
+      "type": "forge:ore_dict",
+      "ore": "dyeYellow"
+    },
+    "#": {
+      "item": "minecraft:blaze_powder"
+    },
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "M": {
+      "item": "minecraft:magma_cream"
+    }
+  },
+  "result": {
+    "item": "stevescarts:modulecomponents",
+    "data": 67
+  }
+}

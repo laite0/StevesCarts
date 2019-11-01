@@ -1,0 +1,52 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 74
+    },
+    {
+      "type": "stevescarts:is_event",
+      "event": "easter"
+    }
+  ],
+  "pattern": [
+    "###",
+    "GCY",
+    "RXB"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:wool",
+      "data": 4
+    },
+    "G": {
+      "item": "stevescarts:modulecomponents",
+      "data": 66
+    },
+    "R": {
+      "item": "stevescarts:modulecomponents",
+      "data": 68
+    },
+    "Y": {
+      "item": "stevescarts:modulecomponents",
+      "data": 67
+    },
+    "B": {
+      "item": "stevescarts:modulecomponents",
+      "data": 69
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 71
+    },
+    "C": {
+      "item": "stevescarts:modulecomponents",
+      "data": 33
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 74
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 9
+    }
+  ],
+  "pattern": [
+    "#X ",
+    "BDX",
+    "#X "
+  ],
+  "key": {
+    "D": {
+      "item": "stevescarts:cartmodule",
+      "data": 43
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 47
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 49
+    },
+    "B": {
+      "type": "forge:ore_dict",
+      "ore": "blockDiamond"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 9
+  }
+}

@@ -109,4 +109,8 @@ public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 	public Vec3d getLocation() {
 		return getPos();
 	}
+
+	public ComponentStore getComponentStore() {
+		return componentStore;
+	}
 }

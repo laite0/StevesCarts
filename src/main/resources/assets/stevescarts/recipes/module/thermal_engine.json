@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 69
+    }
+  ],
+  "pattern": [
+    "OOO",
+    "#X#",
+    "P P"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:nether_brick"
+    },
+    "#": {
+      "type": "forge:ore_dict",
+      "ore": "obsidian"
+    },
+    "X": {
+      "item": "minecraft:furnace"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 69
+  }
+}

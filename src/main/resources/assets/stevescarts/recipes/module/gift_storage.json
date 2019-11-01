@@ -1,0 +1,48 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 50
+    },
+    {
+      "type": "stevescarts:is_event",
+      "event": "christmas"
+    }
+  ],
+  "pattern": [
+    "Y Z",
+    "R#G",
+    "RXG"
+  ],
+  "key": {
+    "Y": {
+      "item": "stevescarts:modulecomponents",
+      "data": 55
+    },
+    "Z": {
+      "item": "stevescarts:modulecomponents",
+      "data": 54
+    },
+    "R": {
+      "item": "stevescarts:modulecomponents",
+      "data": 52
+    },
+    "G": {
+      "item": "stevescarts:modulecomponents",
+      "data": 51
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 33
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 57
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 50
+  }
+}

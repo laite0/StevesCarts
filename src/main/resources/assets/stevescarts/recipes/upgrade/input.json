@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "PCP",
+    "I#I"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "chestWood"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 16
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 59
+    }
+  },
+  "result": {
+    "item": "stevescarts:upgrade",
+    "data": 8
+  }
+}

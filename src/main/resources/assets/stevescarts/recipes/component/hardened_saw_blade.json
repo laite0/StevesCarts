@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##X"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 22
+    },
+    "#": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "stevescarts:modulecomponents",
+    "data": 80
+  }
+}

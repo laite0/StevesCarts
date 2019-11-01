@@ -7,7 +7,9 @@ import vswe.stevescarts.api.StevesCartsInitializer;
 import vswe.stevescarts.api.component.ComponentType;
 import vswe.stevescarts.api.listeners.PlayerInteractListener;
 import vswe.stevescarts.api.listeners.TickListener;
+import vswe.stevescarts.content.client.components.SolarEngineRenderer;
 import vswe.stevescarts.content.components.CreativeEngineComponent;
+import vswe.stevescarts.content.components.SolarEngineComponent;
 
 
 public class StevesCartsContent implements StevesCartsInitializer {
@@ -23,6 +25,14 @@ public class StevesCartsContent implements StevesCartsInitializer {
 			settings.addListener(TickListener.class, CreativeEngineComponent::tick);
 			settings.addListener(PlayerInteractListener.class, CreativeEngineComponent::use);
 		}, CreativeEngineComponent::new);
+
+		api.addComponent(settings -> {
+			settings.setId(new Identifier(StevesCarts.MOD_ID, "solar_engine"));
+			settings.setType(ComponentType.MODULE);
+			settings.renderer(new SolarEngineRenderer());
+
+			settings.addListener(TickListener.class, SolarEngineComponent::tick);
+		}, SolarEngineComponent::new);
 
 	}
 }

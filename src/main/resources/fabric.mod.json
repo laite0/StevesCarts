@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "stevescarts",
+  "version": "${version}",
+  "name": "Steve's Carts",
+  "description": "A carttastic mod adding a near infinite number of carts possible to the game, through the creation of  modular carts.",
+  "license": "MIT",
+  "icon": "assets/modid/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "vswe.stevescarts.StevesCarts"
+    ],
+    "stevescarts": [
+      "vswe.stevescarts.content.StevesCartsContent"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  }
+}

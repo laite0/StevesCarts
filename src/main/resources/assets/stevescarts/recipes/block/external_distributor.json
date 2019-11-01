@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X#X",
+    "#R#",
+    "X#X"
+  ],
+  "key": {
+    "X": {
+      "type": "forge:ore_dict",
+      "ore": "stone"
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "stevescarts:blockdistributor"
+  }
+}

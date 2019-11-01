@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 82
+    }
+  ],
+  "pattern": [
+    " G ",
+    "XEX",
+    "R#R"
+  ],
+  "key": {
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 16
+    },
+    "X": {
+      "item": "minecraft:book"
+    },
+    "E": {
+      "item": "minecraft:enchanting_table"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "G": {
+      "item": "stevescarts:modulecomponents",
+      "data": 47
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 82
+  }
+}

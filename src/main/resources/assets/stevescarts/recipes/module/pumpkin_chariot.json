@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 47
+    },
+    {
+      "type": "stevescarts:is_event",
+      "event": "halloween"
+    }
+  ],
+  "pattern": [
+    "# #",
+    "#P#",
+    "X X"
+  ],
+  "key": {
+    "#": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 0
+    },
+    "P": {
+      "item": "minecraft:pumpkin"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 47
+  }
+}

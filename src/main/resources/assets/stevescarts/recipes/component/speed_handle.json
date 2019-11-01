@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  B",
+    "XH ",
+    "#X "
+  ],
+  "key": {
+    "B": {
+      "type": "forge:ore_dict",
+      "ore": "dyeBlue"
+    },
+    "X": {
+      "item": "minecraft:gold_ingot"
+    },
+    "#": {
+      "item": "minecraft:redstone"
+    },
+    "H": {
+      "item": "stevescarts:modulecomponents",
+      "data": 12
+    }
+  },
+  "result": {
+    "item": "stevescarts:modulecomponents",
+    "data": 13
+  }
+}

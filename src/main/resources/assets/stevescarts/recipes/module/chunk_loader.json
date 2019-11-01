@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 49
+    }
+  ],
+  "pattern": [
+    " E ",
+    "#I#",
+    "RXR"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 16
+    },
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "R": {
+      "item": "stevescarts:modulecomponents",
+      "data": 22
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 49
+  }
+}

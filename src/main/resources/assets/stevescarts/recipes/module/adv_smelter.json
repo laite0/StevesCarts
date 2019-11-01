@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "conditions": [
+    {
+      "type": "stevescarts:module_enabled",
+      "id": 93
+    }
+  ],
+  "pattern": [
+    " D ",
+    " # ",
+    "XCX"
+  ],
+  "key": {
+    "#": {
+      "item": "stevescarts:modulecomponents",
+      "data": 16
+    },
+    "X": {
+      "item": "stevescarts:modulecomponents",
+      "data": 9
+    },
+    "D": {
+      "type": "forge:ore_dict",
+      "ore": "gemDiamond"
+    },
+    "C": {
+      "item": "stevescarts:cartmodule",
+      "data": 91
+    }
+  },
+  "result": {
+    "item": "stevescarts:cartmodule",
+    "data": 93
+  }
+}
