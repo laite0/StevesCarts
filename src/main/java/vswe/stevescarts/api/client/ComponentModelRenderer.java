@@ -15,8 +15,8 @@ public abstract class ComponentModelRenderer<C extends Component> extends Model 
 
 	@Override
 	public void render(C component, StevesCart cart, double x, double y, double z, float deltaTicks, CartEntityRenderer renderer) {
-		manipulateModel(component, cart);
-		cuboids.forEach(cuboid -> cuboid.render(deltaTicks));
+		manipulateModel(component, cart, deltaTicks);
+		cuboids.forEach(cuboid -> cuboid.render(0.0625F));
 	}
 
 	protected Cuboid createRenderCube(int u, int v) {
@@ -29,7 +29,7 @@ public abstract class ComponentModelRenderer<C extends Component> extends Model 
 		return new Cuboid(this, u, v);
 	}
 
-	protected void manipulateModel(C component, StevesCart cart) {
+	protected void manipulateModel(C component, StevesCart cart, float partialtime) {
 
 	}
 

@@ -75,7 +75,7 @@ public class CartEntityRenderer extends EntityRenderer<CartEntity> {
 
 		cartEntity.getComponentStore().forEach((component, settings) -> {
 			bindTexture(settings.getRenderer().textureLocation(component));
-			settings.getRenderer().render(component, cartEntity, 0, 0, 0, 0.0625F, this);
+			settings.getRenderer().render(component, cartEntity, 0, 0, 0, deltaTicks, this);
 		});
 
 		GlStateManager.popMatrix();

@@ -51,7 +51,11 @@ public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 	protected void method_7513(BlockPos blockPos, BlockState blockState) {
 		super.method_7513(blockPos, blockState);
 
-		double targetSpeed = 4;
+		if(true) {
+			return;
+		}
+
+		double targetSpeed = 0.01;
 
 		AbstractRailBlock currentRail = (AbstractRailBlock) blockState.getBlock();
 		RailShape railShape = blockState.get(currentRail.getShapeProperty());

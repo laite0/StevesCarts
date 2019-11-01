@@ -37,7 +37,7 @@ public class SolarEngineRenderer extends ComponentModelRenderer<SolarEngineCompo
 	}
 
 	@Override
-	protected void manipulateModel(SolarEngineComponent component, StevesCart cart) {
+	protected void manipulateModel(SolarEngineComponent component, StevesCart cart, float deltaTicks) {
 		panels.forEach(cuboid -> cuboid.pitch = -component.getInnerRotation());
 		base.rotationPointY = component.getMovingLevel();
 	}

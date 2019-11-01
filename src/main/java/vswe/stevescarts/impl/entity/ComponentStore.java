@@ -21,6 +21,9 @@ public class ComponentStore {
 	public ComponentStore(StevesCart cart) {
 		this.cart = cart;
 		components.add(StevesCartsManager.getComponent(new Identifier(StevesCarts.MOD_ID, "solar_engine")).create(cart));
+		components.add(StevesCartsManager.getComponent(new Identifier(StevesCarts.MOD_ID, "lawn_mower")).create(cart));
+
+
 	}
 
 	public void forEach(BiConsumer<Component, ComponentSettingsImpl<Component>> biConsumer) {
