@@ -4,6 +4,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.RailBlock;
 import net.minecraft.block.enums.RailShape;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.entity.Entity;
@@ -31,6 +32,12 @@ public class CartEntity extends AbstractMinecartEntity {
 
 	private ComponentStore componentStore = new ComponentStore(this);
 	public InventoryBase inventory = new InventoryBase(12);
+	public boolean cornerFlip; //TODO
+	private boolean oldRender;
+	private int wrongRender;
+	private float lastRenderYaw;
+	private double lastMotionX;
+	private double lastMotionZ;
 
 	@Synced
 	public int workingTime = 0;
@@ -92,10 +99,12 @@ public class CartEntity extends AbstractMinecartEntity {
 
 	@Override
 	protected void method_7513(BlockPos blockPos, BlockState blockState) {
+		RailShape shapeProperty = blockState.get(((RailBlock) blockState.getBlock()).getShapeProperty());
+		cornerFlip = ((shapeProperty == RailShape.SOUTH_EAST || shapeProperty == RailShape.SOUTH_WEST) && getVelocity().x < 0.0) || ((shapeProperty == RailShape.NORTH_EAST || shapeProperty == RailShape.NORTH_WEST) && getVelocity().x > 0.0);
+
 		if(workingTime > 0) {
 			return;
 		}
-
 		super.method_7513(blockPos, blockState);
 
 		if(!hasFuel()) {
@@ -132,6 +141,28 @@ public class CartEntity extends AbstractMinecartEntity {
 
 			this.setVelocity(velocityX, velocity.y, velocityY);
 		}
+	}
+
+	public boolean getRenderFlippedYaw(float yaw) {
+		yaw %= 360.0f;
+		if (yaw < 0.0f) {
+			yaw += 360.0f;
+		}
+		final double motionX = getVelocity().x;
+		final double motionY = getVelocity().y;
+		final double motionZ = getVelocity().z;
+
+		if (!oldRender || Math.abs(yaw - lastRenderYaw) < 90.0f || Math.abs(yaw - lastRenderYaw) > 270.0f || (motionX > 0.0 && lastMotionX < 0.0) || (motionZ > 0.0 && lastMotionZ < 0.0)
+				|| (motionX < 0.0 && lastMotionX > 0.0) || (motionZ < 0.0 && lastMotionZ > 0.0) || wrongRender >= 50) {
+			lastMotionX = motionX;
+			lastMotionZ = motionZ;
+			lastRenderYaw = yaw;
+			oldRender = true;
+			wrongRender = 0;
+			return false;
+		}
+		++wrongRender;
+		return true;
 	}
 
 	//Nope

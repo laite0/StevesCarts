@@ -18,58 +18,70 @@ public class CartEntityRenderer extends EntityRenderer<CartEntity> {
 	}
 
 	@Override
-	public void render(CartEntity cartEntity, double x, double y, double z, float yaw, float deltaTicks) {
+	public void render(CartEntity cartEntity, double x, double y, double z, float yaw, final float deltaTicks) {
 		GlStateManager.pushMatrix();
 		this.bindEntityTexture(cartEntity);
 
-		double renderX = MathHelper.lerp(deltaTicks, cartEntity.prevRenderX, cartEntity.x);
-		double renderY = MathHelper.lerp(deltaTicks, cartEntity.prevRenderY, cartEntity.y);
-		double renderZ = MathHelper.lerp(deltaTicks, cartEntity.prevRenderZ, cartEntity.z);
+		final double partialPosX = MathHelper.lerp(deltaTicks, cartEntity.prevRenderX, cartEntity.x);
+		final double partialPosY = MathHelper.lerp(deltaTicks, cartEntity.prevRenderY, cartEntity.y);
+		final double partialPosZ = MathHelper.lerp(deltaTicks, cartEntity.prevRenderZ, cartEntity.z);
+		float partialRotPitch = MathHelper.lerp(deltaTicks, cartEntity.prevPitch, cartEntity.pitch);
 
-		Vec3d vec3d_1 = cartEntity.method_7508(renderX, renderY, renderZ);
-		float pitch = MathHelper.lerp(deltaTicks, cartEntity.prevPitch, cartEntity.pitch);
-		if (vec3d_1 != null) {
-			Vec3d vec3d_2 = cartEntity.method_7505(renderX, renderY, renderZ, 0.30000001192092896D);
-			Vec3d vec3d_3 = cartEntity.method_7505(renderX, renderY, renderZ, -0.30000001192092896D);
-			if (vec3d_2 == null) {
-				vec3d_2 = vec3d_1;
+		final Vec3d posFromRail = cartEntity.getPos();
+		if (posFromRail != null) {
+			Vec3d lastPos = cartEntity.method_7505(partialPosX, partialPosY, partialPosZ, 0.30000001192092896D);
+			Vec3d nextPos = cartEntity.method_7505(partialPosX, partialPosY, partialPosZ, -0.30000001192092896D);
+
+			if (lastPos == null) {
+				lastPos = posFromRail;
+			}
+			if (nextPos == null) {
+				nextPos = posFromRail;
 			}
 
-			if (vec3d_3 == null) {
-				vec3d_3 = vec3d_1;
-			}
+//			x += posFromRail.x - partialPosX;
+//			y += (lastPos.y + nextPos.y) / 2.0 - partialPosY;
+//			z += posFromRail.z - partialPosZ;
 
-			x += vec3d_1.x - renderX;
-			y += (vec3d_2.y + vec3d_3.y) / 2.0D - renderY;
-			z += vec3d_1.z - renderZ;
-			Vec3d vec3d_4 = vec3d_3.add(-vec3d_2.x, -vec3d_2.y, -vec3d_2.z);
-
-			if (vec3d_4.length() != 0.0D) {
-				vec3d_4 = vec3d_4.normalize();
-				yaw = (float)(Math.atan2(vec3d_4.z, vec3d_4.x) * 180.0D / 3.141592653589793D);
-				pitch = (float)(Math.atan(vec3d_4.y) * 73.0D);
+			Vec3d difference = nextPos.add(-lastPos.x, -lastPos.y, -lastPos.z);
+			if (difference.length() != 0.0) {
+				difference = difference.normalize();
+				yaw = (float) (Math.atan2(difference.z, difference.x) * 180.0 / 3.141592653589793);
+				partialRotPitch = (float) (Math.atan(difference.y) * 73.0);
 			}
 		}
 
-		GlStateManager.translatef((float)x, (float)y + 0.375F, (float)z);
-		GlStateManager.rotatef(180.0F - yaw, 0.0F, 1.0F, 0.0F);
-		GlStateManager.rotatef(-pitch, 0.0F, 0.0F, 1.0F);
-		float wobbleTicks = (float)cartEntity.getDamageWobbleTicks() - deltaTicks;
-		float wobbleStrength = cartEntity.getDamageWobbleStrength() - deltaTicks;
-		if (wobbleStrength < 0.0F) {
-			wobbleStrength = 0.0F;
+		yaw = 180.0f - yaw;
+		partialRotPitch *= -1.0f;
+		float damageRot = cartEntity.getDamageWobbleTicks() - deltaTicks;
+		float damageTime = cartEntity.getDamageWobbleStrength() - deltaTicks;
+		final float damageDir = cartEntity.getDamageWobbleSide();
+
+		if (damageTime < 0.0f) {
+			damageTime = 0.0f;
 		}
 
-		if (wobbleTicks > 0.0F) {
-			GlStateManager.rotatef(MathHelper.sin(wobbleTicks) * wobbleTicks * wobbleStrength / 10.0F * (float)cartEntity.getDamageWobbleSide(), 1.0F, 0.0F, 0.0F);
+		boolean flip = cartEntity.getVelocity().x > 0.0 != cartEntity.getVelocity().z > 0.0;
+		if (cartEntity.cornerFlip) {
+			flip = !flip;
 		}
 
-		if (this.renderOutlines) {
-			GlStateManager.enableColorMaterial();
-			GlStateManager.setupSolidRenderingTextureCombine(this.getOutlineColor(cartEntity));
+		if (cartEntity.getRenderFlippedYaw(yaw + (flip ? 0.0f : 180.0f))) {
+			flip = !flip;
 		}
 
-		GlStateManager.scalef(-1.0F, -1.0F, 1.0F);
+		GlStateManager.translatef((float) x, (float) y + 0.375F, (float) z);
+		GlStateManager.rotatef(yaw, 0.0f, 1.0f, 0.0f);
+		GlStateManager.rotatef(partialRotPitch, 0.0f, 0.0f, 1.0f);
+
+		if (damageRot > 0.0f) {
+			damageRot = MathHelper.sin(damageRot) * damageRot * damageTime / 10.0f * damageDir;
+			GlStateManager.rotatef(damageRot, 1.0f, 0.0f, 0.0f);
+		}
+
+		yaw += (flip ? 0.0f : 180.0f);
+		GlStateManager.rotatef(flip ? 0.0f : 180.0f, 0.0f, 1.0f, 0.0f);
+		GlStateManager.scalef(-1.0f, -1.0f, 1.0f);
 		this.model.render(cartEntity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
 
 
@@ -79,13 +91,6 @@ public class CartEntityRenderer extends EntityRenderer<CartEntity> {
 		});
 
 		GlStateManager.popMatrix();
-
-
-		if (this.renderOutlines) {
-			GlStateManager.tearDownSolidRenderingTextureCombine();
-			GlStateManager.disableColorMaterial();
-		}
-
 		super.render(cartEntity, x, y, z, yaw, deltaTicks);
 	}
 
