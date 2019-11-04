@@ -2,6 +2,8 @@ package vswe.stevescarts;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
@@ -10,6 +12,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import vswe.stevescarts.impl.client.CartEntityRenderer;
+import vswe.stevescarts.impl.client.gui.CartContainer;
+import vswe.stevescarts.impl.client.gui.CartGui;
 import vswe.stevescarts.impl.entity.CartEntity;
 import vswe.stevescarts.impl.item.ItemCart;
 import vswe.stevescarts.impl.network.ClientBoundPackets;
@@ -32,6 +36,13 @@ public class StevesCarts implements ModInitializer {
 
 		ClientBoundPackets.init();
 		EntityRendererRegistry.INSTANCE.register(CartEntity.class, (dispatcher, context) -> new CartEntityRenderer(dispatcher));
+
+		ContainerProviderRegistry.INSTANCE.registerFactory(new Identifier(MOD_ID, "cart"), (syncID, identifier, playerEntity, packetByteBuf) -> {
+			CartEntity cartEntity = (CartEntity) playerEntity.getEntityWorld().getEntityById(packetByteBuf.readInt());
+			return new CartContainer(syncID, playerEntity, cartEntity);
+		});
+
+		ScreenProviderRegistry.INSTANCE.registerFactory(new Identifier(MOD_ID, "cart"), CartGui::new);
 
 		manager.load();
 

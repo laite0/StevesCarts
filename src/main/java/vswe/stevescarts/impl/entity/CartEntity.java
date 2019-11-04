@@ -1,6 +1,7 @@
 package vswe.stevescarts.impl.entity;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.RailShape;
@@ -8,6 +9,7 @@ import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
@@ -20,10 +22,12 @@ import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.api.listeners.CartTick;
 import vswe.stevescarts.api.listeners.PlayerInteract;
 import vswe.stevescarts.impl.network.SyncedHandler;
+import vswe.stevescarts.impl.util.InventoryBase;
 
 public class CartEntity extends AbstractMinecartEntity {
 
 	private ComponentStore componentStore = new ComponentStore(this);
+	public InventoryBase inventory = new InventoryBase(12);
 
 	public CartEntity(EntityType<?> entityType, World world) {
 		super(entityType, world);
@@ -49,9 +53,24 @@ public class CartEntity extends AbstractMinecartEntity {
 	public boolean interact(PlayerEntity playerEntity, Hand hand) {
 		if(hand == Hand.MAIN_HAND) {
 			componentStore.fire(PlayerInteract.class, playerEntity);
+			if(!world.isClient) {
+				ContainerProviderRegistry.INSTANCE.openContainer(new Identifier(StevesCarts.MOD_ID, "cart"), playerEntity, byteBuf -> byteBuf.writeInt(getEntityId()));
+			}
 		}
 
 		return super.interact(playerEntity, hand);
+	}
+
+	@Override
+	protected void readCustomDataFromTag(CompoundTag compoundTag) {
+		super.readCustomDataFromTag(compoundTag);
+		inventory.deserializeNBT(compoundTag.getCompound("inv"));
+	}
+
+	@Override
+	protected void writeCustomDataToTag(CompoundTag compoundTag) {
+		super.writeCustomDataToTag(compoundTag);
+		compoundTag.put("inv", inventory.serializeNBT());
 	}
 
 	//TODO make this better
@@ -97,6 +116,8 @@ public class CartEntity extends AbstractMinecartEntity {
 		}
 
 	}
+
+
 
 	@Override
 	public Packet<?> createSpawnPacket() {
