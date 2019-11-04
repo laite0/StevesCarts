@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.network.Packet;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
@@ -17,9 +18,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.api.StevesCart;
-import vswe.stevescarts.api.listeners.CartDataTracker;
 import vswe.stevescarts.api.listeners.CartTick;
 import vswe.stevescarts.api.listeners.PlayerInteract;
+import vswe.stevescarts.impl.network.SyncedHandler;
 
 public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 
@@ -27,23 +28,29 @@ public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 
 	public CartEntity(EntityType<?> entityType, World world) {
 		super(entityType, world);
-		componentStore.fire(CartDataTracker.class);
 	}
 
 	public CartEntity(World world, double x, double y, double z) {
 		super(StevesCarts.cartEntityType, world, x, y, z);
-		componentStore.fire(CartDataTracker.class);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
 		componentStore.fire(CartTick.class);
+
+		if(!world.isClient){
+			ServerWorld serverWorld = (ServerWorld) world;
+			serverWorld.method_14178().sendToNearbyPlayers(this, createSyncPacket());
+		}
 	}
 
 	@Override
 	public boolean interact(PlayerEntity playerEntity, Hand hand) {
-		componentStore.fire(PlayerInteract.class, playerEntity);
+		if(hand == Hand.MAIN_HAND) {
+			componentStore.fire(PlayerInteract.class, playerEntity);
+		}
+
 		return super.interact(playerEntity, hand);
 	}
 
@@ -100,6 +107,10 @@ public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 		buf.writeUuid(getUuid());
 
 		return new CustomPayloadS2CPacket(new Identifier(StevesCarts.MOD_ID, "spawn_cart"), buf);
+	}
+
+	public Packet<?> createSyncPacket() {
+		return SyncedHandler.buildSyncPacket(this);
 	}
 
 	@Override

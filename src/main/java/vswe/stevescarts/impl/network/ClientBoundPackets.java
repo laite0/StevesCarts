@@ -1,18 +1,18 @@
-package vswe.stevescarts.impl.packets;
+package vswe.stevescarts.impl.network;
 
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Identifier;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.impl.entity.CartEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ClientBoundPackets {
 
 	public static void init() {
-		ClientSidePacketRegistry.INSTANCE.register(new Identifier(StevesCarts.MOD_ID, "spawn_cart"), (PacketConsumer) (packetContext, packetByteBuf) -> {
+		ClientSidePacketRegistry.INSTANCE.register(new Identifier(StevesCarts.MOD_ID, "spawn_cart"), (packetContext, packetByteBuf) -> {
 			double x = packetByteBuf.readDouble();
 			double y = packetByteBuf.readDouble();
 			double z = packetByteBuf.readDouble();
@@ -31,6 +31,15 @@ public class ClientBoundPackets {
 				entity.setUuid(uuid);
 				((ClientWorld)packetContext.getPlayer().world).addEntity(id, entity);
 			});
+		});
+
+		ClientSidePacketRegistry.INSTANCE.register(new Identifier(StevesCarts.MOD_ID, "sync_cart"), (packetContext, packetByteBuf) -> {
+			CartEntity cartEntity = (CartEntity) packetContext.getPlayer().getEntityWorld().getEntityById(packetByteBuf.readInt());
+			if(cartEntity == null) {
+				return;
+			}
+			List<SyncedHandler.DataHolder> dataHolders = SyncedHandler.readSyncBuffer(cartEntity, new ExtendedPacketBuffer(packetByteBuf));
+			packetContext.getTaskQueue().execute(() -> dataHolders.forEach(SyncedHandler.DataHolder::apply));
 		});
 	}
 

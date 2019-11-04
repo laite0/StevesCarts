@@ -1,14 +1,11 @@
 package vswe.stevescarts.impl;
 
 import net.minecraft.util.Identifier;
-import org.apache.commons.lang3.Validate;
 import vswe.stevescarts.api.client.ComponentRenderer;
 import vswe.stevescarts.api.component.Component;
 import vswe.stevescarts.api.component.ComponentSettings;
 import vswe.stevescarts.api.component.ComponentType;
 import vswe.stevescarts.impl.listeners.ListenerHandlerImpl;
-
-import java.util.function.Supplier;
 
 public class ComponentSettingsImpl<T extends Component> extends ListenerHandlerImpl<T> implements ComponentSettings<T> {
 
@@ -34,6 +31,7 @@ public class ComponentSettingsImpl<T extends Component> extends ListenerHandlerI
 		return renderer;
 	}
 
+	@Override
 	public Identifier getId() {
 		return identifier;
 	}

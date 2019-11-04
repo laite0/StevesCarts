@@ -12,7 +12,7 @@ import net.minecraft.util.registry.Registry;
 import vswe.stevescarts.impl.client.CartEntityRenderer;
 import vswe.stevescarts.impl.entity.CartEntity;
 import vswe.stevescarts.impl.item.ItemCart;
-import vswe.stevescarts.impl.packets.ClientBoundPackets;
+import vswe.stevescarts.impl.network.ClientBoundPackets;
 
 public class StevesCarts implements ModInitializer {
 

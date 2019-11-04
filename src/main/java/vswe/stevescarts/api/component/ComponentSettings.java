@@ -10,4 +10,5 @@ public interface ComponentSettings<T extends Component> extends ListenerRegister
 	void setType(ComponentType type);
 	void renderer(ComponentRenderer<T> rendererSupplier);
 
+	Identifier getId();
 }

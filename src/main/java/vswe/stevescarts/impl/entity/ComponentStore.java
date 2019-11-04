@@ -34,6 +34,14 @@ public class ComponentStore {
 		components.forEach(componentConsumer);
 	}
 
+	public int size() {
+		return components.size();
+	}
+
+	public Component getById(Identifier identifier) {
+		return components.stream().filter(component -> component.getSettings().getId().equals(identifier)).findFirst().orElse(null);
+	}
+
 	<L extends Runnable> void fire(Class<L> listenerClass) {
 		forEach((component, settings) -> settings.fire(component, listenerClass));
 	}
