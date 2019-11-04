@@ -6,6 +6,7 @@ import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.RailShape;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
@@ -19,8 +20,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import vswe.stevescarts.StevesCarts;
+import vswe.stevescarts.api.component.Component;
 import vswe.stevescarts.api.listeners.CartTick;
 import vswe.stevescarts.api.listeners.PlayerInteract;
+import vswe.stevescarts.api.network.Synced;
 import vswe.stevescarts.impl.network.SyncedHandler;
 import vswe.stevescarts.impl.util.InventoryBase;
 
@@ -28,6 +31,9 @@ public class CartEntity extends AbstractMinecartEntity {
 
 	private ComponentStore componentStore = new ComponentStore(this);
 	public InventoryBase inventory = new InventoryBase(12);
+
+	@Synced
+	public int workingTime = 0;
 
 	public CartEntity(EntityType<?> entityType, World world) {
 		super(entityType, world);
@@ -40,13 +46,16 @@ public class CartEntity extends AbstractMinecartEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		allowMovement = false;
 		componentStore.fire(CartTick.class);
 
 		if(!world.isClient){
 			ServerWorld serverWorld = (ServerWorld) world;
 			serverWorld.method_14178().sendToNearbyPlayers(this, createSyncPacket());
+			if(workingTime > 0) {
+				workingTime--;
+			}
 		}
+
 	}
 
 	@Override
@@ -73,14 +82,23 @@ public class CartEntity extends AbstractMinecartEntity {
 		compoundTag.put("inv", inventory.serializeNBT());
 	}
 
-	//TODO make this better
-	public boolean allowMovement = false;
+	public boolean hasFuel() {
+		return getComponentStore().stream().anyMatch(Component::isProvidingFuel);
+	}
+
+	public boolean canDoNewWork() {
+		return workingTime <= 0 && hasFuel();
+	}
 
 	@Override
 	protected void method_7513(BlockPos blockPos, BlockState blockState) {
+		if(workingTime > 0) {
+			return;
+		}
+
 		super.method_7513(blockPos, blockState);
 
-		if(!allowMovement) {
+		if(!hasFuel()) {
 			return;
 		}
 
@@ -114,10 +132,13 @@ public class CartEntity extends AbstractMinecartEntity {
 
 			this.setVelocity(velocityX, velocity.y, velocityY);
 		}
-
 	}
 
-
+	//Nope
+	@Override
+	protected boolean canAddPassenger(Entity entity) {
+		return false;
+	}
 
 	@Override
 	public Packet<?> createSpawnPacket() {

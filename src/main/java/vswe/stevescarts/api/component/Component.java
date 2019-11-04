@@ -12,6 +12,10 @@ public abstract class Component {
 		this.settings = data.componentSettings;
 	}
 
+	public boolean isProvidingFuel() {
+		return false;
+	}
+
 	public CartEntity getCart() {
 		return cart;
 	}

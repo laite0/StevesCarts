@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class ComponentStore {
 
@@ -31,6 +32,10 @@ public class ComponentStore {
 
 	public void forEach(Consumer<Component> componentConsumer) {
 		components.forEach(componentConsumer);
+	}
+
+	public Stream<Component> stream() {
+		return components.stream();
 	}
 
 	public int size() {

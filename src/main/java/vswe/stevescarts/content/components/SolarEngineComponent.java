@@ -3,7 +3,6 @@ package vswe.stevescarts.content.components;
 import net.minecraft.world.World;
 import vswe.stevescarts.api.component.Component;
 import vswe.stevescarts.api.network.Synced;
-import vswe.stevescarts.impl.entity.CartEntity;
 
 public class SolarEngineComponent extends Component {
 
@@ -74,11 +73,11 @@ public class SolarEngineComponent extends Component {
 			down = !(world.isSkyVisible(getCart().getBlockPos()) && world.isDaylight());
 		}
 		updatePanels();
+	}
 
-		if(isFullyDown() && !world.isClient) {
-			CartEntity cartEntity = (CartEntity) getCart();
-			cartEntity.allowMovement = true;
-		}
+	@Override
+	public boolean isProvidingFuel() {
+		return isFullyDown();
 	}
 
 	public boolean isFullyDown() {
