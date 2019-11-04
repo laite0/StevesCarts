@@ -21,7 +21,7 @@ public class ComponentStore {
 	public ComponentStore(CartEntity cart) {
 		this.cart = cart;
 		components.add(StevesCartsManager.getComponent(new Identifier(StevesCarts.MOD_ID, "solar_engine")).create(cart));
-		components.add(StevesCartsManager.getComponent(new Identifier(StevesCarts.MOD_ID, "lawn_mower")).create(cart));
+		components.add(StevesCartsManager.getComponent(new Identifier(StevesCarts.MOD_ID, "farmer")).create(cart));
 
 
 	}

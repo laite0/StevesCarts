@@ -16,7 +16,11 @@ public abstract class ComponentModelRenderer<C extends Component> extends Model 
 	@Override
 	public void render(C component, CartEntity cart, double x, double y, double z, float deltaTicks, CartEntityRenderer renderer) {
 		manipulateModel(component, cart, deltaTicks);
-		cuboids.forEach(cuboid -> cuboid.render(0.0625F));
+		cuboids.forEach(cuboid -> cuboid.render(0.0625F * extraMult()));
+	}
+
+	public float extraMult() {
+		return 1.0f;
 	}
 
 	protected Cuboid createRenderCube(int u, int v) {
