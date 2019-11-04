@@ -3,7 +3,6 @@ package vswe.stevescarts.impl.entity;
 import net.minecraft.util.Identifier;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.StevesCartsManager;
-import vswe.stevescarts.api.StevesCart;
 import vswe.stevescarts.api.component.Component;
 import vswe.stevescarts.api.util.TriConsumer;
 import vswe.stevescarts.impl.ComponentSettingsImpl;
@@ -16,9 +15,9 @@ import java.util.function.Consumer;
 public class ComponentStore {
 
 	private List<Component> components = new ArrayList<>();
-	private final StevesCart cart;
+	private final CartEntity cart;
 
-	public ComponentStore(StevesCart cart) {
+	public ComponentStore(CartEntity cart) {
 		this.cart = cart;
 		components.add(StevesCartsManager.getComponent(new Identifier(StevesCarts.MOD_ID, "solar_engine")).create(cart));
 		components.add(StevesCartsManager.getComponent(new Identifier(StevesCarts.MOD_ID, "lawn_mower")).create(cart));

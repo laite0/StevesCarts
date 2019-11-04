@@ -3,12 +3,12 @@ package vswe.stevescarts;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.Validate;
-import vswe.stevescarts.api.StevesCart;
 import vswe.stevescarts.api.StevesCartsAPI;
 import vswe.stevescarts.api.StevesCartsInitializer;
 import vswe.stevescarts.api.component.Component;
 import vswe.stevescarts.api.component.ComponentSettings;
 import vswe.stevescarts.impl.ComponentSettingsImpl;
+import vswe.stevescarts.impl.entity.CartEntity;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -55,7 +55,7 @@ public class StevesCartsManager implements StevesCartsAPI {
 			return functionFactory;
 		}
 
-		public T create(StevesCart cart) {
+		public T create(CartEntity cart) {
 			//noinspection unchecked
 			return getComponentFactory().apply(Component.InitData.create(cart, (ComponentSettings<Component>) getSettings()));
 		}

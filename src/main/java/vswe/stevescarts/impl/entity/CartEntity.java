@@ -17,12 +17,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import vswe.stevescarts.StevesCarts;
-import vswe.stevescarts.api.StevesCart;
 import vswe.stevescarts.api.listeners.CartTick;
 import vswe.stevescarts.api.listeners.PlayerInteract;
 import vswe.stevescarts.impl.network.SyncedHandler;
 
-public class CartEntity extends AbstractMinecartEntity implements StevesCart {
+public class CartEntity extends AbstractMinecartEntity {
 
 	private ComponentStore componentStore = new ComponentStore(this);
 
@@ -37,6 +36,7 @@ public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 	@Override
 	public void tick() {
 		super.tick();
+		allowMovement = false;
 		componentStore.fire(CartTick.class);
 
 		if(!world.isClient){
@@ -54,11 +54,14 @@ public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 		return super.interact(playerEntity, hand);
 	}
 
+	//TODO make this better
+	public boolean allowMovement = false;
+
 	@Override
 	protected void method_7513(BlockPos blockPos, BlockState blockState) {
 		super.method_7513(blockPos, blockState);
 
-		if(true) {
+		if(!allowMovement) {
 			return;
 		}
 
@@ -116,16 +119,6 @@ public class CartEntity extends AbstractMinecartEntity implements StevesCart {
 	@Override
 	public Type getMinecartType() {
 		return Type.RIDEABLE;
-	}
-
-	@Override
-	public World getWorld() {
-		return world;
-	}
-
-	@Override
-	public Vec3d getLocation() {
-		return getPos();
 	}
 
 	public ComponentStore getComponentStore() {

@@ -3,9 +3,9 @@ package vswe.stevescarts.content.client.components;
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.util.Identifier;
 import vswe.stevescarts.StevesCarts;
-import vswe.stevescarts.api.StevesCart;
 import vswe.stevescarts.api.client.ComponentModelRenderer;
 import vswe.stevescarts.content.components.SolarEngineComponent;
+import vswe.stevescarts.impl.entity.CartEntity;
 
 import java.util.ArrayList;
 
@@ -37,14 +37,17 @@ public class SolarEngineRenderer extends ComponentModelRenderer<SolarEngineCompo
 	}
 
 	@Override
-	protected void manipulateModel(SolarEngineComponent component, StevesCart cart, float deltaTicks) {
+	protected void manipulateModel(SolarEngineComponent component, CartEntity cart, float deltaTicks) {
 		panels.forEach(cuboid -> cuboid.pitch = -component.getInnerRotation());
 		base.rotationPointY = component.getMovingLevel();
 	}
 
 	@Override
 	public Identifier textureLocation(SolarEngineComponent component) {
-		return new Identifier(StevesCarts.MOD_ID, "textures/models/panelmodelactive.png");
+		if(component.isFullyDown()) {
+			return new Identifier(StevesCarts.MOD_ID, "textures/models/panelmodelactive.png");
+		}
+		return new Identifier(StevesCarts.MOD_ID, "textures/models/panelmodelidle.png");
 	}
 
 	private Cuboid createPanel(final Cuboid base, final int index) {

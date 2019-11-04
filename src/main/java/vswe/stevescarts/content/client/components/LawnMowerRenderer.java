@@ -3,9 +3,9 @@ package vswe.stevescarts.content.client.components;
 import net.minecraft.client.model.Cuboid;
 import net.minecraft.util.Identifier;
 import vswe.stevescarts.StevesCarts;
-import vswe.stevescarts.api.StevesCart;
 import vswe.stevescarts.api.client.ComponentModelRenderer;
 import vswe.stevescarts.content.components.LawnMowerComponent;
+import vswe.stevescarts.impl.entity.CartEntity;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class LawnMowerRenderer extends ComponentModelRenderer<LawnMowerComponent
 	}
 
 	@Override
-	protected void manipulateModel(LawnMowerComponent component, StevesCart cart, float deltaTicks) {
+	protected void manipulateModel(LawnMowerComponent component, CartEntity cart, float deltaTicks) {
 		final float angle = component.getBladeAngle() + deltaTicks * component.getBladeSpindSpeed();
 
 		for (int i = 0; i < bladepins.size(); ++i) {

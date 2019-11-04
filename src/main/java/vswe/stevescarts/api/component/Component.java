@@ -1,10 +1,10 @@
 package vswe.stevescarts.api.component;
 
-import vswe.stevescarts.api.StevesCart;
+import vswe.stevescarts.impl.entity.CartEntity;
 
 public abstract class Component {
 
-	private final StevesCart cart;
+	private final CartEntity cart;
 	private final ComponentSettings<Component> settings;
 
 	public Component(InitData data) {
@@ -12,7 +12,7 @@ public abstract class Component {
 		this.settings = data.componentSettings;
 	}
 
-	public StevesCart getCart() {
+	public CartEntity getCart() {
 		return cart;
 	}
 
@@ -21,15 +21,15 @@ public abstract class Component {
 	}
 
 	public static class InitData {
-		final StevesCart cart;
+		final CartEntity cart;
 		final ComponentSettings<Component> componentSettings;
 
-		private InitData(StevesCart cart, ComponentSettings<Component> componentSettings) {
+		private InitData(CartEntity cart, ComponentSettings<Component> componentSettings) {
 			this.cart = cart;
 			this.componentSettings = componentSettings;
 		}
 
-		public static InitData create(StevesCart cart, ComponentSettings<Component> componentSettings) {
+		public static InitData create(CartEntity cart, ComponentSettings<Component> componentSettings) {
 			return new InitData(cart, componentSettings);
 		}
 	}
