@@ -13,7 +13,7 @@ import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -183,7 +183,7 @@ public class CartEntity extends AbstractMinecartEntity {
 		buf.writeInt(getEntityId());
 		buf.writeUuid(getUuid());
 
-		return new CustomPayloadC2SPacket(new Identifier(StevesCarts.MOD_ID, "spawn_cart"), buf);
+		return new CustomPayloadS2CPacket(new Identifier(StevesCarts.MOD_ID, "spawn_cart"), buf);
 	}
 
 	public Packet<?> createSyncPacket() {
