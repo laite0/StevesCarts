@@ -1,17 +1,17 @@
 package vswe.stevescarts.content.client.components;
 
-import net.minecraft.client.model.Cuboid;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.util.Identifier;
 import vswe.stevescarts.StevesCarts;
-import vswe.stevescarts.api.client.ComponentModelRenderer;
+import vswe.stevescarts.api.client.ComponentModel;
 import vswe.stevescarts.content.components.FarmerComponent;
 import vswe.stevescarts.impl.entity.CartEntity;
 
-public class FarmerRenderer extends ComponentModelRenderer<FarmerComponent> {
+public class FarmerRenderer extends ComponentModel<FarmerComponent> {
 
-	private Cuboid mainAnchor;
-	private Cuboid anchor;
-	private Cuboid[] outers;
+	private ModelPart mainAnchor;
+	private ModelPart anchor;
+	private ModelPart[] outers;
 
 	public FarmerRenderer() {
 		textureHeight = 64;
@@ -19,92 +19,92 @@ public class FarmerRenderer extends ComponentModelRenderer<FarmerComponent> {
 
 		mainAnchor = createRenderCube(0, 0);
 		
-		mainAnchor.setRotationPoint(-18.0f, 4.0f, 0.0f);
+		mainAnchor.setPivot(-18.0f, 4.0f, 0.0f);
 		for (int i = -1; i <= 1; i += 2) {
-			final Cuboid smallarm = new Cuboid(this, 26, 23);
+			final ModelPart smallarm = new ModelPart(this, 26, 23);
 			mainAnchor.addChild(smallarm);
 
-			smallarm.addBox(-1.0f, -1.0f, -1.0f, 8, 2, 2, 0.0f);
-			smallarm.setRotationPoint(0.0f, 0.0f, i * 17);
+			smallarm.addCuboid(-1.0f, -1.0f, -1.0f, 8, 2, 2, 0.0f);
+			smallarm.setPivot(0.0f, 0.0f, i * 17);
 		}
-		final Cuboid mainarm = new Cuboid(this, 0, 37);
+		final ModelPart mainarm = new ModelPart(this, 0, 37);
 		mainAnchor.addChild(mainarm);
 
-		mainarm.addBox(-30.0f, -2.0f, -2.0f, 60, 4, 4, 0.0f);
-		mainarm.setRotationPoint(8.0f, 0.0f, 0.0f);
+		mainarm.addCuboid(-30.0f, -2.0f, -2.0f, 60, 4, 4, 0.0f);
+		mainarm.setPivot(8.0f, 0.0f, 0.0f);
 		mainarm.yaw = 1.5707964f;
 		for (int j = -1; j <= 1; j += 2) {
-			final Cuboid extra = new Cuboid(this, 26, 27);
+			final ModelPart extra = new ModelPart(this, 26, 27);
 			mainAnchor.addChild(extra);
 
-			extra.addBox(-2.5f, -2.5f, -1.0f, 5, 5, 2, 0.0f);
-			extra.setRotationPoint(8.0f, 0.0f, j * 30);
-			final Cuboid bigarm = new Cuboid(this, 26, 17);
+			extra.addCuboid(-2.5f, -2.5f, -1.0f, 5, 5, 2, 0.0f);
+			extra.setPivot(8.0f, 0.0f, j * 30);
+			final ModelPart bigarm = new ModelPart(this, 26, 17);
 			mainAnchor.addChild(bigarm);
 
-			bigarm.addBox(-1.0f, -2.0f, -1.0f, 16, 4, 2, 0.0f);
-			bigarm.setRotationPoint(8.0f, 0.0f, j * 32);
+			bigarm.addCuboid(-1.0f, -2.0f, -1.0f, 16, 4, 2, 0.0f);
+			bigarm.setPivot(8.0f, 0.0f, j * 32);
 		}
-		anchor = new Cuboid(this);
+		anchor = new ModelPart(this);
 		mainAnchor.addChild(anchor);
-		anchor.setRotationPoint(22.0f, 0.0f, 0.0f);
+		anchor.setPivot(22.0f, 0.0f, 0.0f);
 		final float start = -1.5f;
 		final float end = 1.5f;
 		for (float k = -1.5f; k <= 1.5f; ++k) {
 			for (int l = 0; l < 6; ++l) {
-				final Cuboid side = new Cuboid(this, 0, 0);
+				final ModelPart side = new ModelPart(this, 0, 0);
 				anchor.addChild(side);
 
-				side.addBox(-5.0f, -8.8f, -1.0f, 10, 4, 2, 0.0f);
-				side.setRotationPoint(0.0f, 0.0f, k * 20.0f + l % 2 * 0.005f);
+				side.addCuboid(-5.0f, -8.8f, -1.0f, 10, 4, 2, 0.0f);
+				side.setPivot(0.0f, 0.0f, k * 20.0f + l % 2 * 0.005f);
 				side.roll = l * 6.2831855f / 6.0f;
 			}
 			if (k == start || k == end) {
-				final Cuboid sidecenter = new Cuboid(this, 0, 12);
+				final ModelPart sidecenter = new ModelPart(this, 0, 12);
 				anchor.addChild(sidecenter);
 
-				sidecenter.addBox(-6.0f, -6.0f, -0.5f, 12, 12, 1, 0.0f);
-				sidecenter.setRotationPoint(0.0f, 0.0f, k * 20.0f);
+				sidecenter.addCuboid(-6.0f, -6.0f, -0.5f, 12, 12, 1, 0.0f);
+				sidecenter.setPivot(0.0f, 0.0f, k * 20.0f);
 			} else {
 				for (int l = 0; l < 3; ++l) {
-					final Cuboid sidecenter2 = new Cuboid(this, 26, 12);
+					final ModelPart sidecenter2 = new ModelPart(this, 26, 12);
 					anchor.addChild(sidecenter2);
 
-					sidecenter2.addBox(-1.0f, -2.0f, -0.5f, 8, 4, 1, 0.0f);
-					sidecenter2.setRotationPoint(0.0f, 0.0f, k * 20.0f);
+					sidecenter2.addCuboid(-1.0f, -2.0f, -0.5f, 8, 4, 1, 0.0f);
+					sidecenter2.setPivot(0.0f, 0.0f, k * 20.0f);
 					sidecenter2.roll = (l + 0.25f) * 6.2831855f / 3.0f;
 				}
 			}
 		}
 		for (int m = 0; m < 6; ++m) {
-			final Cuboid middle = new Cuboid(this, 0, 6);
+			final ModelPart middle = new ModelPart(this, 0, 6);
 			anchor.addChild(middle);
 
-			middle.addBox(-30.0f, -1.7f, -1.0f, 60, 2, 2, 0.0f);
-			middle.setRotationPoint(0.0f, 0.0f, m % 2 * 0.005f);
+			middle.addCuboid(-30.0f, -1.7f, -1.0f, 60, 2, 2, 0.0f);
+			middle.setPivot(0.0f, 0.0f, m % 2 * 0.005f);
 			middle.pitch = m * 6.2831855f / 6.0f;
 			middle.yaw = 1.5707964f;
 		}
-		outers = new Cuboid[6];
+		outers = new ModelPart[6];
 		for (int m = 0; m < 6; ++m) {
-			final Cuboid nailAnchor = new Cuboid(this);
+			final ModelPart nailAnchor = new ModelPart(this);
 			anchor.addChild(nailAnchor);
 			nailAnchor.pitch = nailRot(m);
 			nailAnchor.yaw = 1.5707964f;
-			final Cuboid outer = new Cuboid(this, 0, 10);
+			final ModelPart outer = new ModelPart(this, 0, 10);
 			nailAnchor.addChild(outer);
 
-			outer.addBox(-30.0f, -0.5f, -0.5f, 60, 1, 1, 0.0f);
-			outer.setRotationPoint(0.0f, -8.8f, 0.0f);
+			outer.addCuboid(-30.0f, -0.5f, -0.5f, 60, 1, 1, 0.0f);
+			outer.setPivot(0.0f, -8.8f, 0.0f);
 			outer.pitch = 3.1415927f;
 			outers[m] = outer;
 			for (int j2 = -13; j2 <= 13; ++j2) {
 				if (Math.abs(j2) > 6 || Math.abs(j2) < 4) {
-					final Cuboid nail = new Cuboid(this, 44, 13);
+					final ModelPart nail = new ModelPart(this, 44, 13);
 					outer.addChild(nail);
 
-					nail.addBox(-0.5f, -1.5f, -0.5f, 1, 3, 1, 0.0f);
-					nail.setRotationPoint(j2 * 2, -2.0f, 0.0f);
+					nail.addCuboid(-0.5f, -1.5f, -0.5f, 1, 3, 1, 0.0f);
+					nail.setPivot(j2 * 2, -2.0f, 0.0f);
 				}
 			}
 		}
@@ -129,7 +129,7 @@ public class FarmerRenderer extends ComponentModelRenderer<FarmerComponent> {
 		return 0.5f;
 	}
 
-	@Override
+	//@Override
 	public Identifier textureLocation(FarmerComponent component) {
 		return new Identifier(StevesCarts.MOD_ID, "textures/models/farmermodeldiamond.png");
 	}

@@ -7,13 +7,17 @@ import net.minecraft.block.Material;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.SystemUtil;
+
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.loot.context.LootContext;
-import net.minecraft.world.loot.context.LootContextParameters;
+
+
+import net.minecraft.util.math.Vec3d;
 import vswe.stevescarts.api.component.Component;
 import vswe.stevescarts.impl.util.InventoryUtils;
 
@@ -21,7 +25,7 @@ import java.util.Map;
 
 public class LawnMowerComponent extends Component {
 
-	private static final Map<DyeColor, ItemConvertible> DROPS = SystemUtil.consume(Maps.newEnumMap(DyeColor.class), (map) -> {
+	private static final Map<DyeColor, ItemConvertible> DROPS = Util.make(Maps.newEnumMap(DyeColor.class), (map) -> {
 		map.put(DyeColor.WHITE, Blocks.WHITE_WOOL);
 		map.put(DyeColor.ORANGE, Blocks.ORANGE_WOOL);
 		map.put(DyeColor.MAGENTA, Blocks.MAGENTA_WOOL);
@@ -75,9 +79,9 @@ public class LawnMowerComponent extends Component {
 		if(getCart().world.isClient) {
 			return;
 		}
-		getCart().world.getEntities(SheepEntity.class, getCart().getBoundingBox().expand(radius(), 2, radius())).stream()
-				.filter(sheepEntity -> !sheepEntity.isSheared())
-				.findFirst().ifPresent(this::shear);
+		getCart().world.getEntitiesByClass(SheepEntity.class, getCart().getBoundingBox().expand(radius(), 2, radius()), (sheepEntity) -> {
+			return !sheepEntity.isSheared();
+		}).stream().findFirst().ifPresent(this::shear);
 	}
 
 	private void cutGrass() {
@@ -92,9 +96,9 @@ public class LawnMowerComponent extends Component {
 
 						ServerWorld world = (ServerWorld) getCart().world;
 						LootContext.Builder builder = new LootContext.Builder(world)
-								.setRandom(world.random)
-								.put(LootContextParameters.POSITION, blockPos)
-								.put(LootContextParameters.TOOL, ItemStack.EMPTY);
+								.random(world.random)
+								.parameter(LootContextParameters.ORIGIN, Vec3d.ofCenter(blockPos))
+								.parameter(LootContextParameters.TOOL, ItemStack.EMPTY);
 
 						state.getDroppedStacks(builder).forEach(stack -> InventoryUtils.insertItem(stack, getCart()));
 
@@ -118,7 +122,7 @@ public class LawnMowerComponent extends Component {
 		}
 		sheepEntity.setSheared(true);
 
-		int dropAmount = 1 + sheepEntity.getRand().nextInt(3);
+		int dropAmount = 1 + sheepEntity.getRandom().nextInt(3);
 		ItemStack stack = new ItemStack(DROPS.get(sheepEntity.getColor()), dropAmount);
 
 		stack = InventoryUtils.insertItem(stack, getCart());

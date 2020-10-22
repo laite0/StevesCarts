@@ -29,7 +29,7 @@
 package vswe.stevescarts.impl.network;
 
 import com.google.common.primitives.Primitives;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
 import java.math.BigInteger;

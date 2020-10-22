@@ -70,7 +70,7 @@ public class SolarEngineComponent extends Component {
 	public void tick() {
 		final World world = getCart().getEntityWorld();
 		if(!world.isClient) {
-			down = !(world.isSkyVisible(getCart().getBlockPos()) && world.isDaylight());
+			down = !(world.isSkyVisible(getCart().getBlockPos()) && world.isDay());
 		}
 		updatePanels();
 	}

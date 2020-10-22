@@ -22,7 +22,7 @@ public class ItemCart extends Item {
 		World world = context.getWorld();
 		BlockPos blockPos = context.getBlockPos();
 		BlockState blockState = world.getBlockState(blockPos);
-		if (!blockState.matches(BlockTags.RAILS)) {
+		if (!blockState.isIn(BlockTags.RAILS)) {
 			return ActionResult.FAIL;
 		} else {
 			RailShape railShape = blockState.getBlock() instanceof AbstractRailBlock ? blockState.get(((AbstractRailBlock) blockState.getBlock()).getShapeProperty()) : RailShape.NORTH_SOUTH;

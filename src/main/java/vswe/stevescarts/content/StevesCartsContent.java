@@ -7,7 +7,7 @@ import vswe.stevescarts.api.StevesCartsInitializer;
 import vswe.stevescarts.api.component.ComponentType;
 import vswe.stevescarts.api.listeners.CartTick;
 import vswe.stevescarts.content.client.components.FarmerRenderer;
-import vswe.stevescarts.content.client.components.LawnMowerRenderer;
+import vswe.stevescarts.content.client.components.LawnMowerModel;
 import vswe.stevescarts.content.client.components.SolarEngineRenderer;
 import vswe.stevescarts.content.components.FarmerComponent;
 import vswe.stevescarts.content.components.LawnMowerComponent;
@@ -28,7 +28,7 @@ public class StevesCartsContent implements StevesCartsInitializer {
 		api.addComponent(settings -> {
 			settings.setId(new Identifier(StevesCarts.MOD_ID, "lawn_mower"));
 			settings.setType(ComponentType.MODULE);
-			settings.renderer(new LawnMowerRenderer());
+			settings.renderer(new LawnMowerModel());
 
 			settings.addListener(CartTick.class, LawnMowerComponent::tick);
 		}, LawnMowerComponent::new);

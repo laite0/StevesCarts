@@ -6,11 +6,11 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 
 public class InventoryBase implements Inventory {
 
-	private int size;
+	private final int size;
 	private DefaultedList<ItemStack> stacks;
 
 	public InventoryBase(int size) {
@@ -30,23 +30,23 @@ public class InventoryBase implements Inventory {
 	}
 
 	@Override
-	public int getInvSize() {
+	public int size() {
 		return size;
 	}
 
 	@Override
-	public boolean isInvEmpty() {
+	public boolean isEmpty() {
 		return stacks.stream().allMatch(ItemStack::isEmpty);
 	}
 
 	@Override
-	public ItemStack getInvStack(int i) {
-		return stacks.get(i);
+	public ItemStack getStack(int slot) {
+		return stacks.get(slot);
 	}
 
 	@Override
-	public ItemStack takeInvStack(int i, int i1) {
-		ItemStack stack = Inventories.splitStack(stacks, i, i1);
+	public ItemStack removeStack(int slot, int amount) {
+		ItemStack stack = Inventories.splitStack(stacks, slot, amount);
 		if (!stack.isEmpty()) {
 			this.markDirty();
 		}
@@ -54,15 +54,15 @@ public class InventoryBase implements Inventory {
 	}
 
 	@Override
-	public ItemStack removeInvStack(int i) {
-		return Inventories.removeStack(stacks, i);
+	public ItemStack removeStack(int slot) {
+		return Inventories.removeStack(stacks, slot);
 	}
 
 	@Override
-	public void setInvStack(int i, ItemStack itemStack) {
-		stacks.set(i, itemStack);
-		if (itemStack.getCount() > this.getInvMaxStackAmount()) {
-			itemStack.setCount(this.getInvMaxStackAmount());
+	public void setStack(int slot, ItemStack stack) {
+		stacks.set(slot, stack);
+		if (stack.getCount() > this.getMaxCountPerStack()) {
+			stack.setCount(this.getMaxCountPerStack());
 		}
 
 		this.markDirty();
@@ -70,11 +70,11 @@ public class InventoryBase implements Inventory {
 
 	@Override
 	public void markDirty() {
-		//Stuff happens in the super methods
+
 	}
 
 	@Override
-	public boolean canPlayerUseInv(PlayerEntity playerEntity) {
+	public boolean canPlayerUse(PlayerEntity player) {
 		return true;
 	}
 

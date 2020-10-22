@@ -11,13 +11,13 @@ public class InventoryUtils {
 
 	public static ItemStack insertItemStacked(Inventory inventory, ItemStack input, boolean simulate) {
 		ItemStack stack = input.copy();
-		for (int i = 0; i < inventory.getInvSize(); i++) {
-			ItemStack targetStack = inventory.getInvStack(i);
+		for (int i = 0; i < inventory.size(); i++) {
+			ItemStack targetStack = inventory.getStack(i);
 
 			//Nice and simple, insert the item into a blank slot
 			if(targetStack.isEmpty()){
 				if(!simulate){
-					inventory.setInvStack(i, stack);
+					inventory.setStack(i, stack);
 				}
 				return ItemStack.EMPTY;
 			} else if (ItemUtils.isItemEqual(stack, targetStack, true, false)){
@@ -39,8 +39,8 @@ public class InventoryUtils {
 
 		if(blockEntity instanceof SidedInventory){
 			SidedInventory sidedInventory = (SidedInventory) blockEntity;
-			for(int slot : sidedInventory.getInvAvailableSlots(direction)){
-				if(sidedInventory.canInsertInvStack(slot, stack, direction)){
+			for(int slot : sidedInventory.getAvailableSlots(direction)){
+				if(sidedInventory.canInsert(slot, stack, direction)){
 					stack = insertIntoInv(sidedInventory, slot, stack);
 					if(stack.isEmpty()){
 						break;
@@ -50,7 +50,7 @@ public class InventoryUtils {
 			return stack;
 		} else if(blockEntity instanceof Inventory){
 			Inventory inventory = (Inventory) blockEntity;
-			for (int i = 0; i < inventory.getInvSize() & !stack.isEmpty(); i++) {
+			for (int i = 0; i < inventory.size() & !stack.isEmpty(); i++) {
 				stack = insertIntoInv(inventory, i, stack);
 			}
 		}
@@ -59,19 +59,19 @@ public class InventoryUtils {
 
 	public static ItemStack insertItem(ItemStack input, CartEntity cartEntity) {
 		ItemStack stack = input.copy();
-		for (int i = 0; i < cartEntity.inventory.getInvSize(); i++) {
+		for (int i = 0; i < cartEntity.inventory.size(); i++) {
 			stack = insertIntoInv(cartEntity.inventory, i, stack);
 		}
 		return stack;
 	}
 
 	private static ItemStack insertIntoInv(Inventory inventory, int slot, ItemStack input){
-		ItemStack targetStack = inventory.getInvStack(slot);
+		ItemStack targetStack = inventory.getStack(slot);
 		ItemStack stack = input.copy();
 
 		//Nice and simple, insert the item into a blank slot
 		if(targetStack.isEmpty()){
-			inventory.setInvStack(slot, stack);
+			inventory.setStack(slot, stack);
 			return ItemStack.EMPTY;
 		} else if (ItemUtils.isItemEqual(stack, targetStack, true, false)){
 			int freeStackSpace = targetStack.getMaxCount() - targetStack.getCount();

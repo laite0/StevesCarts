@@ -1,15 +1,22 @@
 package vswe.stevescarts.impl.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.MinecartEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import vswe.stevescarts.impl.entity.CartEntity;
 
+@Environment(EnvType.CLIENT)
 public class CartEntityRenderer extends EntityRenderer<CartEntity> {
 	private final EntityModel<CartEntity> model = new MinecartEntityModel<>();
 
@@ -18,19 +25,18 @@ public class CartEntityRenderer extends EntityRenderer<CartEntity> {
 	}
 
 	@Override
-	public void render(CartEntity cartEntity, double x, double y, double z, float yaw, final float deltaTicks) {
-		GlStateManager.pushMatrix();
-		this.bindEntityTexture(cartEntity);
+	public void render(CartEntity cartEntity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+		super.render(cartEntity, yaw, tickDelta, matrices, vertexConsumers, light);
+		matrices.push();
+		final double partialPosX = MathHelper.lerp(tickDelta, cartEntity.lastRenderX, cartEntity.getX());
+		final double partialPosY = MathHelper.lerp(tickDelta, cartEntity.lastRenderY, cartEntity.getY());
+		final double partialPosZ = MathHelper.lerp(tickDelta, cartEntity.lastRenderZ, cartEntity.getZ());
+		float partialRotPitch = MathHelper.lerp(tickDelta, cartEntity.prevPitch, cartEntity.pitch);
 
-		final double partialPosX = MathHelper.lerp(deltaTicks, cartEntity.prevRenderX, cartEntity.x);
-		final double partialPosY = MathHelper.lerp(deltaTicks, cartEntity.prevRenderY, cartEntity.y);
-		final double partialPosZ = MathHelper.lerp(deltaTicks, cartEntity.prevRenderZ, cartEntity.z);
-		float partialRotPitch = MathHelper.lerp(deltaTicks, cartEntity.prevPitch, cartEntity.pitch);
-
-		final Vec3d posFromRail = cartEntity.getPos();
+		final Vec3d posFromRail = cartEntity.snapPositionToRail(partialPosX, partialPosY, partialPosZ);
 		if (posFromRail != null) {
-			Vec3d lastPos = cartEntity.method_7505(partialPosX, partialPosY, partialPosZ, 0.30000001192092896D);
-			Vec3d nextPos = cartEntity.method_7505(partialPosX, partialPosY, partialPosZ, -0.30000001192092896D);
+			Vec3d lastPos = cartEntity.snapPositionToRailWithOffset(partialPosX, partialPosY, partialPosZ, 0.30000001192092896D);
+			Vec3d nextPos = cartEntity.snapPositionToRailWithOffset(partialPosX, partialPosY, partialPosZ, -0.30000001192092896D);
 
 			if (lastPos == null) {
 				lastPos = posFromRail;
@@ -39,10 +45,7 @@ public class CartEntityRenderer extends EntityRenderer<CartEntity> {
 				nextPos = posFromRail;
 			}
 
-//			x += posFromRail.x - partialPosX;
-//			y += (lastPos.y + nextPos.y) / 2.0 - partialPosY;
-//			z += posFromRail.z - partialPosZ;
-
+			matrices.translate(posFromRail.x - partialPosX, (lastPos.y + nextPos.y) / 2.0D - partialPosY, posFromRail.z - partialPosZ);
 			Vec3d difference = nextPos.add(-lastPos.x, -lastPos.y, -lastPos.z);
 			if (difference.length() != 0.0) {
 				difference = difference.normalize();
@@ -51,51 +54,36 @@ public class CartEntityRenderer extends EntityRenderer<CartEntity> {
 			}
 		}
 
-		yaw = 180.0f - yaw;
-		partialRotPitch *= -1.0f;
-		float damageRot = cartEntity.getDamageWobbleTicks() - deltaTicks;
-		float damageTime = cartEntity.getDamageWobbleStrength() - deltaTicks;
+		matrices.translate(0.0D, 0.375D, 0.0D);
+		matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180.0F - yaw));
+		matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(-partialRotPitch));
+		float damageTime = cartEntity.getDamageWobbleTicks() - tickDelta;
+		float damageRot = cartEntity.getDamageWobbleStrength() - tickDelta;
 		final float damageDir = cartEntity.getDamageWobbleSide();
 
-		if (damageTime < 0.0f) {
-			damageTime = 0.0f;
+		if (damageRot < 0.0f) {
+			damageRot = 0.0f;
+		}
+		if (damageTime > 0.0F) {
+			matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(MathHelper.sin(damageTime) * damageTime * damageRot / 10.0F * damageDir));
 		}
 
-		boolean flip = cartEntity.getVelocity().x > 0.0 != cartEntity.getVelocity().z > 0.0;
-		if (cartEntity.cornerFlip) {
-			flip = !flip;
-		}
+		matrices.scale(-1.0F, -1.0F, 1.0F);
+		this.model.setAngles(cartEntity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F);
+		VertexConsumer vertexConsumer = vertexConsumers.getBuffer(this.model.getLayer(this.getTexture(cartEntity)));
+		this.model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 
-		if (cartEntity.getRenderFlippedYaw(yaw + (flip ? 0.0f : 180.0f))) {
-			flip = !flip;
-		}
+//		cartEntity.getComponentStore().forEach((component, settings) -> {
+//			bindTexture(settings.getRenderer().textureLocation(component));
+//			settings.getRenderer().render(component, cartEntity, 0, 0, 0, tickDelta, this);
+//		});
 
-		GlStateManager.translatef((float) x, (float) y + 0.375F, (float) z);
-		GlStateManager.rotatef(yaw, 0.0f, 1.0f, 0.0f);
-		GlStateManager.rotatef(partialRotPitch, 0.0f, 0.0f, 1.0f);
+		matrices.pop();
 
-		if (damageRot > 0.0f) {
-			damageRot = MathHelper.sin(damageRot) * damageRot * damageTime / 10.0f * damageDir;
-			GlStateManager.rotatef(damageRot, 1.0f, 0.0f, 0.0f);
-		}
-
-		yaw += (flip ? 0.0f : 180.0f);
-		GlStateManager.rotatef(flip ? 0.0f : 180.0f, 0.0f, 1.0f, 0.0f);
-		GlStateManager.scalef(-1.0f, -1.0f, 1.0f);
-		this.model.render(cartEntity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
-
-
-		cartEntity.getComponentStore().forEach((component, settings) -> {
-			bindTexture(settings.getRenderer().textureLocation(component));
-			settings.getRenderer().render(component, cartEntity, 0, 0, 0, deltaTicks, this);
-		});
-
-		GlStateManager.popMatrix();
-		super.render(cartEntity, x, y, z, yaw, deltaTicks);
 	}
 
 	@Override
-	protected Identifier getTexture(CartEntity var1) {
+	public Identifier getTexture(CartEntity cartEntity) {
 		return new Identifier("textures/entity/minecart.png");
 	}
 }

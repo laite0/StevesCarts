@@ -6,17 +6,18 @@ import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.RailBlock;
 import net.minecraft.block.enums.RailShape;
-import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -57,7 +58,7 @@ public class CartEntity extends AbstractMinecartEntity {
 
 		if(!world.isClient){
 			ServerWorld serverWorld = (ServerWorld) world;
-			serverWorld.method_14178().sendToNearbyPlayers(this, createSyncPacket());
+			serverWorld.getChunkManager().sendToNearbyPlayers(this, createSyncPacket());
 			if(workingTime > 0) {
 				workingTime--;
 			}
@@ -66,7 +67,7 @@ public class CartEntity extends AbstractMinecartEntity {
 	}
 
 	@Override
-	public boolean interact(PlayerEntity playerEntity, Hand hand) {
+	public ActionResult interact(PlayerEntity playerEntity, Hand hand) {
 		if(hand == Hand.MAIN_HAND) {
 			componentStore.fire(PlayerInteract.class, playerEntity);
 			if(!world.isClient) {
@@ -98,14 +99,14 @@ public class CartEntity extends AbstractMinecartEntity {
 	}
 
 	@Override
-	protected void method_7513(BlockPos blockPos, BlockState blockState) {
+	protected void moveOnRail(BlockPos blockPos, BlockState blockState) {
 		RailShape shapeProperty = blockState.get(((RailBlock) blockState.getBlock()).getShapeProperty());
 		cornerFlip = ((shapeProperty == RailShape.SOUTH_EAST || shapeProperty == RailShape.SOUTH_WEST) && getVelocity().x < 0.0) || ((shapeProperty == RailShape.NORTH_EAST || shapeProperty == RailShape.NORTH_WEST) && getVelocity().x > 0.0);
 
 		if(workingTime > 0) {
 			return;
 		}
-		super.method_7513(blockPos, blockState);
+		super.moveOnRail(blockPos, blockState);
 
 		if(!hasFuel()) {
 			return;
@@ -174,15 +175,15 @@ public class CartEntity extends AbstractMinecartEntity {
 	@Override
 	public Packet<?> createSpawnPacket() {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeDouble(x);
-		buf.writeDouble(y);
-		buf.writeDouble(z);
+		buf.writeDouble(this.getX());
+		buf.writeDouble(this.getY());
+		buf.writeDouble(this.getY());
 		buf.writeFloat(pitch);
 		buf.writeFloat(yaw);
 		buf.writeInt(getEntityId());
 		buf.writeUuid(getUuid());
 
-		return new CustomPayloadS2CPacket(new Identifier(StevesCarts.MOD_ID, "spawn_cart"), buf);
+		return new CustomPayloadC2SPacket(new Identifier(StevesCarts.MOD_ID, "spawn_cart"), buf);
 	}
 
 	public Packet<?> createSyncPacket() {

@@ -29,7 +29,7 @@
 package vswe.stevescarts.impl.network;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

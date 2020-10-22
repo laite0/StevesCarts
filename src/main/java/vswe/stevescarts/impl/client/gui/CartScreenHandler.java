@@ -1,17 +1,17 @@
 package vswe.stevescarts.impl.client.gui;
 
-import net.minecraft.container.Container;
-import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import vswe.stevescarts.impl.entity.CartEntity;
 
-public class CartContainer extends Container {
+public class CartScreenHandler extends ScreenHandler {
 
 	public final PlayerInventory playerInventory;
 	public final CartEntity cartEntity;
 
-	public CartContainer(int syncID, PlayerEntity playerEntity, CartEntity cartEntity) {
+	public CartScreenHandler(int syncID, PlayerEntity playerEntity, CartEntity cartEntity) {
 		super(null, syncID);
 		this.playerInventory = playerEntity.inventory;
 		this.cartEntity = cartEntity;
