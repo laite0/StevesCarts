@@ -7,15 +7,13 @@
   ],
   "key": {
     "X": {
-      "type": "forge:ore_dict",
-      "ore": "dyeBlue"
+      "item": "minecraft:green_dye"
     },
     "#": {
       "item": "minecraft:glowstone_dust"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 4
+    "item": "stevescarts:green_pigment"
   }
 }

@@ -7,13 +7,11 @@
   ],
   "key": {
     "#": {
-      "type": "forge:ore_dict",
-      "ore": "string"
+      "item": "minecraft:string"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 43,
+    "item": "stevescarts:fuse",
     "count": 12
   }
 }

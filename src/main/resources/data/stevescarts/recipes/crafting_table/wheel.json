@@ -7,15 +7,13 @@
   ],
   "key": {
     "X": {
-      "type": "forge:ore_dict",
-      "ore": "stickWood"
+      "item": "minecraft:stick"
     },
     "#": {
       "item": "minecraft:iron_ingot"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 14
+    "item": "stevescarts:wheel"
   }
 }

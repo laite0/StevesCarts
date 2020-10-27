@@ -9,41 +9,62 @@ import java.util.Locale;
 
 public enum StevesCartsParts implements ItemConvertible {
 
-        ADVANCED_SOLAR_PANEL,
+    WOODEN_WHEELS,
+    IRON_WHEELS,
+    REINFORCED_WHEELS,
 
-        HARDENED_MESH,
+    RED_PIGMENT,
+    GREEN_PIGMENT,
+    BLUE_PIGMENT,
 
-        IRON_WHEELS,
+    GLASS_O_MAGIC,
+    FUSE,
+    DYNAMITE,
 
-        RAW_HARDENER,
-        REFINED_HARDENER,
-        REINFORCED_METAL,
-        REINFORCED_WHEELS,
+    SIMPLE_PCB,
+    ADVANCED_PCB,
+    GRAPHICAL_INTERFACE,
 
-        SIMPLE_PCB,
-        SOLAR_PANEL,
-        STABILIZED_METAL,
-        WOODEN_WHEELS;
+    RAW_HANDLE,
+    REFINED_HANDLE,
+    SPEED_HANDLE,
+    WHEEL,
 
-        public final String name;
-        public final Item item;
 
-        StevesCartsParts(){
-            name = this.toString().toLowerCase(Locale.ROOT);
-            item = new Item(new Item.Settings().group(StevesCarts.SC2PARTS));
-        }
 
-        public ItemStack getStack() {
-            return new ItemStack(item);
-        }
 
-        public ItemStack getStack(int amount) {
-            return new ItemStack(item, amount);
-        }
+    RAW_HARDENER,
+    REFINED_HARDENER,
+    HARDENED_MESH,
+    STABILIZED_METAL,
+    REINFORCED_METAL,
 
-        @Override
-        public Item asItem() {
-            return item;
-        }
 
+
+    SOLAR_PANEL,
+    ADVANCED_SOLAR_PANEL,
+
+    ;
+
+    public final String name;
+    public final Item item;
+
+    StevesCartsParts() {
+        name = this.toString().toLowerCase(Locale.ROOT);
+        item = new Item(new Item.Settings().group(StevesCarts.SC2PARTS));
     }
+
+    public ItemStack getStack() {
+        return new ItemStack(item);
+    }
+
+    public ItemStack getStack(int amount) {
+        return new ItemStack(item, amount);
+    }
+
+    @Override
+    public Item asItem() {
+        return item;
+    }
+
+}

@@ -7,12 +7,10 @@
   ],
   "key": {
     "D": {
-      "type": "forge:ore_dict",
-      "ore": "gemDiamond"
+      "item": "minecraft:diamond"
     },
     "X": {
-      "type": "forge:ore_dict",
-      "ore": "paneGlass"
+      "item": "minecraft:glass_pane"
     },
     "#": {
       "item": "minecraft:redstone"
@@ -21,12 +19,10 @@
       "item": "minecraft:gold_ingot"
     },
     "P": {
-      "item": "stevescarts:modulecomponents",
-      "data": 9
+      "item": "stevescarts:simple_pcb"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 10
+    "item": "stevescarts:graphical_interface"
   }
 }

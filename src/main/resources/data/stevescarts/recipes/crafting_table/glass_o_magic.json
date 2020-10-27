@@ -7,8 +7,7 @@
   ],
   "key": {
     "X": {
-      "type": "forge:ore_dict",
-      "ore": "paneGlass"
+      "item": "minecraft:glass_pane"
     },
     "#": {
       "item": "minecraft:fermented_spider_eye"
@@ -18,7 +17,6 @@
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 5
+    "item": "stevescarts:glass_o_magic"
   }
 }

@@ -7,8 +7,7 @@
   ],
   "key": {
     "B": {
-      "type": "forge:ore_dict",
-      "ore": "dyeBlue"
+      "item": "minecraft:blue_dye"
     },
     "X": {
       "item": "minecraft:gold_ingot"
@@ -17,12 +16,10 @@
       "item": "minecraft:redstone"
     },
     "H": {
-      "item": "stevescarts:modulecomponents",
-      "data": 12
+      "item": "stevescarts:refined_handle"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 13
+    "item": "stevescarts:speed_handle"
   }
 }

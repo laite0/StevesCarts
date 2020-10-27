@@ -10,15 +10,13 @@
       "item": "minecraft:iron_ingot"
     },
     "P": {
-      "item": "stevescarts:modulecomponents",
-      "data": 9
+      "item": "stevescarts:simple_pcb"
     },
     "#": {
       "item": "minecraft:redstone"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 16
+    "item": "stevescarts:advanced_pcb"
   }
 }
