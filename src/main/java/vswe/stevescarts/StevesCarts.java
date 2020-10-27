@@ -1,6 +1,7 @@
 package vswe.stevescarts;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
@@ -9,8 +10,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import vswe.stevescarts.content.StevesCartsParts;
 import vswe.stevescarts.impl.client.CartEntityRenderer;
 import vswe.stevescarts.impl.client.gui.CartScreenHandler;
 import vswe.stevescarts.impl.client.gui.CartScreen;
@@ -23,6 +27,10 @@ public class StevesCarts implements ModInitializer {
 	public static final String MOD_ID = "stevescarts";
 	public static EntityType<Entity> cartEntityType;
 	public static final StevesCartsManager manager = new StevesCartsManager();
+
+	public static ItemGroup SC2PARTS = FabricItemGroupBuilder.build(
+			new Identifier(MOD_ID, "sc2parts"),
+			() -> new ItemStack(StevesCartsParts.REINFORCED_WHEELS));
 
 	@Override
 	public void onInitialize() {

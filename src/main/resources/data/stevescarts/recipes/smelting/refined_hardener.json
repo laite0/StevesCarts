@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "stevescarts:raw_hardener"
+  },
+  "result": "stevescarts:refined_hardener",
+  "experience": 0.5,
+  "cookingtime": 200
+}

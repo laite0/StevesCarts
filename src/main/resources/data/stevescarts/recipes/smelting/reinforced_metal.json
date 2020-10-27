@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "stevescarts:stabilized_metal"
+  },
+  "result": "stevescarts:reinforced_metal",
+  "experience": 0.5,
+  "cookingtime": 200
+}

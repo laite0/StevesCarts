@@ -1,6 +1,8 @@
 package vswe.stevescarts.content;
 
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import vswe.stevescarts.StevesCarts;
 import vswe.stevescarts.api.StevesCartsAPI;
 import vswe.stevescarts.api.StevesCartsInitializer;
@@ -12,6 +14,8 @@ import vswe.stevescarts.content.client.components.SolarEngineRenderer;
 import vswe.stevescarts.content.components.FarmerComponent;
 import vswe.stevescarts.content.components.LawnMowerComponent;
 import vswe.stevescarts.content.components.SolarEngineComponent;
+
+import java.util.Arrays;
 
 public class StevesCartsContent implements StevesCartsInitializer {
 
@@ -41,5 +45,11 @@ public class StevesCartsContent implements StevesCartsInitializer {
 			settings.addListener(CartTick.class, FarmerComponent::tick);
 		}, FarmerComponent::new);
 
+		Arrays.stream(StevesCartsParts.values()).forEach(value -> registerItem(value.item, value.name));
+
+	}
+
+	private void registerItem(Item item, String name){
+		Registry.register(Registry.ITEM, new Identifier(StevesCarts.MOD_ID, name), item);
 	}
 }
