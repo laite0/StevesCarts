@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:simple_pcb"
+    },
+    "#": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "stevescarts:empty_disk"
+  }
+}

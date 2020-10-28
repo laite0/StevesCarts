@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XXX",
+    "X#X",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "tag": "minecraft:saplings"
+    },
+    "#": {
+      "item": "stevescarts:advanced_pcb"
+    }
+  },
+  "result": {
+    "item": "stevescarts:wood_cutting_core"
+  }
+}
