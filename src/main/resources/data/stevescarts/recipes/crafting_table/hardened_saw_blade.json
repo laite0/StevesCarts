@@ -5,15 +5,13 @@
   ],
   "key": {
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 47
+      "item": "stevescarts:reinforced_metal"
     },
     "#": {
       "item": "minecraft:iron_ingot"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 81
+    "item": "stevescarts:hardened_saw_blade"
   }
 }

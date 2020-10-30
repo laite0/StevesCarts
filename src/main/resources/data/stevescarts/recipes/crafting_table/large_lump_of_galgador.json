@@ -7,12 +7,10 @@
   ],
   "key": {
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 46
+      "item": "stevescarts:lump_of_galgador"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 48
+    "item": "stevescarts:large_lump_of_galgador"
   }
 }

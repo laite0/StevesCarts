@@ -7,12 +7,10 @@
   ],
   "key": {
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 61
+      "item": "stevescarts:tank_pane"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 63
+    "item": "stevescarts:huge_tank_pane"
   }
 }

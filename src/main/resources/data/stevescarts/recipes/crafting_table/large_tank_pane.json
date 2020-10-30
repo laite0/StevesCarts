@@ -6,12 +6,10 @@
   ],
   "key": {
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 61
+      "item": "stevescarts:tank_pane"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 62
+    "item": "stevescarts:large_tank_pane"
   }
 }

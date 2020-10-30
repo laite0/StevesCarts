@@ -13,17 +13,14 @@
       "item": "minecraft:redstone"
     },
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 22
+      "item": "stevescarts:reinforced_metal"
     },
     "L": {
-      "item": "stevescarts:modulecomponents",
-      "data": 16
+      "item": "stevescarts:advanced_pcb"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 59,
+    "item": "stevescarts:blank_upgrade",
     "count": 2
   }
 }

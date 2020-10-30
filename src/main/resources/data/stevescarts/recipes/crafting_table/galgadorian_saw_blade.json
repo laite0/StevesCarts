@@ -5,15 +5,13 @@
   ],
   "key": {
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 22
+      "item": "stevescarts:galgadorian_metal"
     },
     "#": {
       "item": "minecraft:iron_ingot"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 80
+    "item": "stevescarts:galgadorian_saw_blade"
   }
 }

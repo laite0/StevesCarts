@@ -7,24 +7,20 @@
   ],
   "key": {
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 45
+      "item": "stevescarts:eye_of_galgador"
     },
     "#": {
       "item": "minecraft:glowstone_dust"
     },
     "D": {
-      "type": "forge:ore_dict",
-      "ore": "blockDiamond"
+      "item": "minecraft:diamond_block"
     },
     "R": {
-      "item": "stevescarts:modulecomponents",
-      "data": 21
+      "item": "stevescarts:stabilized_metal"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 46,
+    "item": "stevescarts:lump_of_galgador",
     "count": 2
   }
 }

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "X#X",
+    " X "
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:reinforced_metal"
+    },
+    "#": {
+      "item": "stevescarts:galgadorian_metal"
+    }
+  },
+  "result": {
+    "item": "stevescarts:galgadorian_wheels"
+  }
+}

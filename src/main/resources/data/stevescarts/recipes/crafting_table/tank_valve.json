@@ -1,21 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "# #",
     " X ",
-    "# #"
+    "X#X",
+    " X "
   ],
   "key": {
     "X": {
       "item": "minecraft:iron_ingot"
     },
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 83
+      "item": "minecraft:iron_bars"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 84
+    "item": "stevescarts:tank_valve",
+    "count": 8
   }
 }

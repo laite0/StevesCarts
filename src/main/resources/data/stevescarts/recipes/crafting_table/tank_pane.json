@@ -7,17 +7,14 @@
   ],
   "key": {
     "#": {
-      "type": "forge:ore_dict",
-      "ore": "paneGlass"
+      "item": "minecraft:glass_pane"
     },
     "X": {
-      "type": "forge:ore_dict",
-      "ore": "blockGlass"
+      "item": "minecraft:glass"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 61,
+    "item": "stevescarts:tank_pane",
     "count": 32
   }
 }

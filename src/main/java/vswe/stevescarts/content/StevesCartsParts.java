@@ -12,6 +12,7 @@ public enum StevesCartsParts implements ItemConvertible {
     WOODEN_WHEELS,
     IRON_WHEELS,
     REINFORCED_WHEELS,
+    GALGADORIAN_WHEELS,
 
     RED_PIGMENT,
     GREEN_PIGMENT,
@@ -31,10 +32,10 @@ public enum StevesCartsParts implements ItemConvertible {
     WHEEL,
 
 
-
-
     PIPE,
     SAW_BLADE,
+    HARDENED_SAW_BLADE,
+    GALGADORIAN_SAW_BLADE,
     WOOD_CUTTING_CORE,
     SHOOTING_STATION,
     ENTITY_ANALYZER,
@@ -61,13 +62,22 @@ public enum StevesCartsParts implements ItemConvertible {
     HARDENED_MESH,
     STABILIZED_METAL,
     REINFORCED_METAL,
-
-
+    EYE_OF_GALGADOR,
+    LUMP_OF_GALGADOR,
+    LARGE_LUMP_OF_GALGADOR,
+    GALGADORIAN_METAL,
+    ENHANCED_GALGADORIAN_METAL,
 
     SOLAR_PANEL,
     ADVANCED_SOLAR_PANEL,
+    BLANK_UPGRADE,
+    TANK_VALVE,
+    TANK_PANE,
+    LARGE_TANK_PANE,
+    HUGE_TANK_PANE,
 
-    ;
+    IRON_BLADE,
+    BLADE_ARM;
 
     public final String name;
     public final Item item;
