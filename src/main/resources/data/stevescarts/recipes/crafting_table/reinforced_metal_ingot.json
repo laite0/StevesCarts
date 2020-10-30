@@ -5,13 +5,11 @@
   ],
   "key": {
     "X": {
-      "item": "stevescarts:blockmetalstorage",
-      "data": 0
+      "item": "stevescarts:reinforced_metal_block"
     }
   },
   "result": {
-    "item": "stevescarts:modulecomponents",
-    "data": 22,
+    "item": "stevescarts:reinforced_metal",
     "count": 9
   }
 }

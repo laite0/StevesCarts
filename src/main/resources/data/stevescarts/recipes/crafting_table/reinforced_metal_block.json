@@ -7,12 +7,10 @@
   ],
   "key": {
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 49
+      "item": "stevescarts:reinforced_metal"
     }
   },
   "result": {
-    "item": "stevescarts:blockmetalstorage",
-    "data": 2
+    "item": "stevescarts:reinforced_metal_block"
   }
 }

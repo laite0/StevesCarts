@@ -14,6 +14,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import vswe.stevescarts.content.StevesCartsBlocks;
 import vswe.stevescarts.content.StevesCartsParts;
 import vswe.stevescarts.impl.client.CartEntityRenderer;
 import vswe.stevescarts.impl.client.gui.CartScreenHandler;
@@ -27,6 +28,10 @@ public class StevesCarts implements ModInitializer {
 	public static final String MOD_ID = "stevescarts";
 	public static EntityType<Entity> cartEntityType;
 	public static final StevesCartsManager manager = new StevesCartsManager();
+
+	public static ItemGroup SC2BLOCKS = FabricItemGroupBuilder.build(
+			new Identifier(MOD_ID, "sc2blocks"),
+			() -> new ItemStack(StevesCartsBlocks.CART_ASSEMBLER));
 
 	public static ItemGroup SC2PARTS = FabricItemGroupBuilder.build(
 			new Identifier(MOD_ID, "sc2parts"),

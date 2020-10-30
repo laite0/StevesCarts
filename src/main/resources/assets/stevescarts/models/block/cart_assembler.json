@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle":"stevescarts:block/cart_assembler_top",
+    "north":"stevescarts:block/cart_assembler_side_1",
+    "south":"stevescarts:block/cart_assembler_side_2",
+    "west":"stevescarts:block/cart_assembler_side_3",
+    "east":"stevescarts:block/cart_assembler_side_4",
+    "up":"stevescarts:block/cart_assembler_top",
+    "down":"stevescarts:block/cart_assembler_bot"
+  }
+}

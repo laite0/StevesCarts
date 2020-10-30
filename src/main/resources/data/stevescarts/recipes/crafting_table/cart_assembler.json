@@ -7,18 +7,16 @@
   ],
   "key": {
     "#": {
-      "type": "forge:ore_dict",
-      "ore": "stone"
+      "item": "minecraft:stone"
     },
     "X": {
       "item": "minecraft:iron_ingot"
     },
     "R": {
-      "item": "stevescarts:modulecomponents",
-      "data": 9
+      "item": "stevescarts:simple_pcb"
     }
   },
   "result": {
-    "item": "stevescarts:blockcartassembler"
+    "item": "stevescarts:cart_assembler"
   }
 }

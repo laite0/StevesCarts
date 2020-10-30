@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X#X",
+    "#R#",
+    "X#X"
+  ],
+  "key": {
+    "X": {
+      "item": "stevescarts:large_iron_pane"
+    },
+    "#": {
+      "item": "stevescarts:huge_iron_pane"
+    },
+    "R": {
+      "item": "stevescarts:large_dynamic_pane"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cargo_manager"
+  }
+}

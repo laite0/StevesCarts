@@ -1,5 +1,7 @@
 package vswe.stevescarts.content;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -45,11 +47,20 @@ public class StevesCartsContent implements StevesCartsInitializer {
 			settings.addListener(CartTick.class, FarmerComponent::tick);
 		}, FarmerComponent::new);
 
+		Arrays.stream(StevesCartsBlocks.values()).forEach(value -> registerBlock(value.block, value.name));
 		Arrays.stream(StevesCartsParts.values()).forEach(value -> registerItem(value.item, value.name));
+
 
 	}
 
 	private void registerItem(Item item, String name){
 		Registry.register(Registry.ITEM, new Identifier(StevesCarts.MOD_ID, name), item);
+	}
+
+	private void registerBlock(Block block, String name){
+		Identifier identifier = new Identifier(StevesCarts.MOD_ID, name);
+		Registry.register(Registry.BLOCK, identifier, block);
+		BlockItem itemBlock = new BlockItem(block, new Item.Settings().group(StevesCarts.SC2BLOCKS));
+		Registry.register(Registry.ITEM, identifier, itemBlock);
 	}
 }

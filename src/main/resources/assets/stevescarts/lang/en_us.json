@@ -1,7 +1,7 @@
 {
   "itemGroup.SC2Modules": "Steve's Carts 2 Modules",
   "itemGroup.stevescarts.sc2parts": "Steve's Carts 2 Components",
-  "itemGroup.SC2Blocks": "Steve's Carts 2 Blocks",
+  "itemGroup.stevescarts.sc2blocks": "Steve's Carts 2 Blocks",
 
   "_comment1": "Villager",
   "entity.Villager.sc_santa": "Santa",
@@ -398,18 +398,18 @@
 
   "_comment15": "BLOCKS",
 
-  "block.SC2:BlockCargoManager": "Cargo Manager",
+  "block.stevescarts.cart_assembler": "Cart Assembler",
+  "block.stevescarts.cargo_manager": "Cargo Manager",
+  "block.stevescarts.liquid_manager": "Liquid Manager",
+
   "block.SC2:BlockJunction": "Junction Rail",
   "block.SC2:BlockAdvDetector": "Advanced Detector Rail",
-  "block.SC2:BlockCartAssembler": "Cart Assembler",
   "block.SC2:BlockActivator": "Module Toggler",
   "block.SC2:BlockDistributor": "External Distributor",
-  "block.SC2:BlockLiquidManager": "Liquid Manager",
 
-  "_comment16": "Storage",
-  "item.SC2:BlockStorage0": "Reinforced Metal Block",
-  "item.SC2:BlockStorage1": "Galgadorian Block",
-  "item.SC2:BlockStorage2": "Enhanced Galgadorian Block",
+  "block.stevescarts.reinforced_metal_block": "Reinforced Metal Block",
+  "block.stevescarts.galgadorian_block": "Galgadorian Block",
+  "block.stevescarts.enhanced_galgadorian_block": "Enhanced Galgadorian Block",
 
   "_comment17": "Upgrades",
   "item.SC2:batteries": "Upgrade: Batteries",

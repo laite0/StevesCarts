@@ -7,12 +7,10 @@
   ],
   "key": {
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 22
+      "item": "stevescarts:enhanced_galgadorian_metal"
     }
   },
   "result": {
-    "item": "stevescarts:blockmetalstorage",
-    "data": 0
+    "item": "stevescarts:enhanced_galgadorian_block"
   }
 }

@@ -7,14 +7,13 @@
   ],
   "key": {
     "X": {
-      "item": "stevescarts:cartmodule",
-      "data": 66
+      "item": "minecraft:command_block"
     },
     "#": {
       "item": "minecraft:iron_ingot"
     }
   },
   "result": {
-    "item": "stevescarts:blockliquidmanager"
+    "item": "stevescarts:liquid_manager"
   }
 }
