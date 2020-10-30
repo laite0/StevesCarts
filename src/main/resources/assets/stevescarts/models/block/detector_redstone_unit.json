@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle":"stevescarts:block/detector_redstone_bot",
+    "north": "stevescarts:block/detector_redstone_yellow",
+    "south": "stevescarts:block/detector_redstone_blue",
+    "west": "stevescarts:block/detector_redstone_green",
+    "east": "stevescarts:block/detector_redstone_red",
+    "up":"stevescarts:block/detector_redstone_bot",
+    "down":"stevescarts:block/detector_redstone_bot"
+  }
+}

@@ -7,18 +7,16 @@
   ],
   "key": {
     "X": {
-      "type": "forge:ore_dict",
-      "ore": "stone"
+      "item": "minecraft:stone"
     },
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 9
+      "item": "stevescarts:simple_pcb"
     },
     "R": {
       "item": "minecraft:redstone"
     }
   },
   "result": {
-    "item": "stevescarts:blockdistributor"
+    "item": "stevescarts:external_distributor"
   }
 }

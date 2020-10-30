@@ -7,8 +7,7 @@
   ],
   "key": {
     "X": {
-      "type": "forge:ore_dict",
-      "ore": "cobblestone"
+      "item": "minecraft:cobblestone"
     },
     "S": {
       "item": "minecraft:stone_pressure_plate"
@@ -20,12 +19,10 @@
       "item": "minecraft:redstone"
     },
     "P": {
-      "item": "stevescarts:modulecomponents",
-      "data": 9
+      "item": "stevescarts:simple_pcb"
     }
   },
   "result": {
-    "item": "stevescarts:blockdetector",
-    "data": 1
+    "item": "stevescarts:detector_unit"
   }
 }

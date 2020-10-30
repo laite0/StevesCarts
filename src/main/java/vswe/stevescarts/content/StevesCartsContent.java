@@ -49,8 +49,6 @@ public class StevesCartsContent implements StevesCartsInitializer {
 
 		Arrays.stream(StevesCartsBlocks.values()).forEach(value -> registerBlock(value.block, value.name));
 		Arrays.stream(StevesCartsParts.values()).forEach(value -> registerItem(value.item, value.name));
-
-
 	}
 
 	private void registerItem(Item item, String name){

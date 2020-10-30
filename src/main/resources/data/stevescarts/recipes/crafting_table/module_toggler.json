@@ -7,16 +7,13 @@
   ],
   "key": {
     "O": {
-      "type": "forge:ore_dict",
-      "ore": "dyeOrange"
+      "item": "minecraft:orange_dye"
     },
     "B": {
-      "type": "forge:ore_dict",
-      "ore": "dyeBlue"
+      "item": "minecraft:blue_dye"
     },
     "#": {
-      "type": "forge:ore_dict",
-      "ore": "stone"
+      "item": "minecraft:stone"
     },
     "I": {
       "item": "minecraft:iron_ingot"
@@ -28,11 +25,10 @@
       "item": "minecraft:redstone"
     },
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 16
+      "item": "stevescarts:advanced_pcb"
     }
   },
   "result": {
-    "item": "stevescarts:blockactivator"
+    "item": "stevescarts:module_toggler"
   }
 }

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures":{
+    "particle":"stevescarts:block/external_distributor_blue",
+    "north": "stevescarts:block/external_distributor_yellow",
+    "south": "stevescarts:block/external_distributor_blue",
+    "west": "stevescarts:block/external_distributor_green",
+    "east": "stevescarts:block/external_distributor_red",
+    "up":"stevescarts:block/external_distributor_orange",
+    "down":"stevescarts:block/external_distributor_purple"
+  }
+}

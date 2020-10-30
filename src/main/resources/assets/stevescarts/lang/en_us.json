@@ -401,11 +401,16 @@
   "block.stevescarts.cart_assembler": "Cart Assembler",
   "block.stevescarts.cargo_manager": "Cargo Manager",
   "block.stevescarts.liquid_manager": "Liquid Manager",
+  "block.stevescarts.external_distributor": "External Distributor",
+  "block.stevescarts.module_toggler": "Module Toggler",
+  "block.stevescarts.detector_unit": "Detector Unit",
+  "block.stevescarts.detector_manager": "Detector Manager",
+  "block.stevescarts.detector_station": "Detector Station",
+  "block.stevescarts.detector_junction": "Detector Junction",
+  "block.stevescarts.detector_redstone_unit": "Detector Redstone Unit",
 
   "block.SC2:BlockJunction": "Junction Rail",
   "block.SC2:BlockAdvDetector": "Advanced Detector Rail",
-  "block.SC2:BlockActivator": "Module Toggler",
-  "block.SC2:BlockDistributor": "External Distributor",
 
   "block.stevescarts.reinforced_metal_block": "Reinforced Metal Block",
   "block.stevescarts.galgadorian_block": "Galgadorian Block",
@@ -433,12 +438,7 @@
   "item.SC2:solar_panel": "Upgrade: Solar Panel",
   "item.SC2:thermal_engine_upgrade": "Upgrade: Thermal Engine",
 
-  "_comment18": "Detector Units",
-  "item.SC2:BlockDetector0": "Detector Manager",
-  "item.SC2:BlockDetector1": "Detector Unit",
-  "item.SC2:BlockDetector2": "Detector Station",
-  "item.SC2:BlockDetector3": "Detector Junction",
-  "item.SC2:BlockDetector4": "Detector Redstone Unit",
+
 
   "_comment19": "MODULE MISC",
 

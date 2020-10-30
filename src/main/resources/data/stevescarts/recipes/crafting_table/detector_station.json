@@ -10,16 +10,13 @@
       "item": "minecraft:iron_ingot"
     },
     "D": {
-      "item": "stevescarts:blockdetector",
-      "data": 1
+      "item": "stevescarts:detector_unit"
     },
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 9
+      "item": "stevescarts:simple_pcb"
     }
   },
   "result": {
-    "item": "stevescarts:blockdetector",
-    "data": 2
+    "item": "stevescarts:detector_station"
   }
 }
