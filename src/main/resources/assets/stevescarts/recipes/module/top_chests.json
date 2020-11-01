@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "stevescarts:crafting_shaped",
   "conditions": [
     {
       "type": "stevescarts:module_enabled",

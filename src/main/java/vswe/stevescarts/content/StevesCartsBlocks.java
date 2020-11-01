@@ -2,7 +2,9 @@ package vswe.stevescarts.content;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
+import net.minecraft.block.DetectorRailBlock;
 import net.minecraft.block.Material;
+import net.minecraft.block.RailBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.sound.BlockSoundGroup;
@@ -10,28 +12,36 @@ import net.minecraft.sound.BlockSoundGroup;
 import java.util.Locale;
 
 public enum StevesCartsBlocks implements ItemConvertible {
-    CART_ASSEMBLER,
-    CARGO_MANAGER,
-    LIQUID_MANAGER,
+    CART_ASSEMBLER(createBlock()),
+    CARGO_MANAGER(createBlock()),
+    LIQUID_MANAGER(createBlock()),
 
-    EXTERNAL_DISTRIBUTOR,
-    MODULE_TOGGLER,
-    DETECTOR_UNIT,
-    DETECTOR_MANAGER,
-    DETECTOR_STATION,
-    DETECTOR_JUNCTION,
-    DETECTOR_REDSTONE_UNIT,
+    EXTERNAL_DISTRIBUTOR(createBlock()),
+    MODULE_TOGGLER(createBlock()),
+    DETECTOR_UNIT(createBlock()),
+    DETECTOR_MANAGER(createBlock()),
+    DETECTOR_STATION(createBlock()),
+    DETECTOR_JUNCTION(createBlock()),
+    DETECTOR_REDSTONE_UNIT(createBlock()),
 
-    REINFORCED_METAL_BLOCK,
-    GALGADORIAN_BLOCK,
-    ENHANCED_GALGADORIAN_BLOCK;
+    REINFORCED_METAL_BLOCK(createBlock()),
+    GALGADORIAN_BLOCK(createBlock()),
+    ENHANCED_GALGADORIAN_BLOCK(createBlock()),
+
+    ADVANCED_DETECTOR_RAIL(new DetectorRailBlock(FabricBlockSettings.of(Material.SUPPORTED).noCollision().strength(0.7f).sounds(BlockSoundGroup.METAL))),
+    //JUNCTION_RAIL(new RailBlock(FabricBlockSettings.of(Material.SUPPORTED).noCollision().strength(0.7f).sounds(BlockSoundGroup.METAL)))
+    ;
 
     public final String name;
     public final Block block;
 
-    StevesCartsBlocks(){
+    StevesCartsBlocks(Block block){
         name = this.toString().toLowerCase(Locale.ROOT);
-        block = new Block(FabricBlockSettings.of(Material.METAL).strength(2f, 2f).sounds(BlockSoundGroup.METAL));
+        this.block = block;
+    }
+
+    private static Block createBlock(){
+        return new Block(FabricBlockSettings.of(Material.METAL).strength(2f, 2f).sounds(BlockSoundGroup.METAL));
     }
 
     @Override
