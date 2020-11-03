@@ -7,8 +7,7 @@
   ],
   "key": {
     "D": {
-      "type": "forge:ore_dict",
-      "ore": "gemDiamond"
+      "item": "minecraft:diamond"
     },
     "X": {
       "item": "minecraft:glowstone_dust"
@@ -17,12 +16,10 @@
       "item": "minecraft:emerald_block"
     },
     "#": {
-      "item": "stevescarts:upgrade",
-      "data": 0
+      "item": "stevescarts:batteries_upgrade"
     }
   },
   "result": {
-    "item": "stevescarts:upgrade",
-    "data": 1
+    "item": "stevescarts:power_crystal_upgrade"
   }
 }

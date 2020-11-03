@@ -10,20 +10,16 @@
       "item": "minecraft:bookshelf"
     },
     "R": {
-      "item": "stevescarts:modulecomponents",
-      "data": 22
+      "item": "stevescarts:reinforced_metal"
     },
     "G": {
-      "item": "stevescarts:modulecomponents",
-      "data": 45
+      "item": "stevescarts:eye_of_galgador"
     },
     "#": {
-      "item": "stevescarts:upgrade",
-      "data": 2
+      "item": "stevescarts:module_knowledge_upgrade"
     }
   },
   "result": {
-    "item": "stevescarts:upgrade",
-    "data": 3
+    "item": "stevescarts:industrial_espionage_upgrade"
   }
 }

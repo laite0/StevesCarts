@@ -7,19 +7,16 @@
   ],
   "key": {
     "D": {
-      "type": "forge:ore_dict",
-      "ore": "gemDiamond"
+      "item": "minecraft:diamond"
     },
     "X": {
       "item": "minecraft:redstone"
     },
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 59
+      "item": "stevescarts:blank_upgrade"
     }
   },
   "result": {
-    "item": "stevescarts:upgrade",
-    "data": 0
+    "item": "stevescarts:batteries_upgrade"
   }
 }

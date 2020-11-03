@@ -1,0 +1,6 @@
+{
+  "parent": "stevescarts:block/upgrade/upgrade_template",
+  "textures": {
+    "texture": "stevescarts:block/upgrade/module_knowledge"
+  }
+}

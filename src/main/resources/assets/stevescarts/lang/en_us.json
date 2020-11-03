@@ -414,10 +414,11 @@
   "block.stevescarts.enhanced_galgadorian_block": "Enhanced Galgadorian Block",
 
   "_comment17": "Upgrades",
-  "item.SC2:batteries": "Upgrade: Batteries",
-  "item.SC2:power_crystal": "Upgrade: Power Crystal",
-  "item.SC2:module_knowledge": "Upgrade: Module knowledge",
-  "item.SC2:industrial_espionage": "Upgrade: Industrial espionage",
+  "block.stevescarts.batteries_upgrade": "Upgrade: Batteries",
+  "block.stevescarts.power_crystal_upgrade": "Upgrade: Power Crystal",
+  "block.stevescarts.module_knowledge_upgrade": "Upgrade: Module knowledge",
+  "block.stevescarts.industrial_espionage_upgrade": "Upgrade: Industrial espionage",
+
   "item.SC2:experienced_assembler": "Upgrade: Experienced assembler",
   "item.SC2:new_era": "Upgrade: New Era",
   "item.SC2:co2_friendly": "Upgrade: CO2 friendly",

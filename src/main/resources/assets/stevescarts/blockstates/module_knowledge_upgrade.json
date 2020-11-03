@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=north": { "model": "stevescarts:block/upgrade/module_knowledge_upgrade", "x": 90, "uvlock": true},
+    "facing=south": { "model": "stevescarts:block/upgrade/module_knowledge_upgrade", "x": 270 },
+    "facing=west":  { "model": "stevescarts:block/upgrade/module_knowledge_upgrade", "x": 90, "y": 270, "uvlock": true },
+    "facing=east":  { "model": "stevescarts:block/upgrade/module_knowledge_upgrade", "x": 90, "y": 90, "uvlock": true },
+    "facing=down":  { "model": "stevescarts:block/upgrade/module_knowledge_upgrade", "x": 180 },
+    "facing=up":  { "model": "stevescarts:block/upgrade/module_knowledge_upgrade"}
+  }
+}

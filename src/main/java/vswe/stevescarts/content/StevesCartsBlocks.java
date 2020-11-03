@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.sound.BlockSoundGroup;
 import vswe.stevescarts.impl.block.JunctionRailBlock;
+import vswe.stevescarts.impl.block.UpgradeBlock;
 
 import java.util.Locale;
 
@@ -29,7 +30,15 @@ public enum StevesCartsBlocks implements ItemConvertible {
     ENHANCED_GALGADORIAN_BLOCK(createBlock()),
 
     ADVANCED_DETECTOR_RAIL(new DetectorRailBlock(FabricBlockSettings.of(Material.SUPPORTED).noCollision().strength(0.7f).sounds(BlockSoundGroup.METAL))),
-    JUNCTION_RAIL(new JunctionRailBlock())
+    JUNCTION_RAIL(new JunctionRailBlock()),
+
+    BATTERIES_UPGRADE(new UpgradeBlock()),
+    POWER_CRYSTAL_UPGRADE(new UpgradeBlock()),
+    MODULE_KNOWLEDGE_UPGRADE(new UpgradeBlock()),
+    INDUSTRIAL_ESPIONAGE_UPGRADE(new UpgradeBlock()),
+
+
+
     ;
 
     public final String name;
