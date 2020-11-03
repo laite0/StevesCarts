@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "stevescarts:advanced_detector_rail"
+    "stevescarts:advanced_detector_rail",
+    "stevescarts:junction_rail"
   ]
 }

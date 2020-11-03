@@ -4,10 +4,10 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.DetectorRailBlock;
 import net.minecraft.block.Material;
-import net.minecraft.block.RailBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.sound.BlockSoundGroup;
+import vswe.stevescarts.impl.block.JunctionRailBlock;
 
 import java.util.Locale;
 
@@ -29,7 +29,7 @@ public enum StevesCartsBlocks implements ItemConvertible {
     ENHANCED_GALGADORIAN_BLOCK(createBlock()),
 
     ADVANCED_DETECTOR_RAIL(new DetectorRailBlock(FabricBlockSettings.of(Material.SUPPORTED).noCollision().strength(0.7f).sounds(BlockSoundGroup.METAL))),
-    //JUNCTION_RAIL(new RailBlock(FabricBlockSettings.of(Material.SUPPORTED).noCollision().strength(0.7f).sounds(BlockSoundGroup.METAL)))
+    JUNCTION_RAIL(new JunctionRailBlock())
     ;
 
     public final String name;

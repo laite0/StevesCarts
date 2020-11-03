@@ -397,7 +397,6 @@
 
 
   "_comment15": "BLOCKS",
-
   "block.stevescarts.cart_assembler": "Cart Assembler",
   "block.stevescarts.cargo_manager": "Cargo Manager",
   "block.stevescarts.liquid_manager": "Liquid Manager",
@@ -408,10 +407,8 @@
   "block.stevescarts.detector_station": "Detector Station",
   "block.stevescarts.detector_junction": "Detector Junction",
   "block.stevescarts.detector_redstone_unit": "Detector Redstone Unit",
-
-  "block.SC2:BlockJunction": "Junction Rail",
-  "block.SC2:BlockAdvDetector": "Advanced Detector Rail",
-
+  "block.stevescarts.junction_rail": "Junction Rail",
+  "block.stevescarts.advanced_detector_rail": "Advanced Detector Rail",
   "block.stevescarts.reinforced_metal_block": "Reinforced Metal Block",
   "block.stevescarts.galgadorian_block": "Galgadorian Block",
   "block.stevescarts.enhanced_galgadorian_block": "Enhanced Galgadorian Block",

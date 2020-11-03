@@ -11,6 +11,9 @@
     "main": [
       "vswe.stevescarts.StevesCarts"
     ],
+    "client": [
+      "vswe.stevescarts.StevesCartsClient"
+    ],
     "stevescarts": [
       "vswe.stevescarts.content.StevesCartsContent"
     ]
