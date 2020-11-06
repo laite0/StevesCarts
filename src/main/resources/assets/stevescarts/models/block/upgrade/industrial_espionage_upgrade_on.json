@@ -2,6 +2,6 @@
   "parent": "stevescarts:block/upgrade/upgrade_template",
   "textures": {
     "texture": "stevescarts:block/upgrade/industrial_espionage",
-    "side": "stevescarts:block/upgrade/upgrade_side_0"
+    "side": "stevescarts:block/upgrade/upgrade_side_1"
   }
 }

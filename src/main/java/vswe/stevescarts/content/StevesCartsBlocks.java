@@ -7,13 +7,14 @@ import net.minecraft.block.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.sound.BlockSoundGroup;
+import vswe.stevescarts.impl.block.CartAssemblerBlock;
 import vswe.stevescarts.impl.block.JunctionRailBlock;
 import vswe.stevescarts.impl.block.UpgradeBlock;
 
 import java.util.Locale;
 
 public enum StevesCartsBlocks implements ItemConvertible {
-    CART_ASSEMBLER(createBlock()),
+    CART_ASSEMBLER(new CartAssemblerBlock()),
     CARGO_MANAGER(createBlock()),
     LIQUID_MANAGER(createBlock()),
 
@@ -36,6 +37,8 @@ public enum StevesCartsBlocks implements ItemConvertible {
     POWER_CRYSTAL_UPGRADE(new UpgradeBlock()),
     MODULE_KNOWLEDGE_UPGRADE(new UpgradeBlock()),
     INDUSTRIAL_ESPIONAGE_UPGRADE(new UpgradeBlock()),
+    EXPERIENCED_ASSEMBLER_UPGRADE(new UpgradeBlock()),
+    NEW_ERA_UPGRADE(new UpgradeBlock()),
 
 
 

@@ -2,6 +2,7 @@
   "parent": "stevescarts:block/upgrade/upgrade_template",
   "textures": {
     "texture": "stevescarts:block/upgrade/module_knowledge",
-    "side": "stevescarts:block/upgrade/upgrade_side_0"
+    "side": "stevescarts:block/upgrade/upgrade_side_1"
+
   }
 }

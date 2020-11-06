@@ -418,9 +418,9 @@
   "block.stevescarts.power_crystal_upgrade": "Upgrade: Power Crystal",
   "block.stevescarts.module_knowledge_upgrade": "Upgrade: Module knowledge",
   "block.stevescarts.industrial_espionage_upgrade": "Upgrade: Industrial espionage",
+  "block.stevescarts.experienced_assembler_upgrade": "Upgrade: Experienced assembler",
+  "block.stevescarts.new_era_upgrade": "Upgrade: New Era",
 
-  "item.SC2:experienced_assembler": "Upgrade: Experienced assembler",
-  "item.SC2:new_era": "Upgrade: New Era",
   "item.SC2:co2_friendly": "Upgrade: CO2 friendly",
   "item.SC2:generic_engine": "Upgrade: Generic engine",
   "item.SC2:module_input": "Upgrade: Module input",

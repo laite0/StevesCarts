@@ -1,10 +1,16 @@
 {
   "variants": {
-    "facing=north": { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 90, "uvlock": true},
-    "facing=south": { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 270 },
-    "facing=west":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 90, "y": 270, "uvlock": true },
-    "facing=east":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 90, "y": 90, "uvlock": true },
-    "facing=down":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 180 },
-    "facing=up":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade"}
+    "connected=false,facing=north": { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 90, "uvlock": true},
+    "connected=false,facing=south": { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 270 },
+    "connected=false,facing=west":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 90, "y": 270, "uvlock": true },
+    "connected=false,facing=east":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 90, "y": 90, "uvlock": true },
+    "connected=false,facing=down":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade", "x": 180 },
+    "connected=false,facing=up":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade"},
+    "connected=true,facing=north": { "model": "stevescarts:block/upgrade/power_crystal_upgrade_on", "x": 90, "uvlock": true},
+    "connected=true,facing=south": { "model": "stevescarts:block/upgrade/power_crystal_upgrade_on", "x": 270 },
+    "connected=true,facing=west":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade_on", "x": 90, "y": 270, "uvlock": true },
+    "connected=true,facing=east":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade_on", "x": 90, "y": 90, "uvlock": true },
+    "connected=true,facing=down":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade_on", "x": 180 },
+    "connected=true,facing=up":  { "model": "stevescarts:block/upgrade/power_crystal_upgrade_on"}
   }
 }
