@@ -39,6 +39,16 @@ public enum StevesCartsBlocks implements ItemConvertible {
     INDUSTRIAL_ESPIONAGE_UPGRADE(new UpgradeBlock()),
     EXPERIENCED_ASSEMBLER_UPGRADE(new UpgradeBlock()),
     NEW_ERA_UPGRADE(new UpgradeBlock()),
+    CO2_FRIENDLY_UPGRADE(new UpgradeBlock()),
+    GENERIC_ENGINE_UPGRADE(new UpgradeBlock()),
+    MODULE_INPUT_UPGRADE(new UpgradeBlock()),
+    PRODUCTION_LINE_UPGRADE(new UpgradeBlock()),
+
+    CART_DEPLOYER_UPGRADE(new UpgradeBlock()),
+    CART_MODIFIER_UPGRADE(new UpgradeBlock()),
+    CART_CRANE_UPGRADE(new UpgradeBlock()),
+    REDSTONE_CONTROL_UPGRADE(new UpgradeBlock()),
+    CREATIVE_MODE_UPGRADE(new UpgradeBlock()),
 
 
 

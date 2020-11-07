@@ -10,20 +10,16 @@
       "item": "minecraft:iron_ingot"
     },
     "A": {
-      "item": "minecraft:anvil",
-      "data": 0
+      "item": "minecraft:anvil"
     },
     "P": {
-      "item": "stevescarts:modulecomponents",
-      "data": 9
+      "item": "stevescarts:simple_pcb"
     },
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 59
+      "item": "stevescarts:blank_upgrade"
     }
   },
   "result": {
-    "item": "stevescarts:upgrade",
-    "data": 11
+    "item": "stevescarts:cart_modifier_upgrade"
   }
 }

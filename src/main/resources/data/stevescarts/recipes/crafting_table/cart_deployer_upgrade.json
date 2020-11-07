@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IRI",
+    "XPX",
+    "I#I"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:rail"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "X": {
+      "item": "stevescarts:simple_pcb"
+    },
+    "#": {
+      "item": "stevescarts:blank_upgrade"
+    }
+  },
+  "result": {
+    "item": "stevescarts:cart_deployer_upgrade"
+  }
+}

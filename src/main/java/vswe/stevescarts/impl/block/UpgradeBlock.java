@@ -65,8 +65,8 @@ public class UpgradeBlock extends Block {
     @Override
     public BlockState getStateForNeighborUpdate(BlockState ourState, Direction ourFacing, BlockState otherState,
                                                 WorldAccess worldIn, BlockPos ourPos, BlockPos otherPos) {
-        // TODO: Fix for neighbor upgrade
-        return ourState.with(CONNECTED, canConnectTo(worldIn, ourPos.offset(ourFacing.getOpposite())));
+
+        return ourState.with(CONNECTED, canConnectTo(worldIn, ourPos.offset(ourState.get(FACING).getOpposite())));
     }
 
     @SuppressWarnings("deprecation")

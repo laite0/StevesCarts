@@ -16,20 +16,16 @@
       "item": "minecraft:repeater"
     },
     "L": {
-      "item": "stevescarts:modulecomponents",
-      "data": 16
+      "item": "stevescarts:advanced_pcb"
     },
     "P": {
-      "item": "stevescarts:modulecomponents",
-      "data": 9
+      "item": "stevescarts:simple_pcb"
     },
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 59
+      "item": "stevescarts:blank_upgrade"
     }
   },
   "result": {
-    "item": "stevescarts:upgrade",
-    "data": 13
+    "item": "stevescarts:redstone_control_upgrade"
   }
 }
