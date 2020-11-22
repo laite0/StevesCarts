@@ -16,20 +16,16 @@
       "item": "minecraft:nether_brick"
     },
     "O": {
-      "type": "forge:ore_dict",
-      "ore": "obsidian"
+      "item": "minecraft:obsidian"
     },
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 16
+      "item": "stevescarts:advanced_pcb"
     },
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 59
+      "item": "stevescarts:blank_upgrade"
     }
   },
   "result": {
-    "item": "stevescarts:upgrade",
-    "data": 18
+    "item": "stevescarts:thermal_engine_upgrade"
   }
 }

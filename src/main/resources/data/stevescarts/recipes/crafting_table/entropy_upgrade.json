@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GX ",
+    "DLD",
+    " #G"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "L": {
+      "item": "minecraft:lapis_block"
+    },
+    "G": {
+      "item": "stevescarts:eye_of_galgador"
+    },
+    "X": {
+      "item": "stevescarts:reinforced_metal"
+    },
+    "#": {
+      "item": "stevescarts:quick_demolisher_upgrade"
+    }
+  },
+  "result": {
+    "item": "stevescarts:entropy_upgrade"
+  }
+}

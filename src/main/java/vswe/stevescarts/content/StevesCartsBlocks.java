@@ -43,16 +43,16 @@ public enum StevesCartsBlocks implements ItemConvertible {
     GENERIC_ENGINE_UPGRADE(new UpgradeBlock()),
     MODULE_INPUT_UPGRADE(new UpgradeBlock()),
     PRODUCTION_LINE_UPGRADE(new UpgradeBlock()),
-
     CART_DEPLOYER_UPGRADE(new UpgradeBlock()),
     CART_MODIFIER_UPGRADE(new UpgradeBlock()),
     CART_CRANE_UPGRADE(new UpgradeBlock()),
     REDSTONE_CONTROL_UPGRADE(new UpgradeBlock()),
     CREATIVE_MODE_UPGRADE(new UpgradeBlock()),
-
-
-
-    ;
+    QUICK_DEMOLISHER_UPGRADE(new UpgradeBlock()),
+    MANAGER_BRIDGE_UPGRADE(new UpgradeBlock()),
+    ENTROPY_UPGRADE(new UpgradeBlock()),
+    SOLAR_PANEL_UPGRADE(new UpgradeBlock()),
+    THERMAL_ENGINE_UPGRADE(new UpgradeBlock());
 
     public final String name;
     public final Block block;

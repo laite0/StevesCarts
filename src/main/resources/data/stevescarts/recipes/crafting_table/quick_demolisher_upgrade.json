@@ -10,20 +10,16 @@
       "item": "minecraft:iron_block"
     },
     "O": {
-      "type": "forge:ore_dict",
-      "ore": "obsidian"
+      "item": "minecraft:obsidian"
     },
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 22
+      "item": "stevescarts:reinforced_metal"
     },
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 59
+      "item": "stevescarts:blank_upgrade"
     }
   },
   "result": {
-    "item": "stevescarts:upgrade",
-    "data": 15
+    "item": "stevescarts:quick_demolisher_upgrade"
   }
 }

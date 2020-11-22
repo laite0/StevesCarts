@@ -429,12 +429,11 @@
   "block.stevescarts.cart_crane_upgrade": "Upgrade: Cart Crane",
   "block.stevescarts.redstone_control_upgrade": "Upgrade: Redstone Control",
   "block.stevescarts.creative_mode_upgrade": "Upgrade: Creative Mode",
-
-  "item.SC2:quick_demolisher": "Upgrade: Quick Demolisher",
-  "item.SC2:manager_bridge": "Upgrade: Manager Bridge",
-  "item.SC2:entropy": "Upgrade: Entropy",
-  "item.SC2:solar_panel": "Upgrade: Solar Panel",
-  "item.SC2:thermal_engine_upgrade": "Upgrade: Thermal Engine",
+  "block.stevescarts.quick_demolisher_upgrade": "Upgrade: Quick Demolisher",
+  "block.stevescarts.manager_bridge_upgrade": "Upgrade: Manager Bridge",
+  "block.stevescarts.entropy_upgrade": "Upgrade: Entropy",
+  "block.stevescarts.solar_panel_upgrade": "Upgrade: Solar Panel",
+  "block.stevescarts.thermal_engine_upgrade": "Upgrade: Thermal Engine",
 
 
   "_comment19": "MODULE MISC",

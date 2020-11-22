@@ -1,0 +1,7 @@
+{
+  "parent": "stevescarts:block/upgrade/upgrade_template",
+  "textures": {
+    "texture": "stevescarts:block/upgrade/entropy",
+    "side": "stevescarts:block/upgrade/upgrade_side_0"
+  }
+}

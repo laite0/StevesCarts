@@ -7,23 +7,19 @@
   ],
   "key": {
     "D": {
-      "type": "forge:ore_dict",
-      "ore": "gemDiamond"
+      "item": "minecraft:diamond"
     },
     "R": {
       "item": "minecraft:redstone"
     },
     "X": {
-      "item": "stevescarts:modulecomponents",
-      "data": 44
+      "item": "stevescarts:solar_panel"
     },
     "#": {
-      "item": "stevescarts:modulecomponents",
-      "data": 59
+      "item": "stevescarts:blank_upgrade"
     }
   },
   "result": {
-    "item": "stevescarts:upgrade",
-    "data": 19
+    "item": "stevescarts:solar_panel_upgrade"
   }
 }
