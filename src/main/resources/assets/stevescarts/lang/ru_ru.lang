@@ -1,5 +1,12 @@
-﻿# ======================================
-				BLOCK GUI
+itemGroup.SC2Modules=Steve's Carts 2: Модули
+itemGroup.SC2Items=Steve's Carts 2: Компоненты
+itemGroup.SC2Blocks=Steve's Carts 2: Блоки
+
+# Villager
+entity.Villager.sc_santa=Санта
+
+# ======================================
+#				BLOCK GUI
 # ======================================
 
 # Cart assembler gui localization
@@ -17,11 +24,12 @@ gui.SC2:idleAssemblerMessage=В данный момент конструктор
 gui.SC2:modifyCart=Изменить вагонетку
 gui.SC2:assembleCart=Собрать вагонетку
 gui.SC2:fuelLevel=Уровень топлива
+# need beta 3 for these ones to show up (remove this note)
 gui.SC2:noHullError=У Вас нет корпуса!
 gui.SC2:invalidHullErrorShort=Добавленный корпус вовсе не корпус!
 gui.SC2:busyAssemblerError=Конструктор занят
 gui.SC2:departureBayError=В депо уже есть вагонетка!
-
+# end of beta 3 requirement (remove this note)
 
 # Cargo manager and Liquid manager shared gui localization
 gui.SC2:manager=Менеджер
@@ -41,7 +49,6 @@ gui.SC2:sideBlue=Синяя
 gui.SC2:sideYellow=Жёлтая
 gui.SC2:sideGreen=Зелёная
 gui.SC2:sideDisabled=Выключено
-
 
 # Cargo manager gui localization
 gui.SC2:cargoManager=Груз
@@ -93,7 +100,7 @@ gui.SC2:optionInvisibility=Невидимость
 gui.SC2:optionChunk=Загрузка чанков
 gui.SC2:optionCageAuto=Автоматически ловить в клетку
 gui.SC2:optionCage=Ловить в клетку
-gui.SC2:optionRemover=Track removing
+gui.SC2:optionRemover=Удаление рельс
 gui.SC2:settingDisabled=Выключено
 gui.SC2:settingOrange=Оранжевое направление
 gui.SC2:settingBlue=Синее направление
@@ -130,10 +137,10 @@ gui.SC2:sideToolTip=Сторона: [%1]
 
 # Detector Units gui localization
 gui.SC2:operatorOutput=ВЫВОД
-gui.SC2:operatorAnd=AND (и)
-gui.SC2:operatorOr=OR (или)
-gui.SC2:operatorNot=NOT (не)
-gui.SC2:operatorXor=XOR (не-или)
+gui.SC2:operatorAnd=И
+gui.SC2:operatorOr=ИЛИ
+gui.SC2:operatorNot=НЕ
+gui.SC2:operatorXor=НЕ-ИЛИ
 gui.SC2:operatorTopUnit=Верхний узел
 gui.SC2:operatorBotUnit=Нижний узел
 gui.SC2:operatorNorthUnit=Северный узел
@@ -154,6 +161,9 @@ gui.SC2:sateSeeds=Есть семена
 gui.SC2:stateBridge=Есть материал для моста
 gui.SC2:stateProjectiles=Есть снаряды
 gui.SC2:stateFertilizing=Есть удобрения
+# The cake one is a new one (you can remove this comment)
+gui.SC2:stateCake=Have cake supplies
+#
 gui.SC2:stateShield=Щит включен
 gui.SC2:stateChunk=Подгрузчик чанков включен
 gui.SC2:stateInvisibility=Ядро невидимости включено
@@ -196,9 +206,11 @@ gui.SC2:stateTanksFull=Все баки полны
 gui.SC2:stateTanksEmpty=Все баки пусты
 gui.SC2:stateTankEmpty=Есть полностью пустой бак
 
+# Cart GUI
+gui.SC2:returnButton=Обратное направление вагонетки
 
 # ======================================
-				ITEMS
+#				ITEMS
 # ======================================
 
 # Carts
@@ -263,7 +275,7 @@ item.SC2:firework_display.name=Дисплей фейерверка
 item.SC2:crop_nether_wart.name=Семя: Адский нарост
 item.SC2:cage.name=Клетка
 item.SC2:compact_solar_engine.name=Компактный солнечный двигатель
-item.SC2:internal_tank.name=Внутренний бак
+item.SC2:internal_sctank.name=Внутренний бак
 item.SC2:mechanical_pig.name=Механическая свинья
 item.SC2:creative_engine.name=Творческий двигатель
 item.SC2:incinerator.name=Мусоросжигатель
@@ -271,16 +283,16 @@ item.SC2:thermal_engine.name=Термальный двигатель
 item.SC2:advanced_thermal_engine.name=Улучшенный термальный двигатель
 item.SC2:liquid_cleaner.name=Очиститель жидкостей
 item.SC2:side_tanks.name=Боковые баки
-item.SC2:top_tank.name=Верхний бак
-item.SC2:advanced_tank.name=Улучшенный бак
-item.SC2:front_tank.name=Передний бак
+item.SC2:top_sctank.name=Верхний бак
+item.SC2:advanced_sctank.name=Улучшенный бак
+item.SC2:front_sctank.name=Передний бак
 item.SC2:creative_hull.name=Творческий корпус
 item.SC2:power_observer.name=Датчик энергии
 item.SC2:steves_arcade.name=Аркада Стива
 item.SC2:hardened_wood_cutter.name=Закалённый лесоруб
-item.SC2:creative_tank.name=Творческий бак
-item.SC2:open_tank.name=Открытый бак
-item.SC2:egg_basket=Корзина для яиц
+item.SC2:creative_sctank.name=Творческий бак
+item.SC2:open_sctank.name=Открытый бак
+item.SC2:egg_basket.name=Корзина для яиц
 item.SC2:drill_intelligence.name=Интеллигентный бур
 item.SC2:lawn_mower.name=Газонокосилка
 item.SC2:galgadorian_farmer.name=Галгадорианский комбайнер
@@ -302,6 +314,8 @@ item.SC2:trick_or_treat_cake_server.name=Подносчик тортов Сла�
 item.SC2:cake_server.name=Подносчик тортов
 item.SC2:creative_incinerator.name=Творческий мусоросжигатель
 item.SC2:creative_supplies.name=Творческий поставщик ресурсов
+item.SC2:color_randomizer.name=Случайный цвет
+item.SC2:treetap.name=Модуль сигнада дерева
 
 # Components
 item.SC2:unknowncomponent.name=Неизвестный компонент SC2
@@ -347,7 +361,7 @@ item.SC2:cleaning_fan.name=Вентилятор очистителя
 item.SC2:cleaning_core.name=Основание очистителя
 item.SC2:cleaning_tube.name=Труба очистителя
 item.SC2:fuse.name=Фитиль
-item.SC2:solar_panel.component.name=Солнечная батарея
+item.SC2:solar_panel.name=Солнечная батарея
 item.SC2:eye_of_galgador.name=Глаз Галгадора
 item.SC2:lump_of_galgador.name=Глыба Галгадора
 item.SC2:galgadorian_metal.name=Галгадорианский металл
@@ -363,10 +377,10 @@ item.SC2:sock.name=Носок
 item.SC2:stuffed_sock.name=Наполненный носок
 item.SC2:advanced_solar_panel.name=Улучшенная солнечная батарея
 item.SC2:blank_upgrade.name=Пустое улучшение
-item.SC2:tank_valve.name=Вентиль бака
-item.SC2:tank_pane.name=Панель бака
-item.SC2:large_tank_pane.name=Большая панель бака
-item.SC2:huge_tank_pane.name=Огромная панель бака
+item.SC2:sctank_valve.name=Вентиль бака
+item.SC2:sctank_pane.name=Панель бака
+item.SC2:large_sctank_pane.name=Большая панель бака
+item.SC2:huge_sctank_pane.name=Огромная панель бака
 item.SC2:liquid_cleaning_core.name=Основание очистителя жидкостей
 item.SC2:liquid_cleaning_tube.name=Труба очистителя жидкостей
 item.SC2:explosive_easter_egg.name=Взрывчатое пасхальное яйцо
@@ -392,7 +406,7 @@ item.SC2:blade_arm.name=Ротор
 
 
 # ======================================
-				BLOCKS
+#				BLOCKS
 # ======================================
 
 tile.SC2:BlockCargoManager.name=Менеджер груза
@@ -440,7 +454,7 @@ item.SC2:BlockDetector4.name=Датчик: Красный узел
 
 
 # ======================================
-				MODULE MISC
+#				MODULE MISC
 # ======================================
 
 # Categories
@@ -465,6 +479,7 @@ info.SC2:moduleGroupToolShooter=[%1:Инструмент|Инструменты]
 # Messages
 info.SC2:pigExtraMessage=В память победы Vswe's на арене Thunderpig. Спасибо всем, кто пожертвовал во время 2013 Minecraft Marathon
 info.SC2:oceanExtraMessage=Место для вполне обычного океана
+info.SC2:openExtraMessage=Этот модуль будет накапливать небольшое количество воды, когда идет дождь
 info.SC2:alphaExtraMessage=1 год в альфе
 info.SC2:storageEmpty=Пусто
 info.SC2:storageFull=Полно
@@ -480,6 +495,7 @@ info.SC2:cartSideBack=Заднее
 info.SC2:cartSideLeft=Левое
 info.SC2:cartSideRight=Правое
 info.SC2:cartSideFront=Переднее
+info.SC2:shiftForMore=Нажмите <[%1]> для большей информации
 info.SC2:occupiedSides=Займет [%1] [%2:место|места]
 info.SC2:sidesAnd=и
 info.SC2:noSides=Не займет ни одну из сторон
@@ -496,17 +512,19 @@ info.SC2:impossibleCombinationError=Комбинация типов модуле
 info.SC2:complexityOverloadError=Модуль "[%1]" слишком сложен для этого корпуса.
 info.SC2:missingParentError=Для работы [%1] необходим [%2]!
 info.SC2:presentNemesisError=[%1] не работает вместе с [%2]
-info.SC2:presentDuplicateError[%1] не может быть добавлен дважды.
+info.SC2:presentDuplicateError=[%1] не может быть добавлен дважды.
 info.SC2:sideClashError=[%1] и [%2] приведут к конфликту на [%3]
+# need beta 3 for these ones to show up (remove this note)
 info.SC2:toolUnbreakable=Неломаемый
 info.SC2:toolDurability=Прочность: [%1]%
 info.SC2:modularCapacity=Модульная вместимость: [%1]
 info.SC2:complexityCap=Предел модульной сложности: [%1]
 info.SC2:maxEngineCount=Макс. кол-во двигателей: [%1]
 info.SC2:maxAddonCount=Макс. кол-во расширений: [%1]
+# end of beta 3 requirement (remove this note)
 
 # ======================================
-				UPGRADES
+#				UPGRADES
 # ======================================
 
 info.SC2:effectBlueprint=Разрешает использовать схемы конструкции.
@@ -529,7 +547,7 @@ info.SC2:effectEfficiency=Эффективность сборки [%1]%.
 
 
 # ======================================
-				MODULES
+#				MODULES
 # ======================================
 
 # Addons
@@ -550,6 +568,7 @@ modules.addons.SC2:colorizerRgbBlue=Синий
 modules.addons.SC2:intelligenceLockedBlock=Бур всегда будет разбивать этот блок
 modules.addons.SC2:intelligenceChange=Изменить выборку бура
 modules.addons.SC2:intelligenceCurrent=Сейчас: [%1->Включено|Выключено]
+modules.addons.SC2:intelligenceRestricted=Добыча этого блока ограничено конфигурацией
 modules.addons.SC2:enchanterInstruction=Положить зачарованную книгу в левый слот.
 modules.addons.SC2:invisibilityToggle=[%1->Включить|Выключить] ядро невидимости
 modules.addons.SC2:informationProviderLabelName=Название
@@ -581,9 +600,10 @@ modules.addons.SC2:recipeNoLimit=Нет предела
 modules.addons.SC2:recipeLimit=Лимитировать имеющиеся предметы
 modules.addons.SC2:recipeDisabled=Ничего не производить
 modules.addons.SC2:recipeChangeLimit=[%1->Увеличить|Уменьшить] поддерживаемое кол-во предметов.
-modules.addons.SC2:recipeChangeLimit10=Shift+Клик - изменить на 10.
-modules.addons.SC2:recipeChangeLimit64=Ctrl+Клик - изменить на 64.
+modules.addons.SC2:recipeChangeLimit10=Shift+ЛКМ - изменить на 10.
+modules.addons.SC2:recipeChangeLimit64=Ctrl+ЛКМ - изменить на 64.
 modules.addons.SC2:shieldToggle=[%1->Включить|Выключить] щит
+modules.addons.SC2:buttonRandomize=Случайный цвет
 
 # Engines
 modules.engines.SC2:creativePowerLevel=Энергия: [%1]
@@ -597,12 +617,13 @@ modules.engines.SC2:thermalEngineTitle=Термальный двигатель
 modules.engines.SC2:thermalPowered=Работает
 modules.engines.SC2:outOfWater=Воды нет
 modules.engines.SC2:outOfLava=Лавы нет
+# need beta 3 for these ones to show up (remove this note)
 modules.engines.SC2:engineDisabledMessage=Выключен
 modules.engines.SC2:enginePriorityMessage=[%1->Высокий|Средний|Низкий] приоритет
-
+# end of beta 3 requirement (remove this note)
 
 # Tanks
-modules.tanks.SC2:creativeTankMode=(Твор. режим) Настройка: [%1][%2->Обычно|Всегда полон|Всегда пуст|Всегда наполовину]
+modules.tanks.SC2:creativeTankMode=Текущий творческий режим: [%1][%2->Обычно|Всегда полон|Всегда пуст|Всегда наполовину]
 modules.tanks.SC2:creativeTankChangeMode=ПКМ, чтобы изменить
 modules.tanks.SC2:creativeTankResetMode=Shift+ПКМ, чтобы вернуться к по умолчанию
 modules.tanks.SC2:tankLocked=Зарезервировано для этой жидкости
@@ -660,12 +681,15 @@ modules.attachments.SC2:noteDelay=Изменить задерждку. Теку�
 modules.attachments.SC2:noteAdd=Добавить ноту к мелодии #[%1]
 modules.attachments.SC2:noteRemove=Удалить самую правую ноту #[%1]
 modules.attachments.SC2:noteVolume=Громкость: [%1->Выкл.|Низкая|Средняя|Высокая]
+# need beta 3 for these ones to show up (remove this note)
 modules.attachments.SC2:seatStateMessage=[%1->Эта вагонетка занята|Сесть в вагонетку|Покинуть вагонетку]
 modules.attachments.SC2:controlSystemReset=Сбросить счетчик
+# end of beta 3 requirement (remove this note)
 
 # ======================================
-				Steve's Arcade 
+#				Steve's Arcade
 # ======================================
+# need beta 3 for these ones to show up (remove this note)
 # Ghast Invaders
 arcade.SC2:ghastInvaders=Ghast Invaders
 arcade.SC2:ghastLives=Жизней
