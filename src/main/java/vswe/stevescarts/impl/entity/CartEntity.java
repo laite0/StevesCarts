@@ -177,7 +177,7 @@ public class CartEntity extends AbstractMinecartEntity {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeDouble(this.getX());
 		buf.writeDouble(this.getY());
-		buf.writeDouble(this.getY());
+		buf.writeDouble(this.getZ());
 		buf.writeFloat(pitch);
 		buf.writeFloat(yaw);
 		buf.writeInt(getEntityId());
