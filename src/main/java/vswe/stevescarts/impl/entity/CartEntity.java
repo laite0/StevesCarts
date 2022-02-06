@@ -100,7 +100,7 @@ public class CartEntity extends AbstractMinecartEntity {
 
 	@Override
 	protected void moveOnRail(BlockPos blockPos, BlockState blockState) {
-		RailShape shapeProperty = blockState.get(((RailBlock) blockState.getBlock()).getShapeProperty());
+		RailShape shapeProperty = blockState.get(((AbstractRailBlock) blockState.getBlock()).getShapeProperty());
 		cornerFlip = ((shapeProperty == RailShape.SOUTH_EAST || shapeProperty == RailShape.SOUTH_WEST) && getVelocity().x < 0.0) || ((shapeProperty == RailShape.NORTH_EAST || shapeProperty == RailShape.NORTH_WEST) && getVelocity().x > 0.0);
 
 		if(workingTime > 0) {
